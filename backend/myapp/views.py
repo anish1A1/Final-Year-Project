@@ -43,7 +43,7 @@ class LoginView(generics.GenericAPIView):
 
 class DashboardView(APIView):
     permission_classes = [IsAuthenticated, HasRole]
-    required_role = 'buyer'    # this added for permissions are checked and  only the added here will  be autherized 
+    required_role = 'user'    # this added for permissions are checked and  only the added here will  be autherized 
     def get(self, request):
         user = request.user
         user_serializer = UserSerializer(user)
