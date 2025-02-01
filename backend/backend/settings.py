@@ -127,7 +127,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+#for global static file directory we use the below code.  {directory where apps are also there.}
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+MEDIA_URL = '/media/'  # This should be /media/ to avoid confusion
+MEDIA_ROOT = BASE_DIR / 'media'  # This should point to a media directory
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -146,3 +155,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1), #
     'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
 }
+
+

@@ -34,7 +34,7 @@ class LoginView(generics.GenericAPIView):
                 {'refresh' : str(refresh),
                  'access' : str(refresh.access_token),
                  'user': user_serializer.data},
-                #  'redirect_url': '/'
+               
             )
         else:
             return Response({'details' :"Invalid Credentials"}, status=401)  
@@ -42,7 +42,9 @@ class LoginView(generics.GenericAPIView):
         
 
 class DashboardView(APIView):
-    permission_classes = [IsAuthenticated, HasRole]
+
+    permission_classes = [IsAuthenticated, ]
+    
     required_role = 'user'    # this added for permissions are checked and  only the added here will  be autherized 
     def get(self, request):
         user = request.user
