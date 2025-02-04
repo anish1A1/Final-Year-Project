@@ -2,13 +2,16 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
-from rest_framework.permissions import AllowAny
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer
+from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from .permissions import HasRole
+from rest_framework import viewsets
+from rest_framework import generics
+from .models import Equipment
 # Create your views here.
 
 
@@ -53,3 +56,36 @@ class DashboardView(APIView):
             'message' : 'Welcome to Dashboard',
             'user': user_serializer.data
         }, status=200)
+
+class IsOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user            
+    #This will check if the user the object is belonging to is equal to the user making the request. 
+    # This is used to ensure that only the owner of an object can access it.
+
+
+        # To list and create the Equipment
+class EquipmentListCreateView(generics.ListCreateAPIView):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_serializer_context(self):
+        return {'request': self.request}      #This allows the serializer to access the request object 
+    #and use it for context-specific operations (e.g., getting the currently authenticated user).
+
+    # This method overrides the perform_create method
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+        # The serializer.save(user=self.request.user) call saves the new Equipment instance, setting the user field to the currently authenticated user (self.request.user).
+        
+        
+# class for update, delete and retrieve the equipment
+class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwner]
+    
+    def get_serializer_context(self):
+        return {'request': self.request}
+    

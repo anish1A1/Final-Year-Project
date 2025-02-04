@@ -33,9 +33,16 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True)
     
 
+
 class EquipmentSerializer(serializers.ModelSerializer):
-    model = Equipment
-    fields = '__all__'
-    
-    
-    
+    user = serializers.ReadOnlyField(source='user.username')
+    class Meta:
+        model = Equipment
+        fields = '__all__'
+        
+    def create(self, validated_data):
+        # Sets the user from the context
+        user = self.context['request'].user
+        validated_data['user'] = user
+        print("validated Data: ", validated_data)
+        return super().create(validated_data)

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -130,12 +130,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 #for global static file directory we use the below code.  {directory where apps are also there.}
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+
 
 MEDIA_URL = '/media/'  # This should be /media/ to avoid confusion
-MEDIA_ROOT = BASE_DIR / 'media'  # This should point to a media directory
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # This should point to a media directory
 
 
 # Default primary key field type
