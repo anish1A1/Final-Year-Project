@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer, EquipmentStockSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Equipment
+from .models import Equipment, EquipmentStock
 # Create your views here.
 
 
@@ -68,7 +68,13 @@ class IsOwner(BasePermission):
 class EquipmentListCreateView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
-    permission_classes = [IsAuthenticated]
+    
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
     
     def get_serializer_context(self):
         return {'request': self.request}      #This allows the serializer to access the request object 
@@ -79,12 +85,42 @@ class EquipmentListCreateView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
         # The serializer.save(user=self.request.user) call saves the new Equipment instance, setting the user field to the currently authenticated user (self.request.user).
         
+       
+# This method will List and create the quantity and Available stock of the Equipment 
+class EquipmentStockListCreateView(generics.ListCreateAPIView):
+    queryset = EquipmentStock.objects.all()
+    serializer_class = EquipmentStockSerializer
+    permission_classes = [IsAuthenticated]   
+    
+    def perform_create(self, serializer):
+        equipment = Equipment.objects.get(id=self.request.data['equipment'])  # Get the equipment object from the request data
+        serializer.save(equipment=equipment)
         
+# This method will delete, update and List by ID the quantity and Available stock of the Equipment 
+class EquipmentStockDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EquipmentStock.objects.all()
+    serializer_class = EquipmentStockSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwner]
+    
+    def perform_create(self, serializer):
+        equipment = Equipment.objects.get(id=self.request.data['equipment'])  # Get the equipment object from the request data
+        serializer.save(equipment=equipment)
+    
+         
+         
 # class for update, delete and retrieve the equipment
 class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly, IsOwner]
+    # permission_classes = [IsAuthenticatedOrReadOnly, IsOwner]
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        
+        else:
+            self.permission_classes = [IsAuthenticated, IsOwner]
+        return super().get_permissions()
     
     def get_serializer_context(self):
         return {'request': self.request}

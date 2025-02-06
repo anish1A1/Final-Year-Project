@@ -75,6 +75,8 @@ class EquipmentStock(models.Model):
     quantity = models.IntegerField()
     availability_status = models.BooleanField(default=True)
 
+    def __str__(self):
+        return f"Stock for {self.equipment.name}"
     
 class EquipmentBooking(models.Model):
     
@@ -124,3 +126,4 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type})"
+
