@@ -39,6 +39,10 @@ class UserRole(models.Model):
     class Meta:
         unique_together = ('user', 'role')
         
+        # the unique_together option is used to enforce a unique constraint on the combination 
+        # of the user and role fields. 
+        # This means that each pair of user and role must be unique in the UserRole table.
+        
     def __str__(self):
         return self.user.username + ' ' + self.role.name    
         
@@ -56,12 +60,67 @@ class Equipment(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='uploads/images', null=True,blank=True, validators=[validate_file_size, FileExtensionValidator(['jpg', 'png'])])
-    availability_status = models.BooleanField(default=True)
-    quantity = models.IntegerField()
-    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2)
+    # availability_status = models.BooleanField(default=True)
+    # quantity = models.IntegerField()
+    per_day_rate = models.DecimalField(max_digits=10, decimal_places=2)
     user_manual = models.FileField(upload_to='uploads/manuals', null=True, blank=True, validators=[validate_file_size, FileExtensionValidator(['pdf', 'docx'])])
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment')
     delivery_charge = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return self.name
+    
+class EquipmentStock(models.Model):
+    equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, related_name='stock')
+    quantity = models.IntegerField()
+    availability_status = models.BooleanField(default=True)
+
+    
+class EquipmentBooking(models.Model):
+    
+    class StatusChoices(models.TextChoices):
+        PENDING = 'pending'
+        ACCEPTED = 'accepted'
+        REJECTED = 'rejected'
+    
+    start_date = models.DateField()
+    end_date = models.DateField()
+    date_added = models.DateField(auto_now_add=True)
+    delivery_location = models.CharField(max_length=255)
+    quantity = models.PositiveIntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment_booking')
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, related_name='equipment_booking')
+    status = models.CharField(max_length=255, choices=StatusChoices.choices, default=StatusChoices.PENDING)
+    
+    @property
+    def total_date(self):
+        return (self.end_date - self.start_date).days
+    @property
+    def total_cost(self):
+        return self.quantity * self.equipment.per_day_rate * self.total_date
+    
+    
+    def __str__(self):
+        return f"Booking for {self.equipment.name} from {self.start_date} to {self.end_date}"
+    
+ 
+class Payment(models.Model):
+    class PaymentTypeChoices(models.TextChoices):
+        ONLINE = 'online', 'Online'
+        OFFLINE = 'offline', 'Offline'
+    
+    class PaymentStatusChoices(models.TextChoices):
+        PENDING = 'pending'
+        CLEARED = 'cleared'
+       
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    equipment_booking = models.ForeignKey(EquipmentBooking, on_delete=models.CASCADE, related_name='payments')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date_paid = models.DateTimeField(auto_now_add=True)
+    payment_method = models.CharField(max_length=50)
+    payment_type = models.CharField(max_length=50, choices=PaymentTypeChoices.choices, default=PaymentTypeChoices.ONLINE)
+    status = models.CharField(max_length=50, choices=PaymentStatusChoices.choices, default= PaymentStatusChoices.PENDING)
+
+    def __str__(self):
+        return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type})"
