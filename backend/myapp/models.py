@@ -66,18 +66,13 @@ class Equipment(models.Model):
     user_manual = models.FileField(upload_to='uploads/manuals', null=True, blank=True, validators=[validate_file_size, FileExtensionValidator(['pdf', 'docx'])])
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='equipment')
     delivery_charge = models.DecimalField(max_digits=10, decimal_places=2)
-
-    def __str__(self):
-        return self.name
-    
-class EquipmentStock(models.Model):
-    equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, related_name='stock')
     quantity = models.IntegerField()
     availability_status = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"Stock for {self.equipment.name}"
+        return self.name 
     
+
 class EquipmentBooking(models.Model):
     
     class StatusChoices(models.TextChoices):

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import FarmerProfile, UserRole, Role, Equipment, EquipmentStock
+from .models import FarmerProfile, UserRole, Role, Equipment
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -46,9 +46,3 @@ class EquipmentSerializer(serializers.ModelSerializer):
         validated_data['user'] = user
         print("validated Data: ", validated_data)
         return super().create(validated_data)
-
-class EquipmentStockSerializer(serializers.ModelSerializer):
-    equipment = EquipmentSerializer(read_only=True)
-    class Meta:
-        model = EquipmentStock
-        fields = '__all__'
