@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import FarmerProfile, UserRole, Role, Equipment
+from .models import FarmerProfile, UserRole, Role, Equipment, EquipmentBooking
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -46,3 +46,25 @@ class EquipmentSerializer(serializers.ModelSerializer):
         validated_data['user'] = user
         print("validated Data: ", validated_data)
         return super().create(validated_data)
+
+class EquipmentBookingSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    class Meta:
+        model = EquipmentBooking
+        fields = '__all__'
+        read_only_fields = ['total_date', 'total_cost']
+        
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().update(instance, validated_data)
+    
+    # def create(self, validated_data):
+    #     # Sets the user from the context
+    #     user = self.context['request'].user
+    #     validated_data['user'] = user
+    #     print("validated Data: ", validated_data)
+    #     return super().create(validated_data)
