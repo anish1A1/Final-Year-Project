@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import FarmerProfile, UserRole, Role, Equipment, EquipmentBooking
+from .models import FarmerProfile, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -28,6 +28,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             FarmerProfile.objects.create(user_role=user_role, farm_location=farm_location, occupation_name=occupation_name)
         
         return user   
+
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
@@ -49,18 +50,36 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 class EquipmentBookingSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    total_date = serializers.SerializerMethodField()
+    total_cost = serializers.SerializerMethodField()
     class Meta:
         model = EquipmentBooking
         fields = '__all__'
         read_only_fields = ['total_date', 'total_cost']
+    def get_total_date(self, obj):
+        return obj.total_date
+    
+    def validate(self, data):
+        # Check if the equipment is already booked by the same user
+        user =self.context['request'].user
+        equipment = data.get('equipment')
+        
+        if EquipmentBooking.objects.filter(equipment=equipment, user=user).exists():
+            raise serializers.ValidationError("Equipment is already booked by you")
+        return data
+    
+    def get_total_cost(self, obj):
+        return obj.total_cost
         
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
 
-    def update(self, instance, validated_data):
-        validated_data['user'] = self.context['request'].user
-        return super().update(instance, validated_data)
+    # def update(self, instance, validated_data):
+    #     validated_data['user'] = self.context['request'].user
+    #     return super().update(instance, validated_data)
+    
+    
     
     # def create(self, validated_data):
     #     # Sets the user from the context
@@ -68,3 +87,12 @@ class EquipmentBookingSerializer(serializers.ModelSerializer):
     #     validated_data['user'] = user
     #     print("validated Data: ", validated_data)
     #     return super().create(validated_data)
+    
+
+class EquipmentPaymentSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source = 'user.username')
+    equipment_booking = serializers.PrimaryKeyRelatedField(queryset=EquipmentBooking.objects.all())
+    
+    class Meta:
+        model = EquipmentPayment
+        fields = '__all__'

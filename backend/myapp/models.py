@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 import os
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
-
+import uuid
 def validate_file_size(value):
     filesize = value.size
     if filesize > 10485760:  # 10 MB limit
@@ -101,7 +101,8 @@ class EquipmentBooking(models.Model):
         return f"Booking for {self.equipment.name} from {self.start_date} to {self.end_date}"
     
  
-class Payment(models.Model):
+
+class CommonPayments(models.Model):
     class PaymentTypeChoices(models.TextChoices):
         ONLINE = 'online', 'Online'
         OFFLINE = 'offline', 'Offline'
@@ -109,16 +110,31 @@ class Payment(models.Model):
     class PaymentStatusChoices(models.TextChoices):
         PENDING = 'pending'
         CLEARED = 'cleared'
-       
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
-    equipment_booking = models.ForeignKey(EquipmentBooking, on_delete=models.CASCADE, related_name='payments')
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date_paid = models.DateTimeField(auto_now_add=True)
-    payment_method = models.CharField(max_length=50)
+    
+    class PaymentMethodChoices(models.TextChoices):
+        ESEWA = 'esewa'
+        CASH = 'cash'
+        KHALTI = 'khalti'
+        
+    payment_method = models.CharField(max_length=50, choices=PaymentMethodChoices.choices)
+    amount = models.PositiveIntegerField()
+    date_paid = models.DateField(auto_now_add=True)
     payment_type = models.CharField(max_length=50, choices=PaymentTypeChoices.choices, default=PaymentTypeChoices.ONLINE)
     status = models.CharField(max_length=50, choices=PaymentStatusChoices.choices, default= PaymentStatusChoices.PENDING)
 
+    class Meta:
+        abstract = True
+        
+class EquipmentPayment(CommonPayments):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    equipment_booking = models.ForeignKey(EquipmentBooking, on_delete=models.CASCADE, related_name='payments')
+    id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
+  
     def __str__(self):
         return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type})"
 
+    def save(self, *args, **kwargs):
+        # Set status to 'CLEARED' if the payment method is online
+        if self.payment_method in [self.PaymentMethodChoices.ESEWA, self.PaymentMethodChoices.KHALTI]:
+            self.status = self.PaymentStatusChoices.CLEARED
+        super().save(*args, **kwargs)
