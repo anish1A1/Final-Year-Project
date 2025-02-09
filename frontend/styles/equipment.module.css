@@ -1,0 +1,88 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-top: 100px;
+}
+
+.equipmentList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.equipmentItem {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+}
+
+.equipmentItem img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.equipmentItem a {
+    display: block;
+    margin-top: 10px;
+    color: #0070f3;
+    text-decoration: none;
+}
+
+.equipmentItem a:hover {
+    text-decoration: underline;
+}
+
+.createButton {
+    background-color: #0070f3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.createButton:hover {
+    background-color: #005bb5;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.submitButton {
+    background-color: #0070f3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background-color: #005bb5;
+}
+
+.detailButton {
+    background-color: #0070f3;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.detailButton:hover {
+    background-color: #005bb5;
+}
