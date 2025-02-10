@@ -134,20 +134,13 @@ class EquipmentPayment(CommonPayments):
         return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type} by {self.user}) id {self.id}"
 
     def save(self, *args, **kwargs):
-        is_new = self.pk is None
+     
         if self.payment_method in [self.PaymentMethodChoices.ESEWA, self.PaymentMethodChoices.KHALTI]:
             self.status = self.PaymentStatusChoices.CLEARED
             self.payment_type = self.PaymentTypeChoices.ONLINE
         super().save(*args, **kwargs)
         
-        if is_new:
-            print(f"[DEBUG] Creating EquipmentDelivery for EquipmentPayment ID: {self.id}")
-            try:
-                delivery = EquipmentDelivery.objects.create(equipment_payment=self)
-                print(f"[DEBUG] EquipmentDelivery created with ID: {delivery.id}")
-            except Exception as e:
-                print(f"[ERROR] Failed to create EquipmentDelivery: {e}")
-        
+   
 
 class EquipmentDelivery(models.Model):
     class DeliveryStatusChoices(models.TextChoices):

@@ -255,7 +255,7 @@ export const EquipProvider = ({children}) => {
                 }
             });
             console.log('Updated Delivery:', id, status);
-            setDeliveries(deliveries.map(delivery => delivery.id === id ? response.data : delivery));
+            
         } catch (error) {
             console.error(`Error Updating Equipment's Delivery: ${error}`);
             setError(error.response.data);

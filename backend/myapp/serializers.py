@@ -105,8 +105,16 @@ class EquipmentPaymentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("You have already made a payment for this booking")
         return data
     
+    def create(self, validated_data):
+        payment = super().create(validated_data)
+        if payment.status ==  EquipmentPayment.PaymentStatusChoices.CLEARED:
+            EquipmentDelivery.objects.create(equipment_payment=payment)
+        return payment
+    
 class EquipmentDeliverySerializer(serializers.ModelSerializer):
    
     class Meta:
         model = EquipmentDelivery
         fields = '__all__'
+        
+        

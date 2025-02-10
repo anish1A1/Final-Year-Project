@@ -146,6 +146,15 @@ class EquipmentDeliveryListCreateView(generics.ListCreateAPIView):
     serializer_class = EquipmentDeliverySerializer
     permission_classes = [IsAuthenticated]
     
+    def get_queryset(self):
+        # Get the logged-in user
+        user = self.request.user
+
+        # Filter deliveries where the equipment's owner is the logged-in user
+        return EquipmentDelivery.objects.filter(
+            equipment_payment__equipment_booking__equipment__user=user
+        )
+    
 class EquipmentDeliveryUpdateView(generics.UpdateAPIView):
     queryset = EquipmentDelivery.objects.all()
     serializer_class = EquipmentDeliverySerializer
