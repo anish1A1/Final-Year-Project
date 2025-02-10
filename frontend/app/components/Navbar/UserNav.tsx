@@ -33,7 +33,7 @@ const UserNav = () => {
                             }} />
 
                             <MenuLink label="Dashboard" onClick={() => {
-                                router.push('/dashboard');
+                                router.push('/dashboards');
                                 setIsOpen(false);  // This will close the Menu
                             }} />
                         </>

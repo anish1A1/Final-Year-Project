@@ -117,7 +117,7 @@ class CommonPayments(models.Model):
         KHALTI = 'khalti'
         
     payment_method = models.CharField(max_length=50, choices=PaymentMethodChoices.choices)
-    amount = models.PositiveIntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     date_paid = models.DateField(auto_now_add=True)
     payment_type = models.CharField(max_length=50, choices=PaymentTypeChoices.choices, default=PaymentTypeChoices.OFFLINE)
     status = models.CharField(max_length=50, choices=PaymentStatusChoices.choices, default= PaymentStatusChoices.PENDING)
@@ -131,17 +131,22 @@ class EquipmentPayment(CommonPayments):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
   
     def __str__(self):
-        return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type} by {self.user})"
+        return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type} by {self.user}) id {self.id}"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
-        # Set status to 'CLEARED' if the payment method is online
         if self.payment_method in [self.PaymentMethodChoices.ESEWA, self.PaymentMethodChoices.KHALTI]:
             self.status = self.PaymentStatusChoices.CLEARED
             self.payment_type = self.PaymentTypeChoices.ONLINE
         super().save(*args, **kwargs)
+        
         if is_new:
-            EquipmentDelivery.objects.create(equipment_payment=self)
+            print(f"[DEBUG] Creating EquipmentDelivery for EquipmentPayment ID: {self.id}")
+            try:
+                delivery = EquipmentDelivery.objects.create(equipment_payment=self)
+                print(f"[DEBUG] EquipmentDelivery created with ID: {delivery.id}")
+            except Exception as e:
+                print(f"[ERROR] Failed to create EquipmentDelivery: {e}")
         
 
 class EquipmentDelivery(models.Model):

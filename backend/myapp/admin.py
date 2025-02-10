@@ -1,5 +1,5 @@
 from django.contrib import admin
-from myapp.models import UserRole, Role, FarmerProfile, Equipment, EquipmentBooking, EquipmentPayment
+from myapp.models import UserRole, Role, FarmerProfile, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery
 # Register your models here.
 
 admin.site.register(Role)
@@ -8,6 +8,7 @@ admin.site.register(FarmerProfile)
 admin.site.register(Equipment)
 admin.site.register(EquipmentBooking)
 admin.site.register(EquipmentPayment)
+admin.site.register(EquipmentDelivery)
 
 
 

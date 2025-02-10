@@ -13,6 +13,7 @@ export const EquipProvider = ({children}) => {
     const [loading, setLoading] = useState(true);
     const [errors, setError] = useState({});
     const [equipmentPurchases, setEquipmentPurchases] = useState([]);
+    const [deliveries, setDeliveries] = useState([]);
     const { user } = useContext(AuthContext);   // Since we also need to pass the user as it is required in the model
 
 
@@ -221,12 +222,46 @@ export const EquipProvider = ({children}) => {
                 ...equipmentPurchases,
                 response.data
             ]);
-            router.push('/dashboard');
+            router.push('/dashboards');
         } catch (error) {
             console.error(`Error Doing Payment of equipment: ${error}`);
             setError(error.response.data);
         }
     };
+
+    // Fetch all deliveries
+    const fetchEquipmentDeliveries = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('/api/equipment-delivery/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log('Fetched Deliveries:', response.data); // Log to verify
+            setDeliveries(response.data);
+        } catch (error) {
+            console.error(`Error fetching deliveries: ${error}`);
+        }
+    };
+    
+
+    const updateEquipmentDelivery = async (id, status) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.patch(`/api/equipment-delivery/${id}/`, { status }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log('Updated Delivery:', id, status);
+            setDeliveries(deliveries.map(delivery => delivery.id === id ? response.data : delivery));
+        } catch (error) {
+            console.error(`Error Updating Equipment's Delivery: ${error}`);
+            setError(error.response.data);
+        }
+    };
+    
     
 
     
@@ -238,6 +273,7 @@ export const EquipProvider = ({children}) => {
         errors,
         equipmentBooks,
         equipmentPurchases,
+        deliveries,
         fetchEquipment,
         createEquipment,
         updateEquipment,
@@ -248,9 +284,11 @@ export const EquipProvider = ({children}) => {
         updateBookingStatus,
         createEquipmentPayment,
         fetchEquipmentPayment,
+        fetchEquipmentDeliveries,
+        updateEquipmentDelivery,
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [equipment, equipmentBooks, equipmentPurchases, loading, errors, user]);
+    }), [equipment, equipmentBooks, equipmentPurchases,deliveries, loading, errors, user]);
     
     return (
         <EquipmentContext.Provider value={equipContextValue} >
