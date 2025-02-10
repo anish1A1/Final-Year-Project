@@ -157,6 +157,7 @@ export const EquipProvider = ({children}) => {
                     'Content-Type': 'multipart/form-data',
                 }
             });
+            
             setEquipmentBooks((prevEquipmentBookings) => [...prevEquipmentBookings,
                 response.data
             ]);
@@ -196,7 +197,7 @@ export const EquipProvider = ({children}) => {
             setLoading(false);
         }
     };
-    const createEquipmentPayment = async (formData, router) => {
+    const createEquipmentPayment = async (formData, router, setError) => {
         const token = localStorage.getItem('token');
         const data = new FormData();
     
@@ -215,6 +216,7 @@ export const EquipProvider = ({children}) => {
                     'Content-Type': 'multipart/form-data',
                 }
             });
+            setError(null);   //clears any existing error
             setEquipmentPurchases((equipmentPurchases) => [
                 ...equipmentPurchases,
                 response.data

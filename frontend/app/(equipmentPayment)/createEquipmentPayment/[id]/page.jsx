@@ -10,6 +10,7 @@ const CreateEquipmentPaymentPage = () => {
         amount: 0,
         equipment_booking: ''
     });
+    const [error, setError] = useState(null);
     const router = useRouter();
     const { id } = useParams();
 
@@ -27,7 +28,7 @@ const CreateEquipmentPaymentPage = () => {
                 setFormData((prevFormData) => ({
                     ...prevFormData,
                     equipment_booking: id,
-                    amount: booking.total_cost || 0  // Assuming total_cost is the amount to be paid
+                    amount: booking.total_cost  // Assuming total_cost is the amount to be paid
                 }));
             }
         }
@@ -36,18 +37,33 @@ const CreateEquipmentPaymentPage = () => {
     const handleChange = (e) => {
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value || ''
+            [e.target.name]: e.target.value 
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await createEquipmentPayment(formData, router);
+        try {
+            await createEquipmentPayment(formData, router, setError);
+        } catch (error) {
+            setError(error);
+        }
     };
 
     return (
         <div className="container mt-28 p-4">
             <h2 className="text-xl font-bold mb-4">Create Equipment Payment</h2>
+            
+            {error && error.non_field_errors ? (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <span className="block sm:inline">{error.non_field_errors ?  error.non_field_errors.join(', ') :  'An error has occured'}</span>
+                </div>
+            ): error ? (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <span className="block sm:inline">{error}</span>
+                </div>
+            ) : null}
+            
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">Payment Method</label>

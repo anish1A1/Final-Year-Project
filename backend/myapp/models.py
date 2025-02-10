@@ -119,7 +119,7 @@ class CommonPayments(models.Model):
     payment_method = models.CharField(max_length=50, choices=PaymentMethodChoices.choices)
     amount = models.PositiveIntegerField()
     date_paid = models.DateField(auto_now_add=True)
-    payment_type = models.CharField(max_length=50, choices=PaymentTypeChoices.choices, default=PaymentTypeChoices.ONLINE)
+    payment_type = models.CharField(max_length=50, choices=PaymentTypeChoices.choices, default=PaymentTypeChoices.OFFLINE)
     status = models.CharField(max_length=50, choices=PaymentStatusChoices.choices, default= PaymentStatusChoices.PENDING)
 
     class Meta:
@@ -131,10 +131,31 @@ class EquipmentPayment(CommonPayments):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
   
     def __str__(self):
-        return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type})"
+        return f"Payment of {self.amount} for {self.equipment_booking} ({self.payment_type} by {self.user})"
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
         # Set status to 'CLEARED' if the payment method is online
         if self.payment_method in [self.PaymentMethodChoices.ESEWA, self.PaymentMethodChoices.KHALTI]:
             self.status = self.PaymentStatusChoices.CLEARED
+            self.payment_type = self.PaymentTypeChoices.ONLINE
         super().save(*args, **kwargs)
+        if is_new:
+            EquipmentDelivery.objects.create(equipment_payment=self)
+        
+
+class EquipmentDelivery(models.Model):
+    class DeliveryStatusChoices(models.TextChoices):
+        PROCESSING = 'processing', 'Processing'
+        DELIVERING = 'delivering', 'Delivering'
+        DELIVERED = 'delivered', 'Delivered'
+    
+
+    id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
+    equipment_payment = models.OneToOneField(EquipmentPayment, on_delete=models.CASCADE, related_name='delivery')
+    status = models.CharField(max_length=50, choices=DeliveryStatusChoices.choices, default=DeliveryStatusChoices.PROCESSING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Delivery for Payment ID: {self.equipment_payment.id}, Status: {self.status}"

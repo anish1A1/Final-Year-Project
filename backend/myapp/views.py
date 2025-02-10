@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer
+from .serializers import EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Equipment, EquipmentBooking, EquipmentPayment
+from .models import Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment
 from rest_framework import serializers
 
 # Create your views here.
@@ -134,10 +134,19 @@ class EquipmentPaymentView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def perform_create(self, serializer):
+        
         equipment_booking_id = self.request.data.get("equipment_booking")
         if not EquipmentBooking.objects.filter(id=equipment_booking_id).exists():
             raise serializers.ValidationError({"equipment_booking": "Invalid booking ID."})
 
         serializer.save(user=self.request.user)
 
+class EquipmentDeliveryListCreateView(generics.ListCreateAPIView):
+    queryset = EquipmentDelivery.objects.all()
+    serializer_class = EquipmentDeliverySerializer
+    permission_classes = [IsAuthenticated]
     
+class EquipmentDeliveryUpdateView(generics.UpdateAPIView):
+    queryset = EquipmentDelivery.objects.all()
+    serializer_class = EquipmentDeliverySerializer
+    permission_classes = [IsAuthenticated]

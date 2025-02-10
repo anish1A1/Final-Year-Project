@@ -5,7 +5,7 @@ import { AuthContext } from '../../../../../utils/auth';
 import { useRouter } from 'next/navigation';
 
 const EquipmentToBookList = () => {
-    const { fetchEquipmentBookings, equipmentBooks, loading, fetchEquipment, equipment } = useContext(EquipmentContext);
+    const { fetchEquipmentBookings, equipmentBooks, fetchEquipmentPayment,equipmentPurchases, loading, fetchEquipment, equipment } = useContext(EquipmentContext);
     const { user } = useContext(AuthContext);
     const [combinedBookings, setCombinedBookings] = useState([]);
     const router = useRouter();
@@ -14,6 +14,7 @@ const EquipmentToBookList = () => {
         const fetchData = async () => {
             await fetchEquipmentBookings();
             await fetchEquipment();
+            await fetchEquipmentPayment();
         };
         fetchData();
     }, []);
@@ -36,6 +37,10 @@ const EquipmentToBookList = () => {
             setCombinedBookings(combined);
         }
     }, [equipmentBooks, equipment, user]);
+
+    const hasMadePayment = (bookingId) => {
+      return equipmentPurchases.some(payment => payment.equipment_booking === bookingId);
+    }                  // checks the payment's equipment_booking id is equal to bookingId. If it matches than the item is already purchased
 
     const handleStatusAccept = (id) => {
         router.push(`/createEquipmentPayment/${id}`);
@@ -70,8 +75,11 @@ const EquipmentToBookList = () => {
                                     <p className="text-sm mb-1">Booking Status: {item.status}</p>
 
                                     {item.status === 'accepted' && 
+                                        hasMadePayment(item.id) ? (
+                                          <p className="text-sm mb-1 text-green-500 text-center">You have already made a payment</p>
+                                        ) : (
                                         <button onClick={() => handleStatusAccept(item.id)}>Make Payment</button>
-                                    }
+                                    )}
                                 </div>
                             </>
                         ) : (

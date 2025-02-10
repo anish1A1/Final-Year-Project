@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import FarmerProfile, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment
+from .models import FarmerProfile, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -95,4 +95,18 @@ class EquipmentPaymentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = EquipmentPayment
+        fields = '__all__'
+        
+    def validate(self, data):
+        user = self.context['request'].user
+        equipment_booking = data.get('equipment_booking')
+        
+        if EquipmentPayment.objects.filter(user=user, equipment_booking=equipment_booking).exists():
+            raise serializers.ValidationError("You have already made a payment for this booking")
+        return data
+    
+class EquipmentDeliverySerializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model = EquipmentDelivery
         fields = '__all__'
