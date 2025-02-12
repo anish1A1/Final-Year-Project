@@ -1,0 +1,13 @@
+In Django:
+django,
+django_rest_framework,
+django_rest_framework_simplejwt,
+pip install -U django-jazzmin,
+django_corshearders
+
+
+In Frontend:
+
+NextJS,
+shadcn,
+axios,

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer
+from .serializers import CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment
+from .models import Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product
 from rest_framework import serializers
 
 # Create your views here.
@@ -169,3 +169,26 @@ class EquipmentDeliveryReceiveListView(generics.ListAPIView):
         user = self.request.user
         
         return EquipmentDelivery.objects.filter(equipment_payment__equipment_booking__user=user)
+    
+    
+    
+    # Now for Products
+    
+class CategoryView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
+    
+    
+class ProductListCreateView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            self.permission_classes = [IsAuthenticated, HasRole] 
+            self.required_role = 'farmer'
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
+    

@@ -7,6 +7,7 @@ class HasRole(BasePermission):
             return request.user.user_roles.filter(role__name =required_role)
         return False
     
+    # HasRole will check if the user has the required role specified in the required_role
 
 class IsOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -14,7 +15,6 @@ class IsOwner(BasePermission):
     #This will check if the user the object is belonging to is equal to the user making the request. 
     # This is used to ensure that only the owner of an object can access it.
 
-from rest_framework.permissions import BasePermission
 
 class IsEquipmentOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
