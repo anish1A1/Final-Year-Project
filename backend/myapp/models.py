@@ -11,22 +11,6 @@ def validate_file_size(value):
         raise ValidationError("Maximum file size is 10MB")
 
 
-# in image field there is  get_file_path  we are creating a function of that
-# def get_image_file_path(request, filename):
-#     nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")  # getting the current time and date
-#     filename = f"{nowTime}_{filename}"
-#     return os.path.join('uploads/images', filename)
-
-# def get_manual_file_path(request, filename):
-#     nowTime = datetime.datetime.now().strftime("%Y%m%d%H%M%S")  # getting the current time and date
-#     filename = f"{nowTime}_{filename}"
-#     return os.path.join('uploads/manuals', filename)
-#     The purpose of this function is to:
-
-# Prevent filename collisions by adding a unique timestamp to each uploaded file
-# Store uploaded files in a designated uploads/ directory
-    
-
 class Role(models.Model):
     name = models.CharField(max_length=100, unique=True)
     def __str__(self):
@@ -96,9 +80,10 @@ class EquipmentBooking(models.Model):
     def total_cost(self):
         return self.quantity * self.equipment.per_day_rate * self.total_date
     
-    
     def __str__(self):
-        return f"Booking for {self.equipment.name} from {self.start_date} to {self.end_date}"
+        return str(self.id)
+    # def __str__(self):
+    #     return f"Booking for {self.equipment.name} from {self.start_date} to {self.end_date}"
     
  
 
@@ -139,7 +124,8 @@ class EquipmentPayment(CommonPayments):
             self.status = self.PaymentStatusChoices.CLEARED
             self.payment_type = self.PaymentTypeChoices.ONLINE
         super().save(*args, **kwargs)
-        
+    
+
    
 
 class EquipmentDelivery(models.Model):
@@ -157,3 +143,44 @@ class EquipmentDelivery(models.Model):
     
     def __str__(self):
         return f"Delivery for Payment ID: {self.equipment_payment.id}, Status: {self.status}"
+    
+    
+
+
+# Now Start for the Products
+class Category(models.Model):             #It inherits from models.Model, indicating that it's a Django model.
+    slug = models.CharField(max_length=150, null=False, blank=False)
+    name = models.CharField(max_length=50, null=False, blank=False)
+    image = models.ImageField(upload_to='uploads/category-images', null = True, blank = True)  #An ImageField field, which allows users to upload image files. 
+    description = models.TextField(max_length=500, null = False, blank = False)
+    status = models.BooleanField(default = False, help_text = "0=default, 1=Hidden")
+    trending = models.BooleanField(default = False, help_text = "0=default, 1=Trending")
+    meta_title = models.CharField(max_length =150, null=False, blank= False) 
+    meta_keywords = models.CharField(max_length =150, null=False, blank= False)    
+    meta_description = models.TextField(max_length=500, null = False, blank = False)
+    created_at = models.DateTimeField(auto_now_add=True)         #This field stores the date and time when the category was created.
+    
+
+    def __str__(self):           #This method returns a string representation of the category object.   #it will store the value
+        return self.name                    
+        
+
+class Product(models.Model):
+    category = models.name = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    slug = models.CharField(max_length=150, null=False, blank=False)
+    name = models.CharField(max_length=50, null=False, blank=False)
+    product_image = models.ImageField(upload_to='uploads/product-images', null = True, blank = True, validators=[validate_file_size, FileExtensionValidator(['jpg', 'png'])])  #An ImageField field, which allows users to upload image files. 
+    small_description = models.CharField(max_length=250, null = False, blank = False)
+    quantity = models.IntegerField(null = False, blank = False)
+    description = models.TextField(max_length=500, null = False, blank = False)
+    original_price = models.FloatField(null=False, blank = False)
+    selling_price = models.FloatField(null=False, blank = False)
+    status = models.BooleanField(default = False, help_text = "0=default, 1=Hidden")
+    trending = models.BooleanField(default = False, help_text = "0=default, 1=Trending")
+    tag= models.CharField(max_length=150, null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)         #This field stores the date and time when the category was created.
+    delivery_sell_charge = models.DecimalField(max_digits=10, decimal_places=2)
+    def __str__(self):           #This method returns a string representation of the category object.
+        return self.name
+    

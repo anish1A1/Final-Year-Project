@@ -92,7 +92,7 @@ class EquipmentBookingSerializer(serializers.ModelSerializer):
 class EquipmentPaymentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source = 'user.username')
     equipment_booking = serializers.PrimaryKeyRelatedField(queryset=EquipmentBooking.objects.all())
-    
+  
     class Meta:
         model = EquipmentPayment
         fields = '__all__'
@@ -111,8 +111,11 @@ class EquipmentPaymentSerializer(serializers.ModelSerializer):
             EquipmentDelivery.objects.create(equipment_payment=payment)
         return payment
     
+    
 class EquipmentDeliverySerializer(serializers.ModelSerializer):
-   
+    
+    equipment_payment = EquipmentPaymentSerializer()
+    
     class Meta:
         model = EquipmentDelivery
         fields = '__all__'

@@ -14,6 +14,7 @@ export const EquipProvider = ({children}) => {
     const [errors, setError] = useState({});
     const [equipmentPurchases, setEquipmentPurchases] = useState([]);
     const [deliveries, setDeliveries] = useState([]);
+    const [deliveryReceive, setDeliveryReceive] = useState([]);
     const { user } = useContext(AuthContext);   // Since we also need to pass the user as it is required in the model
 
 
@@ -222,7 +223,9 @@ export const EquipProvider = ({children}) => {
                 ...equipmentPurchases,
                 response.data
             ]);
-            router.push('/dashboards');
+             router.push('/dashboards');
+            
+
         } catch (error) {
             console.error(`Error Doing Payment of equipment: ${error}`);
             setError(error.response.data);
@@ -261,6 +264,21 @@ export const EquipProvider = ({children}) => {
             setError(error.response.data);
         }
     };
+
+    const fetchEquipmentDeliveriesToReceive = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get('/api/equipment-delivery-receive/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            console.log('Fetched Deliveries To Receive:', response.data); // Log to verify
+            setDeliveryReceive(response.data);
+        } catch (error) {
+            console.error(`Error fetching deliveries: ${error}`);
+        }
+    };
     
     
 
@@ -274,6 +292,7 @@ export const EquipProvider = ({children}) => {
         equipmentBooks,
         equipmentPurchases,
         deliveries,
+        deliveryReceive,
         fetchEquipment,
         createEquipment,
         updateEquipment,
@@ -286,9 +305,10 @@ export const EquipProvider = ({children}) => {
         fetchEquipmentPayment,
         fetchEquipmentDeliveries,
         updateEquipmentDelivery,
+        fetchEquipmentDeliveriesToReceive,
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [equipment, equipmentBooks, equipmentPurchases,deliveries, loading, errors, user]);
+    }), [equipment, equipmentBooks, equipmentPurchases,deliveries, deliveryReceive, loading, errors, user]);
     
     return (
         <EquipmentContext.Provider value={equipContextValue} >
