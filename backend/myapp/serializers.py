@@ -1,10 +1,25 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery
+from .models import Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = ['name']
+
+class UserRoleSerializer(serializers.ModelSerializer):
+    role = RoleSerializer()
+    class Meta:
+        model = UserRole
+        fields = ['role']
+        
+        
+
 class UserSerializer(serializers.ModelSerializer):
+    user_roles = UserRoleSerializer(many=True)
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ['id', 'username', 'email', 'user_roles']
         
 class RegisterSerializer(serializers.ModelSerializer):
     farm_location = serializers.CharField(write_only=True, required=False, allow_blank=True, allow_null=True)

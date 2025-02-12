@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '@/utils/auth';
 import { useRouter } from "next/navigation";
 import MenuLink from './MenuLink';
@@ -9,6 +9,16 @@ const UserNav = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);
     const router = useRouter();
+    const [isFarmer, setIsFarmer] = useState(false);
+
+    useEffect(() => {
+        if (user && user.user_roles) {
+            
+            const farmerRole = user.user_roles.some((role: { role: { name: string; }; }) => role.role.name === 'farmer');
+           
+            setIsFarmer(farmerRole);
+        }
+    }, [user]);
 
     return (
         <div className='p-2 relative inline-block border rounded-full'>
@@ -36,6 +46,13 @@ const UserNav = () => {
                                 router.push('/dashboards');
                                 setIsOpen(false);  // This will close the Menu
                             }} />
+                            {isFarmer ?(
+                                     
+                                     <MenuLink label="Product Dashboard" onClick={() => {
+                                        router.push('/Product Dashboard');
+                                        setIsOpen(false);  // This will close the Menu
+                                    }} />
+                            ) : null}
                         </>
                     ) : (
                         <>

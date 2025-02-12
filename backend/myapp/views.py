@@ -44,7 +44,13 @@ class LoginView(generics.GenericAPIView):
         else:
             return Response({'details' :"Invalid Credentials"}, status=401)  
         
-        
+
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    
+    def get_object(self):
+        return self.request.user
 
 class DashboardView(APIView):
 

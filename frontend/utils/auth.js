@@ -51,7 +51,7 @@ export const AuthProvider = ({children}) => {
             const { access , refresh } = response.data;
             localStorage.setItem('token', access);
             localStorage.setItem('refreshToken', refresh);
-            console.log(response.data);
+            // console.log(response.data);
             
             axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
             await fetchUserData(access);
