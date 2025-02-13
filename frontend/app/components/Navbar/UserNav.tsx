@@ -49,7 +49,7 @@ const UserNav = () => {
                             {isFarmer ?(
                                      
                                      <MenuLink label="Product Dashboard" onClick={() => {
-                                        router.push('/Product Dashboard');
+                                        router.push('/productDashboard');
                                         setIsOpen(false);  // This will close the Menu
                                     }} />
                             ) : null}

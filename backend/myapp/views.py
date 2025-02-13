@@ -54,7 +54,7 @@ class UserDetailView(generics.RetrieveAPIView):
 
 class DashboardView(APIView):
 
-    permission_classes = [IsAuthenticated, IsOwner, IsEquipmentOwner ]
+    permission_classes = [IsAuthenticated, ]
     
     required_role = 'user'    # this added for permissions are checked and  only the added here will  be autherized 
     def get(self, request):
@@ -189,6 +189,7 @@ class CategoryView(generics.ListAPIView):
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
     
     def get_permissions(self):
         if self.request.method == 'POST':

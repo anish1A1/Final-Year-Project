@@ -9,8 +9,9 @@ export const ProductProvider = ({children}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState({});
     const [products, setProducts] = useState([]);
+    const [category, setCategory] = useState([]);
 
-    const user = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
 
 
     const fetchProduct = async () => {
@@ -24,17 +25,23 @@ export const ProductProvider = ({children}) => {
         }
     };
 
-    const createProduct = async (formDate, router) => {
-        
+    const createProduct = async (formData, category, router) => {
         const data = new FormData();
-
-        for(let data in formDate) {
-            data.append(key, formDate[key]);
-        } 
-        if(user){
+    
+        // Append all form data to the FormData object
+        Object.keys(formData).forEach((key) => {
+            data.append(key, formData[key]);
+        });
+    
+        if (user) {
             data.append('user', user.id);
         }
+    
 
+        if (formData.category) { 
+            data.append('category_id', formData.category)
+        }
+    
         try {
             const response = await axios.post(`/api/product/`, data, {
                 headers: {
@@ -52,6 +59,26 @@ export const ProductProvider = ({children}) => {
             setError(error.response?.data || error.message);
         }
     };
+    
+
+    const fetchCategory = async () => {
+        try {
+            const response = await axios.get(`/api/category/`);
+            setCategory(response.data);
+            if(user){
+                
+              
+                console.log(`User Id: ${user.id}`);
+                console.log(`User Name: ${user.name}`);
+            }
+        } catch (error) {
+            console.log(`Error fetching categories: ${error}`);
+            setError(error.response?.data || error.message);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
 
 
@@ -60,10 +87,12 @@ export const ProductProvider = ({children}) => {
         products,
         loading,
         error,
+        category,
         fetchProduct,
         createProduct,
+        fetchCategory,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, loading, error]); 
+    }), [products, category, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 
@@ -72,3 +101,4 @@ export const ProductProvider = ({children}) => {
     );
 }
 
+export {ProductContext}

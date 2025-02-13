@@ -128,7 +128,7 @@ class EquipmentPaymentSerializer(serializers.ModelSerializer):
     
     
 class EquipmentDeliverySerializer(serializers.ModelSerializer):
-    
+    user = serializers.ReadOnlyField(source='user.username')
     equipment_payment = EquipmentPaymentSerializer()
     
     class Meta:
@@ -147,7 +147,10 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__' 
 
 class ProductSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
+   
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True)
+    category = CategorySerializer(read_only=True)
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['category', 'category_id', 'user', 'id', 'slug', 'product_image','small_description', 'quantity', 'description', 'original_price', 'selling_price', 'tag', 'delivery_sell_charge' ]
+    
