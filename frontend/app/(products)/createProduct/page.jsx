@@ -58,6 +58,14 @@ const CreateProduct = () => {
     }
     console.log('Category:', category);  // Debugging category state
 
+    useEffect(() => {
+        if (category.length > 0 && !formData.category) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                category: category[0].id // Set the first category ID as default
+            }));
+        }
+    }, [category]);
 
   return (
     <div className="bg-gray-100 mt-24 p-4">
@@ -109,9 +117,10 @@ const CreateProduct = () => {
             <label>Category</label>
             <select 
                 name="category" 
-                value={formData.category} 
+                value={formData.category || (formData.category[0] && formData.category[0].id) } 
                 onChange={handleChange} 
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                required 
             >
                 {category && category.map((item) => (
                     <option key={item.id} value={item.id}>{item.name}</option>

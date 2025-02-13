@@ -35,6 +35,10 @@ const ViewProduct = () => {
                         <p className="text-gray-700 mt-2">Status: {product.status ? 'Hidden' : 'Visible'}</p>
                         <p className="text-gray-700 mt-2">Trending: {product.trending ? 'Yes' : 'No'}</p>
                         <p className="text-gray-700 mt-2">Created At: {new Date(product.created_at).toLocaleString()}</p>
+
+                        <p className="text-gray-700 mt-2">Total Time(From created Day): {product.total_time}</p>
+
+
                     </div>
                 ))}
             </div>

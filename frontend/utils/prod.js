@@ -37,9 +37,12 @@ export const ProductProvider = ({children}) => {
             data.append('user', user.id);
         }
     
+        console.log(`Creating category: ${formData.category}`);
+
 
         if (formData.category) { 
             data.append('category_id', formData.category)
+            console.log(`Creating category: ${formData.category}`);
         }
     
         try {

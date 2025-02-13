@@ -146,11 +146,15 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__' 
 
+
 class ProductSerializer(serializers.ModelSerializer):
    
     category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True)
     category = CategorySerializer(read_only=True)
+    total_time = serializers.SerializerMethodField();
     class Meta:
         model = Product
-        fields = ['category', 'category_id', 'user', 'id', 'slug', 'product_image','small_description', 'quantity', 'description', 'original_price', 'selling_price', 'tag', 'delivery_sell_charge' ]
+        fields = ['category', 'category_id', 'user', 'id', 'slug', 'product_image','small_description', 'quantity', 'description', 'original_price', 'selling_price', 'tag', 'delivery_sell_charge', 'created_at', 'total_time' ]
     
+    def get_total_time(self, obj):
+        return obj.total_time

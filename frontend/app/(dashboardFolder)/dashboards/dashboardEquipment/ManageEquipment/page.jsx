@@ -62,12 +62,12 @@ const ManageEquipment = () => {
                         <img src={item.equipmentDetails?.image} alt={item.equipmentDetails?.name} className="w-full h-48 object-cover" />
                         <div className="card-body p-4">
                             <h2 className="card-title text-lg font-bold mb-2">{item.equipmentDetails?.name}</h2>
-                            <p className="text-sm mb-1">Per Day Rate: ${item.equipmentDetails?.per_day_rate}</p>
+                            <p className="text-sm mb-1">Per Day Rate: Rs{item.equipmentDetails?.per_day_rate}</p>
                             <p className="text-sm mb-1">Start Date: {item.start_date}</p>
                             <p className="text-sm mb-1">End Date: {item.end_date}</p>
                             <p className="text-sm mb-1">Total Days: {item.total_date}</p>
                             <p className="text-sm mb-1">Quantity: {item.quantity}</p>
-                            <p className="text-sm mb-1">Total Price: ${item.total_cost}</p>
+                            <p className="text-sm mb-1">Total Price: Rs{item.total_cost}</p>
                             <p className="text-sm mb-1">Location: {item.delivery_location}</p>
                             <p className="text-sm mb-1">Booking Status: {item.status}</p>
                             <div className="card-actions justify-end mt-4">

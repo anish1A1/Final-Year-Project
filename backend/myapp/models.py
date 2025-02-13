@@ -1,10 +1,10 @@
 from django.db import models
-import datetime
 from django.contrib.auth.models import User
 import os
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 import uuid
+from django.utils import timezone
 def validate_file_size(value):
     filesize = value.size
     if filesize > 10485760:  # 10 MB limit
@@ -160,6 +160,8 @@ class Category(models.Model):             #It inherits from models.Model, indica
 
     def __str__(self):           #This method returns a string representation of the category object.   #it will store the value
         return self.name                    
+    
+
         
 
 class Product(models.Model):
@@ -181,3 +183,7 @@ class Product(models.Model):
     def __str__(self):           #This method returns a string representation of the category object.
         return self.name
     
+    @property
+    def total_time(self):
+        now = timezone.now()
+        return (now - self.created_at).days
