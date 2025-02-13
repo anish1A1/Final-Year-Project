@@ -53,7 +53,7 @@ export const ProductProvider = ({children}) => {
                 ...prevProduct,
                 response.data
             ]);
-            router.push('/product');
+            router.push('/viewProduct');
         } catch (error) {
             console.log(`Error creating product: ${error}`);
             setError(error.response?.data || error.message);
@@ -65,12 +65,6 @@ export const ProductProvider = ({children}) => {
         try {
             const response = await axios.get(`/api/category/`);
             setCategory(response.data);
-            if(user){
-                
-              
-                console.log(`User Id: ${user.id}`);
-                console.log(`User Name: ${user.name}`);
-            }
         } catch (error) {
             console.log(`Error fetching categories: ${error}`);
             setError(error.response?.data || error.message);

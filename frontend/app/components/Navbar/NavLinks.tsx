@@ -10,7 +10,7 @@ const NavLinks = () => {
     <div className="flex h-5 items-center space-x-4 text-sm roun">
         
         <div className=' hover:text-white'>
-        <Link href="/" className="p-2  text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded">Products</Link>
+        <Link href="/viewProduct" className="p-2  text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded">Products</Link>
         </div>
         <Separator orientation="vertical" className='bg-gray-400' />
             <div>
