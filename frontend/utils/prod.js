@@ -9,6 +9,8 @@ export const ProductProvider = ({children}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState({});
     const [products, setProducts] = useState([]);
+    const [ownerProducts, setOwnerProducts] = useState([]);
+
     const [category, setCategory] = useState([]);
 
     const {user} = useContext(AuthContext);
@@ -22,6 +24,9 @@ export const ProductProvider = ({children}) => {
         } catch (error) {
             console.log(`Erro Fetching products: ${error}`);
             setError(error.response?.data || error.message);
+        }
+        finally{
+            setLoading(false);
         }
     };
 
@@ -77,6 +82,47 @@ export const ProductProvider = ({children}) => {
         }
     }
 
+    const fetchProductByOwner = async () => {
+        try {
+            const response = await axios.get(`/api/product-user/`);
+            setOwnerProducts(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.log(`Erro Fetching products: ${error}`);
+            setError(error.response?.data || error.message);
+        }
+        finally{
+            setLoading(false);
+        }
+    };
+
+    const deleteProduct = async (id, router) => {
+        
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.delete(`/api/product-list/${id}/`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+    
+            // Update the state to remove the deleted product
+            setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
+            setOwnerProducts((prevOwnerProducts) => prevOwnerProducts.filter((ownerProduct) => ownerProduct.id !== id));
+            
+            return response.data;
+            // Redirect to the product dashboard
+            router.push('/productDashboard');
+    
+        } catch (error) {
+            console.error(`Error deleting product: ${error}`);
+            setError(error.response?.data || error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+
 
 
 
@@ -85,11 +131,14 @@ export const ProductProvider = ({children}) => {
         loading,
         error,
         category,
+        ownerProducts,
+        fetchProductByOwner,
         fetchProduct,
         createProduct,
         fetchCategory,
+        deleteProduct,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category, loading, error]); 
+    }), [products, category, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 

@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from .permissions import HasRole, IsOwner, IsEquipmentOwner
+from .permissions import HasRole, IsOwner, IsEquipmentOwner, IsProductOwner
 from rest_framework import viewsets
 from rest_framework import generics
 from .models import Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product
@@ -197,5 +197,25 @@ class ProductListCreateView(generics.ListCreateAPIView):
             self.required_role = 'farmer'
         else:
             self.permission_classes = [AllowAny]
+        return super().get_permissions()
+    
+    
+class ProductOwnerListView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Product.objects.filter(user= self.request.user)
+    
+
+class ProductListUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated, IsOwner]
         return super().get_permissions()
     

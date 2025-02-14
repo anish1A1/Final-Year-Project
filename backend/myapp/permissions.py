@@ -20,3 +20,7 @@ class IsEquipmentOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.equipment.user == request.user
 
+
+class IsProductOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.product.user == request.user
