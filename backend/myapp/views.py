@@ -183,7 +183,7 @@ class EquipmentDeliveryReceiveListView(generics.ListAPIView):
 class CategoryView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [IsAuthenticated]
+    
     
     
 class ProductListCreateView(generics.ListCreateAPIView):

@@ -10,7 +10,6 @@ export const ProductProvider = ({children}) => {
     const [error, setError] = useState({});
     const [products, setProducts] = useState([]);
     const [ownerProducts, setOwnerProducts] = useState([]);
-
     const [category, setCategory] = useState([]);
 
     const {user} = useContext(AuthContext);
@@ -110,9 +109,9 @@ export const ProductProvider = ({children}) => {
             setProducts((prevProducts) => prevProducts.filter((product) => product.id !== id));
             setOwnerProducts((prevOwnerProducts) => prevOwnerProducts.filter((ownerProduct) => ownerProduct.id !== id));
             
+            router.push('/productDashboard');
             return response.data;
             // Redirect to the product dashboard
-            router.push('/productDashboard');
     
         } catch (error) {
             console.error(`Error deleting product: ${error}`);
@@ -121,8 +120,50 @@ export const ProductProvider = ({children}) => {
             setLoading(false);
         }
     };
-    
 
+    const getProductById = async (id) => {
+        try {
+            const response = await axios.get(`/api/product-list/${id}/`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching product by ID: ${error}`);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    const updateProduct = async (id, formData, router) => {
+        const token = localStorage.getItem('token');
+        const data = new FormData();
+    
+        // Append all form data to the FormData object
+        Object.keys(formData).forEach((key) => {
+            data.append(key, formData[key]);
+        });
+    
+        if (user) {
+            data.append('user', user.id);
+        }
+    
+        try {
+            const response = await axios.put(`/api/product-list/${id}/`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            setOwnerProducts((prevProducts) => prevProducts.map(item => item.id === id ? response.data : item));
+            setProducts((prevProducts) => prevProducts.map(item => item.id === id ? response.data : item));
+            router.push('/productDashboard');
+        } catch (error) {
+            console.error(`Error updating product: ${error}`);
+            setError(error.response?.data || error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
 
 
 
@@ -137,6 +178,8 @@ export const ProductProvider = ({children}) => {
         createProduct,
         fetchCategory,
         deleteProduct,
+        updateProduct,
+        getProductById,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }), [products, category, ownerProducts, loading, error]); 
 

@@ -1,6 +1,5 @@
 "use client"
 import React, {useContext, useEffect} from 'react'
-import { AuthContext } from '../../../utils/auth'
 import { ProductContext } from '../../../utils/prod'
 import {useRouter} from 'next/navigation';
 const ProductListByOwner = () => {
@@ -16,6 +15,10 @@ const ProductListByOwner = () => {
 
   const deletProduct = async (id) => {
     await deleteProduct(id, router);
+  }
+
+  const updateProduct = async (id) => {
+    router.push(`/updateProduct/${id}`);
   }
   
     if (loading) {
@@ -45,6 +48,7 @@ const ProductListByOwner = () => {
                     <p className="text-gray-700 mt-2">Total Time(From created Day): {product.total_time}</p>
                     <div className="flex justify-between">
                     <button onClick={() => deletProduct(product.id)}>Delete Product</button>
+                    <button onClick={() => updateProduct(product.id)}>Update Product</button>
 
                     </div>
                 </div>
