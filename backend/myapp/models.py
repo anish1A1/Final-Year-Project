@@ -187,3 +187,6 @@ class Product(models.Model):
     def total_time(self):
         now = timezone.now()
         return (now - self.created_at).days
+    
+    def product_owner(self):
+        return self.user.username

@@ -7,12 +7,17 @@ import { useRouter } from 'next/navigation';
 const ViewProduct = () => {
     const { fetchProduct, products, loading } = useContext(ProductContext);
     const { user } = useContext(AuthContext);
+    const router = useRouter();
 
     useEffect(() => {
         fetchProduct();
     }, []);
     if (loading) {
         return <div className="container mx-auto mt-24">Loading...</div>;
+    }
+    
+    const handleView = (id) => {
+        router.push(`/viewProduct/${id}`);
     }
   
 
@@ -38,7 +43,11 @@ const ViewProduct = () => {
 
                         <p className="text-gray-700 mt-2">Total Time(From created Day): {product.total_time}</p>
 
+                        <p className="text-gray-700 mt-2">Created By: {product.product_owner}</p>
 
+                        <div className="flex justify-between">
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={() => handleView(product.id)}>View Product</button>
+                        </div>
                     </div>
                 ))}
             </div>
