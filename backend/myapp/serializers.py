@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
+from .models import Cart, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -164,3 +164,25 @@ class ProductSerializer(serializers.ModelSerializer):
         Return the username of the product owner
         """
         return obj.user.username
+    
+    
+class CartSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Cart
+        fields = ['id', 'user', 'product', 'product_qty']
+        
+    def validate(self, data):
+        user = self.context['request'].user
+        product = data['product']
+        
+        if Cart.objects.filter(user=user, product=product).exists():
+            raise serializers.ValidationError('Product already exists in cart')
+        return data
+    
+        
+  
+        
+    
+    
+    

@@ -16,6 +16,7 @@ const ViewProduct = () => {
         return <div className="container mx-auto mt-24">Loading...</div>;
     }
     
+    
     const handleView = (id) => {
         router.push(`/viewProduct/${id}`);
     }

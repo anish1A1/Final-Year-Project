@@ -5,9 +5,11 @@ import { useParams } from 'next/navigation'
 
 const ViewProductById = () => {
     const { id } = useParams();
-    const { getProductById, loading } = useContext(ProductContext);
+    const { getProductById, loading, addToCart } = useContext(ProductContext);
     const [product, setProducts] = useState(null);
     const [error, setError] = useState('');
+    const [productQty, setProductQty] = useState(1);
+    const [formError, setFormError] = useState('');
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -29,6 +31,27 @@ const ViewProductById = () => {
     if (!product) {
         return <div className="container mx-auto mt-24">No product found</div>;
     }
+
+    const handleAddToCart = async (e) => {
+        e.preventDefault();
+        if (productQty < 1) {
+            setFormError('Quantity must be at least 1.');
+            return;
+        }
+
+        try {
+            const datas = {
+                product: product.id,
+                product_qty: productQty
+
+            }
+            await addToCart(datas);
+            alert('Product added to cart successfully!');
+        } catch (error) {
+            setFormError('Error adding product to the cart.');
+            console.error('Error adding product to the cart:', error);
+        }
+    };
 
     return (
         <div className="container mx-auto mt-24 p-8 bg-white rounded-lg shadow-lg">
@@ -58,6 +81,27 @@ const ViewProductById = () => {
                 <h2 className="text-2xl font-bold mb-4">Product Description</h2>
                 <p className="text-gray-700 text-lg">{product.description}</p>
             </div>
+            <form onSubmit={handleAddToCart} className="mt-8">
+                <div className="flex flex-col mb-4">
+                    <label htmlFor="quantity" className="text-lg font-medium text-gray-700 mb-2">Quantity:</label>
+                    <input
+                        id="quantity"
+                        type="number"
+                        value={productQty}
+                        onChange={(e) => setProductQty(Number(e.target.value))}
+                        className="block w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                        min="1"
+                        required
+                    />
+                </div>
+                {formError && <p className="text-red-500 mb-4">{formError}</p>}
+                <button
+                    type="submit"
+                    className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+                >
+                    Add to Cart
+                </button>
+            </form>
         </div>
     );
 }

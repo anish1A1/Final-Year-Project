@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer
+from .serializers import CartSerializer, CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner, IsProductOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product
+from .models import Cart, Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product
 from rest_framework import serializers
 
 # Create your views here.
@@ -218,4 +218,33 @@ class ProductListUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         else:
             self.permission_classes = [IsAuthenticated, IsOwner]
         return super().get_permissions()
+
+class CartListCreateView(generics.ListCreateAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
     
+    def get_serializer_context(self):
+        return {'request': self.request}   
+    def perform_create(self, serializer):
+        user = self.request.user
+        product = self.request.data.get('product')
+        product_qty = self.request.data.get('product_qty')
+        
+        # Check if the product is already in the cart
+        if Cart.objects.filter(user=user, product_id=product).exists():
+            raise serializers.ValidationError("This product is already in the cart.")
+        
+        # If not, create the cart entry
+        serializer.save(user=user, product_id=product, product_qty=product_qty)
+    
+    def get_queryset(self):
+        return Cart.objects.filter(user= self.request.user)
+        
+class CartDetailView(generics.RetrieveUpdateAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Cart.objects.filter(user= self.request.user)

@@ -11,6 +11,7 @@ export const ProductProvider = ({children}) => {
     const [products, setProducts] = useState([]);
     const [ownerProducts, setOwnerProducts] = useState([]);
     const [category, setCategory] = useState([]);
+    const [cartItem, setCartItem] = useState([]);
 
     const {user} = useContext(AuthContext);
 
@@ -145,7 +146,7 @@ export const ProductProvider = ({children}) => {
         if (user) {
             data.append('user', user.id);
         }
-    
+        
         try {
             const response = await axios.put(`/api/product-list/${id}/`, data, {
                 headers: {
@@ -163,6 +164,87 @@ export const ProductProvider = ({children}) => {
             setLoading(false);
         }
     };
+
+    const fetchCart = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`/api/cart/`, {
+                headers: {
+                'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (response.data.length > 0) {
+                setCartItem(response.data);
+            }
+        } catch (error) {
+            console.error(`Error updating product: ${error}`);
+            setError(error.response?.data || error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const addToCart = async (formData) => {
+        try {
+            const data = new FormData();
+            const token = localStorage.getItem('token');
+            
+            Object.keys(formData).forEach((key) => {
+                data.append(key, formData[key]);
+            });
+
+            if (user) {
+                data.append('user', user.id);
+            } else{
+                console.log('Please login to add to cart');
+            }
+            console.log(formData);
+
+            const response = await axios.post(`/api/cart/`,data, {
+                headers: {
+                'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+            setCartItem((prevCart) => [...prevCart, response.data]);
+        } catch (error) {
+            console.error(`Error updating product: ${error}`);
+            setError(error.response?.data || error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateCart = async (id, product_qty) => {
+        try {
+            const response = await axios.put(`/api/cart/${id}/`, {
+                product_qty,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            setCartItem((prevCart) => prevCart.map(item => item.id === id ? response.data : item));
+        } catch (error) {
+            console.error(`Error updating cart: ${error}`);
+            setError(error.response?.data || error.message);
+        }
+    };
+
+    const removeFromCart = async (id) => {
+        try {
+            await axios.delete(`/api/cart/${id}/`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setCartItem((prevCart) => prevCart.filter(item => item.id !== id));
+        } catch (error) {
+            console.error(`Error removing from cart: ${error}`);
+            setError(error.response?.data || error.message);
+        }
+    };
     
 
 
@@ -173,6 +255,7 @@ export const ProductProvider = ({children}) => {
         error,
         category,
         ownerProducts,
+        cartItem,
         fetchProductByOwner,
         fetchProduct,
         createProduct,
@@ -180,8 +263,12 @@ export const ProductProvider = ({children}) => {
         deleteProduct,
         updateProduct,
         getProductById,
+        fetchCart,
+        addToCart,
+        updateCart,
+        removeFromCart,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category, ownerProducts, loading, error]); 
+    }), [products, category, cartItem, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 
