@@ -196,7 +196,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
             self.permission_classes = [IsAuthenticated, HasRole] 
             self.required_role = 'farmer'
         else:
-            self.permission_classes = [AllowAny]
+            self.permission_classes = [IsAuthenticatedOrReadOnly]
         return super().get_permissions()
     
     
@@ -228,23 +228,24 @@ class CartListCreateView(generics.ListCreateAPIView):
         return {'request': self.request}   
     def perform_create(self, serializer):
         user = self.request.user
-        product = self.request.data.get('product')
+        product_id = self.request.data.get('product')
         product_qty = self.request.data.get('product_qty')
+        product = Product.objects.get(id=product_id)
         
         # Check if the product is already in the cart
-        if Cart.objects.filter(user=user, product_id=product).exists():
+        if Cart.objects.filter(user=user, product=product).exists():
             raise serializers.ValidationError("This product is already in the cart.")
         
-        # If not, create the cart entry
-        serializer.save(user=user, product_id=product, product_qty=product_qty)
+        
+        serializer.save(user=user, product=product, product_qty=product_qty)
     
     def get_queryset(self):
         return Cart.objects.filter(user= self.request.user)
         
-class CartDetailView(generics.RetrieveUpdateAPIView):
+class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
-        return Cart.objects.filter(user= self.request.user)
+        return Cart.objects.filter(user=self.request.user)

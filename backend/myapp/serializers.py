@@ -167,22 +167,42 @@ class ProductSerializer(serializers.ModelSerializer):
     
     
 class CartSerializer(serializers.ModelSerializer):
-    
+    product = ProductSerializer(read_only=True)
     class Meta:
         model = Cart
         fields = ['id', 'user', 'product', 'product_qty']
+       
+    def validate_product_qty(self, value):
+        product = self.instance.product.id if self.instance else self.initial_data.get('product')
+        product_instance = Product.objects.get(id=product)
         
+        if value > product_instance.quantity: 
+            raise serializers.ValidationError(f'Only {product_instance.quantity} is available')
+        
+        return value
+    
+   
     def validate(self, data):
         user = self.context['request'].user
-        product = data['product']
-        
-        if Cart.objects.filter(user=user, product=product).exists():
+        product_id = self.initial_data.get('product')
+        product = Product.objects.get(id=product_id) if product_id else self.instance.product
+
+        # Check if the user created the product
+        if product.user == user:
+            raise serializers.ValidationError('You cannot add a product you created to your cart.')
+
+        # Check if the product already exists in the user's cart
+        if not self.instance and Cart.objects.filter(user=user, product=product).exists():
             raise serializers.ValidationError('Product already exists in cart')
+        
         return data
-    
-        
-  
-        
+ 
+    def create(self, validated_data):
+        # Sets the user from the context
+        user = self.context['request'].user
+        validated_data['user'] = user
+        print("validated Data: ", validated_data)
+        return super().create(validated_data)
     
     
     

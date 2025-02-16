@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { ProductContext } from '../../../../utils/prod'
 import { useParams } from 'next/navigation'
+import { AuthContext } from '../../../../utils/auth'
 
 const ViewProductById = () => {
     const { id } = useParams();
@@ -9,7 +10,9 @@ const ViewProductById = () => {
     const [product, setProducts] = useState(null);
     const [error, setError] = useState('');
     const [productQty, setProductQty] = useState(1);
-    const [formError, setFormError] = useState('');
+    const {user} = useContext(AuthContext);
+    
+    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -35,27 +38,34 @@ const ViewProductById = () => {
     const handleAddToCart = async (e) => {
         e.preventDefault();
         if (productQty < 1) {
-            setFormError('Quantity must be at least 1.');
+            setError('Quantity must be at least 1.');
             return;
         }
 
         try {
             const datas = {
                 product: product.id,
-                product_qty: productQty
-
-            }
-            await addToCart(datas);
-            alert('Product added to cart successfully!');
+                product_qty: productQty,
+                user: user.id
+            };
+            const response = await addToCart(datas);
+            setSuccessMessage(response.message);
+            setError('');
         } catch (error) {
-            setFormError('Error adding product to the cart.');
-            console.error('Error adding product to the cart:', error);
+            if (error.non_field_errors) {
+                setError(error.non_field_errors[0]);
+            } else {
+                console.error('Error adding product to the cart:', error);
+                setError(error ? error.message ? error.non_field_errors : error.message : error.non_field_errors[0]);
+            }
+            setSuccessMessage('');
         }
     };
 
     return (
         <div className="container mx-auto mt-24 p-8 bg-white rounded-lg shadow-lg">
             {error && <p className="text-red-500 mb-4">{error}</p>}
+            {successMessage && <p className="text-blue-500 mb-4">{successMessage}</p>}
             <h1 className="text-4xl font-bold mb-4 text-center">{product.name}</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="flex items-center justify-center">
@@ -91,10 +101,11 @@ const ViewProductById = () => {
                         onChange={(e) => setProductQty(Number(e.target.value))}
                         className="block w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                         min="1"
+                        max={product.quantity}
                         required
                     />
                 </div>
-                {formError && <p className="text-red-500 mb-4">{formError}</p>}
+                
                 <button
                     type="submit"
                     className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"

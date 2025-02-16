@@ -177,8 +177,9 @@ export const ProductProvider = ({children}) => {
                 setCartItem(response.data);
             }
         } catch (error) {
-            console.error(`Error updating product: ${error}`);
-            setError(error.response?.data || error.message);
+                const errorMessage = error.response?.data || error.message;
+                console.error(`Error fetching the cart: ${errorMessage}`);
+                throw error.response?.data;;
         } finally {
             setLoading(false);
         }
@@ -207,9 +208,11 @@ export const ProductProvider = ({children}) => {
             });
             
             setCartItem((prevCart) => [...prevCart, response.data]);
+            return { status: 'success', message: 'Product added to cart successfully!' };
         } catch (error) {
-            console.error(`Error updating product: ${error}`);
-            setError(error.response?.data || error.message);
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error adding to cart: ${errorMessage}`);
+            throw error.response?.data;  // Throw the error to be caught in the component
         } finally {
             setLoading(false);
         }
@@ -217,7 +220,7 @@ export const ProductProvider = ({children}) => {
 
     const updateCart = async (id, product_qty) => {
         try {
-            const response = await axios.put(`/api/cart/${id}/`, {
+            const response = await axios.patch(`/api/cart/${id}/`, {
                 product_qty,
             }, {
                 headers: {
@@ -226,9 +229,11 @@ export const ProductProvider = ({children}) => {
                 },
             });
             setCartItem((prevCart) => prevCart.map(item => item.id === id ? response.data : item));
+            return { status: 'success', message: 'Cart updated successfully!' };
         } catch (error) {
-            console.error(`Error updating cart: ${error}`);
-            setError(error.response?.data || error.message);
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error updating cart: ${errorMessage}`);
+            throw error.response?.data;   // Throw the error to be caught in the component
         }
     };
 
@@ -240,9 +245,12 @@ export const ProductProvider = ({children}) => {
                 },
             });
             setCartItem((prevCart) => prevCart.filter(item => item.id !== id));
+            return { status: 'success', message: 'Item removed from cart successfully!' };
+   
         } catch (error) {
-            console.error(`Error removing from cart: ${error}`);
-            setError(error.response?.data || error.message);
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error removing from cart: ${errorMessage}`);
+            throw error.response?.data;  // Throw the error to be caught in the component
         }
     };
     
