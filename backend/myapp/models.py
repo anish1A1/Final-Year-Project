@@ -200,3 +200,30 @@ class Cart(models.Model):
     
     def __str__(self):
         return self.product.name + " " +"Ordered by " + self.user.username
+
+
+class Trades(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='trade_product')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    note = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.product.name} offered by {self.user.username}"
+
+class TradeRequest(models.Model):
+    trade = models.ForeignKey(Trades, on_delete=models.CASCADE, related_name='trade_requests')
+    requested_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='requested_products')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user.username} wants to trade {self.requested_product.name} for {self.trade.product.name}"
+
+class ConfirmedTrade(models.Model):
+    trade_request = models.OneToOneField(TradeRequest, on_delete=models.CASCADE)
+    confirmed_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='confirmed_trades')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Trade between {self.trade_request.user.username} and {self.trade_request.trade.user.username}"

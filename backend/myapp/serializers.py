@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Cart, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
+from .models import Cart, Category, FarmerProfile, Product,  UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -205,4 +205,34 @@ class CartSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
     
+# class TradeRequestSerializer(serializers.ModelSerializer):
+#     requested_product = ProductSerializer(read_only=True)
+
+#     class Meta:
+#         model = TradeRequest
+#         fields = ['id', 'trade', 'requested_product', 'created_at']
+        
+        
+# class TradeSerializer(serializers.ModelSerializer):
+#     trade_request = TradeRequestSerializer(many=True,read_only=True)
+#     product = ProductSerializer(read_only=True)
     
+#     class Meta: 
+#         model = Trade
+#         fields = ['id', 'product', 'user', 'trade_request', 'created_at']
+        
+#     def create(self, validated_data):
+#         user = self.context['request'].user
+#         validated_data['user'] = user
+#         product_id = self.request.data.get('product')
+#         product  = Product.objects.get(id=product_id)
+        
+#         trade = Trade.objects.create(user=user, product=product)
+       
+#         requested_product_ids = self.iniitial_data.get('requested_product', [] )
+       
+#         for requested_product_id in requested_product_ids:
+#             requested_product = Product.objects.get(id= requested_product_id) 
+#             TradeRequest.objects.create(user=user, product=requested_product)
+            
+#         return trade       

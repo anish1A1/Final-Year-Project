@@ -249,3 +249,27 @@ class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
     
     def get_queryset(self):
         return Cart.objects.filter(user=self.request.user)
+    
+    
+# class TradeListCreateView(generics.ListCreateAPIView):
+#     queryset = Trade.objects.all()
+#     serializer_class = TradeSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get_queryset(self):
+#         return Trade.objects.filter(user=self.request.user)
+
+#     def get_serializer_context(self):
+#         return {'request': self.request}
+    
+
+# class TradeRequestListCreateView(generics.ListCreateAPIView):
+#     queryset = TradeRequest.objects.all()
+#     serializer_class = TradeRequestSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get_queryset(self):
+#         return TradeRequest.objects.filter(trade__user=self.request.user)
+
+#     def get_serializer_context(self):
+#         return {'request': self.request}

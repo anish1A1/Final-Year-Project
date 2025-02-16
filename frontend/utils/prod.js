@@ -12,6 +12,8 @@ export const ProductProvider = ({children}) => {
     const [ownerProducts, setOwnerProducts] = useState([]);
     const [category, setCategory] = useState([]);
     const [cartItem, setCartItem] = useState([]);
+    const [trades, setTrades] = useState([]);
+    const [tradeRequests, setTradeRequests] = useState([]);
 
     const {user} = useContext(AuthContext);
 
@@ -254,6 +256,95 @@ export const ProductProvider = ({children}) => {
         }
     };
     
+    const fetchTrades = async () => {
+        try {
+            const response = await axios.get('/api/trades/', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setTrades(response.data);
+            
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const createTrade = async (formData, router) => {
+        try {
+            const data = new FormData();
+            const token = localStorage.getItem('token');
+
+            Object.keys(formData).forEach((key) => {
+                if (Array.isArray(formData[key])) {
+                    formData[key].forEach((item) => data.append(key, item));
+                } else {
+                    data.append(key, formData[key]);
+                }
+            });
+
+            const response = await axios.post('/api/trades/', data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            setTrades((prevTrades) => [...prevTrades, response.data]);
+            router.push('/trades'); // Redirect to the trades page after creating the trade
+            return { status: 'success', message: 'Trade created successfully!' };
+            
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error creating trade: ${errorMessage}`);
+            throw error.response?.data;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchTradeRequests = async (tradeId) => {
+        try {
+            const response = await axios.get(`/api/trade-requests/?trade=${tradeId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setTradeRequests(response.data);
+        } catch (err) {
+            setError(err.message);
+        } finally{
+            setLoading(false);
+        }
+    };
+
+    const createTradeRequest = async (formData) => {
+        try {
+            const data = new FormData();
+            const token = localStorage.getItem('token');
+
+            Object.keys(formData).forEach((key) => {
+                data.append(key, formData[key]);
+            });
+
+            const response = await axios.post('/api/trade-requests/', data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            setTradeRequests((prevRequests) => [...prevRequests, response.data]);
+            return { status: 'success', message: 'Trade request created successfully!' };
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error creating trade request: ${errorMessage}`);
+            throw error.response?.data;
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
 
 
@@ -264,6 +355,8 @@ export const ProductProvider = ({children}) => {
         category,
         ownerProducts,
         cartItem,
+        trades,
+        tradeRequests,
         fetchProductByOwner,
         fetchProduct,
         createProduct,
@@ -275,8 +368,12 @@ export const ProductProvider = ({children}) => {
         addToCart,
         updateCart,
         removeFromCart,
+        fetchTrades,
+        createTrade,
+        fetchTradeRequests,
+        createTradeRequest
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category, cartItem, ownerProducts, loading, error]); 
+    }), [products, category, cartItem, trades, tradeRequests, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 
