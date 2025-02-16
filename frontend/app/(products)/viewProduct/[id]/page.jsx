@@ -37,6 +37,10 @@ const ViewProductById = () => {
 
     const handleAddToCart = async (e) => {
         e.preventDefault();
+        if (!user) {
+            setError('You must be logged in to add products to the cart.');
+            return;
+        }
         if (productQty < 1) {
             setError('Quantity must be at least 1.');
             return;

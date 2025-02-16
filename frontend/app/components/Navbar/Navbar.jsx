@@ -6,6 +6,8 @@ import UserNav from './UserNav';
 import NavLinks from './NavLinks';
 import SearchBar from './SearchBar';
 import FavoriteIcon from './FavoriteIcon';
+import CartNav from './CartNav';
+
 
 const Navbar = () => {
 
@@ -34,6 +36,10 @@ const Navbar = () => {
 
                     
                     <SearchBar />
+                    <Link href="/cart" className="  mt-1  rounded">
+                    {/* <Image src = "/cart.gif" alt = "logo" width = {30} height = {20} className='border-none hover:bg-none' /> */}
+                    <CartNav />
+                    </Link>
                   <FavoriteIcon />
                     <UserNav/>
 
