@@ -72,10 +72,10 @@ class EquipmentListCreateView(generics.ListCreateAPIView):
     serializer_class = EquipmentSerializer
     
     def get_permissions(self):
-        if self.request.method == 'POST':
-            self.permission_classes = [IsAuthenticated]
-        else:
+        if self.request.method == 'GET':
             self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated]
         return super().get_permissions()
     
     def get_serializer_context(self):

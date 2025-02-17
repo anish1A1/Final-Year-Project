@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useContext } from 'react';
 import { useRouter } from "next/navigation";
-import axios from "../../../utils/axios";
 import styles from '../../../styles/equipment.module.css';
 import { EquipmentContext } from '../../../utils/equip';
 import { AuthContext } from "../../../utils/auth";
@@ -41,7 +40,7 @@ const CreateEquipment = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            createEquipment(formData, router);  // Use createEquipment from the context
+            await createEquipment(formData, router);  // Use createEquipment from the context
         } catch (error) {
             console.error('Error:', error);
         }
@@ -78,7 +77,7 @@ const CreateEquipment = () => {
 
                 <div className={styles.formGroup}>
                     <label>Per Day Rate:</label>
-                    <input type="number" step="0.01" name="hourly_rate" value={formData.per_day_rate} onChange={handleChange} required />
+                    <input type="number" step="1" name="per_day_rate" value={formData.per_day_rate} onChange={handleChange} required />
                 </div>
 
                 <div className={styles.formGroup}>
@@ -88,7 +87,7 @@ const CreateEquipment = () => {
 
                 <div className={styles.formGroup}>
                     <label>Delivery Charge:</label>
-                    <input type="number" step="0.01" name="delivery_charge" value={formData.delivery_charge} onChange={handleChange} required />
+                    <input type="number" step="1" name="delivery_charge" value={formData.delivery_charge} onChange={handleChange} required />
                 </div>
 
                 <button type="submit" className={styles.submitButton}>Create Equipment</button>   

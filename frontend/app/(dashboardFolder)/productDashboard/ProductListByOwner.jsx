@@ -25,6 +25,10 @@ const ProductListByOwner = () => {
         return <div className="container mx-auto mt-24">Loading...</div>;
     };   
 
+    if (!ownerProducts) {
+      return <div className="container mx-auto mt-24">No products created by you</div>;
+    };
+
     return (
         <div className="container mx-auto mt-24">
         <h1 className="text-2xl font-bold mb-4">Product List</h1>
