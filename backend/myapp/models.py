@@ -180,6 +180,7 @@ class Product(models.Model):
     tag= models.CharField(max_length=150, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)         #This field stores the date and time when the category was created.
     delivery_sell_charge = models.DecimalField(max_digits=10, decimal_places=2)
+    
     def __str__(self):           #This method returns a string representation of the category object.
         return self.name
     
@@ -190,6 +191,9 @@ class Product(models.Model):
     
     def product_owner(self):
         return self.user.username
+    
+    def product_total_amount(self):
+        return self.selling_price * self.quantity
     
 
 class Cart(models.Model):
@@ -202,28 +206,53 @@ class Cart(models.Model):
         return self.product.name + " " +"Ordered by " + self.user.username
 
 
-class Trades(models.Model):
+class Trade(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='trade_product')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     note = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
+    trade_ending_date = models.DateTimeField()
     def __str__(self):
         return f"{self.product.name} offered by {self.user.username}"
 
 class TradeRequest(models.Model):
-    trade = models.ForeignKey(Trades, on_delete=models.CASCADE, related_name='trade_requests')
-    requested_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='requested_products')
+    
+    class StatusChoices(models.TextChoices):
+        PENDING = 'pending'
+        ACCEPTED = 'accepted'
+        REJECTED = 'rejected'
+        
+    trade = models.ForeignKey(Trade, on_delete=models.CASCADE, related_name='trade_requests')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    delivery_location = models.CharField(max_length=255)
+    product_name = models.CharField(max_length=255)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.ImageField(upload_to='uploads/images', null=True,blank=True, validators=[validate_file_size, FileExtensionValidator(['jpg', 'png'])])
+    note = models.TextField(max_length=255)
+    status = models.CharField(max_length=255, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     
     def __str__(self):
-        return f"{self.user.username} wants to trade {self.requested_product.name} for {self.trade.product.name}"
+        return f"{self.user.username} wants to trade {self.product_name} for {self.trade.product.name}"
+    
+    @property
+    def total_cost(self):
+        return self.price * self.quantity
+    
+    
 
 class ConfirmedTrade(models.Model):
-    trade_request = models.OneToOneField(TradeRequest, on_delete=models.CASCADE)
-    confirmed_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='confirmed_trades')
-    created_at = models.DateTimeField(auto_now_add=True)
     
+    class DeliveryStatusChoices(models.TextChoices):
+        PROCESSING = 'processing', 'Processing'
+        DELIVERING = 'delivering', 'Delivering'
+        DELIVERED = 'delivered', 'Delivered'
+        CANCELED = 'canceled', 'Canceled'
+        
+    trade_request = models.OneToOneField(TradeRequest, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=50, choices=DeliveryStatusChoices.choices, default=DeliveryStatusChoices.PROCESSING)
     def __str__(self):
         return f"Trade between {self.trade_request.user.username} and {self.trade_request.trade.user.username}"
