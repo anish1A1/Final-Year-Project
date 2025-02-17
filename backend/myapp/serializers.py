@@ -204,27 +204,25 @@ class CartSerializer(serializers.ModelSerializer):
         print("validated Data: ", validated_data)
         return super().create(validated_data)
 
-class TradeRequestSerializer(serializers.ModelSerializer):
-    requested_product = ProductSerializer(read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
     
-    class Meta:
-        model = TradeRequest
-        fields = ['id', 'trade', 'requested_product', 'user', 'created_at']
+
         
 class TradeSerializer(serializers.ModelSerializer):
-    trade_requests = TradeRequestSerializer(many = True,read_only=True)
-    user = serializers.ReadOnlyField(source='user.username')
-    product = ProductSerializer(read_only=True)
+    # user = serializers.ReadOnlyField(source='user.username')
+    # product = ProductSerializer(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+
     
     class Meta:
         model = Trade
-        fields = ['id', 'user', 'note', 'product', 'trade_requests', 'created_at']
+        fields = '__all__'
         
-    # def create(self, validated_data):
-    #     user = self.context['request'].user
-    #     validated_data['user'] = user
-    #     product_id =self.initial_data.get('product')
-    #     product = Product.objects.get(id=product_id)
-        
-    #     trade = 
+    def validate(self, data):
+        user = self.context['request'].user
+        product_id = self.initial_data.get('product')
+
+        print("user: ", user)
+        print("product_id: ", product_id)
+        return data
+    
+   

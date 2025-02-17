@@ -5,27 +5,52 @@ import { ProductContext} from '../../..//utils/prod';
 import { AuthContext } from '../../../utils/auth';
 
 const CreateTradePage = () => {
-    const { fetchProduct, products, createTrade, loading, error } = useContext(ProductContext);
+    const { fetchProductByOwner, ownerProducts, createTrade, loading, error } = useContext(ProductContext);
     const {user} = useContext(AuthContext);
-    const [selectedProduct, setSelectedProduct] = useState('');
-    const [requestedProducts, setRequestedProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState({});
     const [successMessage, setSuccessMessage] = useState('');
     const [formError, setFormError] = useState('');
     const router = useRouter();
 
+    const [formData, SetFormData] = useState({
+        product: '',
+        user : '',
+        wanted_product: '',
+        wanted_quantity: 0,
+        wanted_price: 0,
+        note: '',
+        trade_ending_date: '',
+    })
+
     useEffect(() => {
-        fetchProduct();
+        fetchProductByOwner();
     }, []);
 
     const handleProductChange = (e) => {
-        setSelectedProduct(e.target.value);
+        const value = e.target.value;
+        setSelectedProduct(value);
+        SetFormData(prevData => ({
+            ...prevData,
+            product: selectedProduct  // Ensure it's the ID, not name
+        }));
+        console.log(selectedProduct);
+        // console.log(value);
+        
+
+        
     };
 
-    const handleRequestedProductsChange = (e) => {
-        const options = Array.from(e.target.options);
-        const selected = options.filter((option) => option.selected).map((option) => option.value);
-        setRequestedProducts(selected);
+    const handleChange = (e) => {
+        const {name, value, type} = e.target;
+        SetFormData({
+            ...formData,
+            [name]: type === 'checkbox' ? e.target.checked : value
+        });
     };
+
+    
+
+   
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,16 +58,13 @@ const CreateTradePage = () => {
             setFormError('Please select a product to trade.');
             return;
         }
-        if (requestedProducts.length === 0) {
-            setFormError('Please select at least one product to receive in exchange.');
-            return;
-        }
+        console.log(formData);
+      
 
-        const formData = {
-            product: selectedProduct,
-            requested_products: requestedProducts,
-            user: user.id
-        };
+        // const formData = {
+        //     product: selectedProduct,
+        //     user: user.id
+        // };
 
         try {
             const response = await createTrade(formData, router);
@@ -63,22 +85,88 @@ const CreateTradePage = () => {
                 <p className="text-center">Loading products...</p>
             ) : (
                 <form onSubmit={handleSubmit}>
+
+
+
+
+
                     <div className="mb-4">
                         <label htmlFor="product" className="block text-gray-700 text-lg font-medium mb-2">Product to Trade:</label>
                         <select
                             id="product"
+                            name='product'
                             value={selectedProduct}
                             onChange={handleProductChange}
                             className="block w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                             required
                         >
                             <option value="">Select a product</option>
-                            {products.map((product) => (
+                            {ownerProducts.map((product) => (
                                 <option key={product.id} value={product.id}>{product.name}</option>
                             ))}
                         </select>
                     </div>
+
                     <div className="mb-4">
+                        <label>Wanted Product:</label>
+                        <input 
+                            type="text" 
+                            name="wanted_product" 
+                            value={formData.wanted_product} 
+                            onChange={handleChange} 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                            required 
+                        />
+                    </div>
+
+                     <div className="mb-4">
+                        <label>Wanted Quantity:</label>
+                        <input 
+                            type="number"  
+                            name="wanted_quantity" 
+                            value={formData.wanted_quantity} 
+                            onChange={handleChange} 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                            required 
+                        />
+                    </div>       
+
+                     <div className="mb-4">
+                        <label>Wanted Price:</label>
+                        <input 
+                            type="number" 
+                            name="wanted_price" 
+                            value={formData.wanted_price} 
+                            onChange={handleChange} 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                            required 
+                        />
+                    </div>
+
+                     <div className="mb-4">
+                        <label>Trade Ending Date</label>
+                        <input 
+                            type="date" 
+                            name="trade_ending_date" 
+                            value={formData.trade_ending_date} 
+                            onChange={handleChange} 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                            required 
+                        />
+                    </div> 
+                    <div className="mb-4">
+                        <label>Note for the Trade:</label>
+                        <input 
+                            type="text" 
+                            name="note" 
+                            value={formData.note} 
+                            onChange={handleChange} 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
+                            required 
+                        />
+                    </div>   
+
+                    {/* <div className="mb-4">
                         <label htmlFor="requested-products" className="block text-gray-700 text-lg font-medium mb-2">Products to Receive:</label>
                         <select
                             id="requested-products"
@@ -92,7 +180,7 @@ const CreateTradePage = () => {
                                 <option key={product.id} value={product.id}>{product.name}</option>
                             ))}
                         </select>
-                    </div>
+                    </div> */}
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"

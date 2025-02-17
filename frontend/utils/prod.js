@@ -276,14 +276,18 @@ export const ProductProvider = ({children}) => {
         try {
             const data = new FormData();
             const token = localStorage.getItem('token');
-
+            
             Object.keys(formData).forEach((key) => {
-                if (Array.isArray(formData[key])) {
-                    formData[key].forEach((item) => data.append(key, item));
-                } else {
-                    data.append(key, formData[key]);
-                }
+                data.append(key, formData[key]);
             });
+
+            if (user) {
+                data.append('user', user.id);
+            } else{
+                console.log('Please login to add to cart');
+            }
+
+            console.log(`Data is ${data}`);
 
             const response = await axios.post('/api/trades/', data, {
                 headers: {

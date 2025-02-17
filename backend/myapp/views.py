@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import CartSerializer, CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer
+from .serializers import CartSerializer, CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner, IsProductOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Cart, Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product
+from .models import Cart, Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade
 from rest_framework import serializers
 
 # Create your views here.
@@ -251,17 +251,21 @@ class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Cart.objects.filter(user=self.request.user)
     
     
-# class TradeListCreateView(generics.ListCreateAPIView):
-#     queryset = Trade.objects.all()
-#     serializer_class = TradeSerializer
-#     permission_classes = [IsAuthenticated]
+class TradeListCreateView(generics.ListCreateAPIView):
+    queryset = Trade.objects.all()
+    serializer_class = TradeSerializer
+    permission_classes = [IsAuthenticated]
 
-#     def get_queryset(self):
-#         return Trade.objects.filter(user=self.request.user)
+    def get_queryset(self):
+        return Trade.objects.filter(user=self.request.user)
 
-#     def get_serializer_context(self):
-#         return {'request': self.request}
+    def get_serializer_context(self):
+        return {'request': self.request}
     
+    def create(self, request, *args, **kwargs):
+        print("Received data:", request.data)  # Debugging
+        return super().create(request, *args, **kwargs)
+
 
 # class TradeRequestListCreateView(generics.ListCreateAPIView):
 #     queryset = TradeRequest.objects.all()

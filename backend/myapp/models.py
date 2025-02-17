@@ -217,7 +217,7 @@ class Trade(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     trade_ending_date = models.DateTimeField()
     def __str__(self):
-        return f"{self.product.name} offered by {self.user.username}"
+        return f"Trade of {self.product.name} offered by {self.user.username}"
 
 class TradeRequest(models.Model):
     
