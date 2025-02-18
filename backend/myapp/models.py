@@ -218,6 +218,19 @@ class Trade(models.Model):
     trade_ending_date = models.DateTimeField()
     def __str__(self):
         return f"Trade of {self.product.name} offered by {self.user.username}"
+    
+    @property
+    def trade_status(self):
+        if self.trade_ending_date < timezone.now():
+            return "Trade ended"
+        else:
+            return "Trade active"
+        
+    def time_left(self):
+        return (self.trade_ending_date - timezone.now()).days
+    
+    def total_amount(self):
+        return self.wanted_price * self.wanted_quantity
 
 class TradeRequest(models.Model):
     

@@ -11,3 +11,4 @@ In Frontend:
 NextJS,
 shadcn,
 axios,
+npm install react-icons

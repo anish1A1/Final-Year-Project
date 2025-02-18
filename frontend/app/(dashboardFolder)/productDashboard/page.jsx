@@ -18,9 +18,13 @@ const ProductDashboard = () => {
                To create a new product
                <Link href='/createProduct' className='btn btn-primary p-6 bg-slate-600 rounded'>Create Product</Link>
 
-               <div className="mt-12 ">
+               <div className="mt-12 mb-6 ">
                 <ProductListByOwner />
                </div>
+
+               <Link href='/tradeProductList' className='btn btn-primary p-6 bg-slate-600 rounded'>Create Product</Link>
+
+
     </div>
     </PrivateRoute>
   )

@@ -14,6 +14,7 @@ export const ProductProvider = ({children}) => {
     const [cartItem, setCartItem] = useState([]);
     const [trades, setTrades] = useState([]);
     const [tradeRequests, setTradeRequests] = useState([]);
+    const[allTrades, setAllTrades] = useState([]);
 
     const {user} = useContext(AuthContext);
 
@@ -255,6 +256,12 @@ export const ProductProvider = ({children}) => {
             throw error.response?.data;  // Throw the error to be caught in the component
         }
     };
+
+
+
+
+    // Trade Related Logics
+
     
     const fetchTrades = async () => {
         try {
@@ -288,15 +295,19 @@ export const ProductProvider = ({children}) => {
             }
 
             console.log(`Data is ${data}`);
-
+          
+            for (const da of data) {
+                console.log(`${da}`)
+            }
             const response = await axios.post('/api/trades/', data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
                 },
             });
 
             setTrades((prevTrades) => [...prevTrades, response.data]);
-            router.push('/trades'); // Redirect to the trades page after creating the trade
+            router.push('/allTrades'); // Redirect to the trades page after creating the trade
             return { status: 'success', message: 'Trade created successfully!' };
             
         } catch (error) {
@@ -307,6 +318,25 @@ export const ProductProvider = ({children}) => {
             setLoading(false);
         }
     };
+
+
+
+
+    const fetchAllTrades = async () => {
+        try {
+            const response = await axios.get('/api/trades-all/', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            setAllTrades(response.data);
+            
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const fetchTradeRequests = async (tradeId) => {
         try {
@@ -361,6 +391,7 @@ export const ProductProvider = ({children}) => {
         cartItem,
         trades,
         tradeRequests,
+        allTrades,
         fetchProductByOwner,
         fetchProduct,
         createProduct,
@@ -375,9 +406,10 @@ export const ProductProvider = ({children}) => {
         fetchTrades,
         createTrade,
         fetchTradeRequests,
-        createTradeRequest
+        createTradeRequest,
+        fetchAllTrades,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category, cartItem, trades, tradeRequests, ownerProducts, loading, error]); 
+    }), [products, category, cartItem, trades, allTrades, tradeRequests, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 

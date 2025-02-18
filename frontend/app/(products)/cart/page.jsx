@@ -74,7 +74,21 @@ const CartPage = () => {
                             </div>
                         </div>
                         <div className="flex items-center">
-                            <label htmlFor={`quantity-${item.id}`} className="mr-2">Quantity:</label>
+
+                        <label htmlFor={`quantity-${item.id}`} className="mr-2">Quantity:</label>
+                            <input
+                                id={`quantity-${item.id}`}
+                                type="number"
+                                // value={quantity[item.id] || 1}
+                                value={item.product_qty}
+                                // onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                                className="w-16 p-2 border rounded"
+                                min="1"
+                                max={item.product.quantity}
+                                disabled
+                            />
+
+                            <label htmlFor={`quantity-${item.id}`} className="mr-2">Update:</label>
                             <input
                                 id={`quantity-${item.id}`}
                                 type="number"

@@ -18,7 +18,7 @@ const NavLinks = () => {
             </div>
         <Separator orientation="vertical" className='bg-gray-400' />
             <div>
-                <Link href="/" className="p-2  text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded">Trade</Link>
+                <Link href="/allTrades" className="p-2  text-gray-600 hover:bg-gray-200 hover:text-gray-900 rounded ">Trade</Link>
             </div>
     </div>
   )

@@ -266,6 +266,11 @@ class TradeListCreateView(generics.ListCreateAPIView):
         print("Received data:", request.data)  # Debugging
         return super().create(request, *args, **kwargs)
 
+class TradeAllListView(generics.ListAPIView):
+    queryset = Trade.objects.all()
+    serializer_class = TradeSerializer
+    permission_classes = [IsAuthenticated]
+    
 
 # class TradeRequestListCreateView(generics.ListCreateAPIView):
 #     queryset = TradeRequest.objects.all()

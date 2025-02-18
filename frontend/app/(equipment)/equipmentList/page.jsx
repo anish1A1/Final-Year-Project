@@ -44,10 +44,9 @@ const EquipmentList = () => {
     return (
         <div className={styles.container}>
             <h1>Equipment List</h1>
-            {user &&
-            <Link href="/createEquipment">
+            {user && ( <Link href="/createEquipment">
                 <button className={styles.createButton}>Create Equipment</button>
-            </Link>
+            </Link>)
             }
             <div className={styles.equipmentList}>
                 {equipment.map((item) => (
