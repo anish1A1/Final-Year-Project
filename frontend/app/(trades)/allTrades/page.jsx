@@ -83,7 +83,7 @@ const AllTrades = () => {
                     <div className="mt-3">
                         <p className="text-gray-900 font-semibold">Selling Price: <span className="text-blue-600">${trade.product.selling_price}</span></p>
                         <p className="text-gray-700">Wanted Product: <span className="font-semibold">{trade.wanted_product}</span></p>
-                        <p className="text-gray-700">Wanted Quantity: <span className="font-semibold">{trade.wanted_quantity}</span></p>
+                        <p className="text-gray-700">Wanted Quantity (per Unit): <span className="font-semibold">{trade.wanted_quantity}</span></p>
                         <p className="text-gray-700">Wanted Price: <span className="font-semibold">${trade.wanted_price}</span></p>
                         <p className="text-gray-700">Note: <span className="font-semibold">{trade.note}</span></p>
                         <p className="text-gray-700">Total Trade Amount: <span className="font-semibold">{trade.total_amount}</span></p>

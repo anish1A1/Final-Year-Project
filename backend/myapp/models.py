@@ -225,7 +225,7 @@ class Trade(models.Model):
             return "Trade ended"
         else:
             return "Trade active"
-        
+            
     def time_left(self):
         return (self.trade_ending_date - timezone.now()).days
     

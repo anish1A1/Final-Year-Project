@@ -22,7 +22,7 @@ const ProductDashboard = () => {
                 <ProductListByOwner />
                </div>
 
-               <Link href='/tradeProductList' className='btn btn-primary p-6 bg-slate-600 rounded'>Create Product</Link>
+               <Link href='productDashboard/tradeProductList' className='btn btn-primary p-6 bg-slate-600 rounded'>View Trades</Link>
 
 
     </div>

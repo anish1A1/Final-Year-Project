@@ -230,3 +230,10 @@ class TradeSerializer(serializers.ModelSerializer):
     def get_total_amount(self,obj):
         return obj.wanted_price * obj.wanted_quantity
    
+   
+
+class TradeRequestListCreateSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    class Meta:
+        model = TradeRequest
+        fields = '__all__'
