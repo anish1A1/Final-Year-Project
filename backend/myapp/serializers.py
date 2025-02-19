@@ -234,12 +234,20 @@ class TradeSerializer(serializers.ModelSerializer):
 
 class TradeRequestSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    trade = TradeSerializer(read_only=True)
+    trade_id = serializers.PrimaryKeyRelatedField(queryset=Trade.objects.all(), 
+                                               write_only=True, source='trade')
+    total_cost = serializers.SerializerMethodField();
     class Meta:
         model = TradeRequest
-        fields = '__all__'
+        fields = ['trade', 'user', 'trade_id', 'delivery_location', 'product_name', 
+                  'status', 'note', 'image', 'price', 'quantity', 'total_cost']
         
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
+    
+    def get_total_cost(self, obj):
+        return obj.price * obj.quantity
     
     

@@ -12,7 +12,7 @@ const CreateTradeRequestPage = () => {
     const router = useRouter();
 
     const [formData, setFormData] = useState({
-        trade: id,
+        trade_id: id,
         delivery_location: "",
         product_name: "",
         quantity: 1,
