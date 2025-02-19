@@ -36,6 +36,10 @@ const AllTrades = () => {
         }
     };
 
+    const handleTradeRequest = (id) => {
+        router.push(`/CreateTradeRequest/${id}`);
+    }
+
     useEffect(() => {
         const interval = setInterval(() => {
             const updateTimeLeft = {};
@@ -59,6 +63,10 @@ const AllTrades = () => {
         router.push(`/viewProduct/${id}`);
     }
 
+
+    const hasRequestedTrade = (tradeId) => {
+        return allTrades.some(req => req.trade === tradeId);
+    }
 
 
   return (
@@ -109,15 +117,20 @@ const AllTrades = () => {
                     </div>
 
                     {/* Buttons */}
-                    <div className="flex justify-between mt-5">
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={() => handleView(trade.product.id)}
-                        >
-                            View Product
-                        </button>
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                <div className="flex justify-between mt-5">
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => handleView(trade.product.id)}>
+                        View Product
+                    </button>
+
+                    {hasRequestedTrade(trade.id) ? (
+                        <p className="text-green-600 font-bold text-sm mt-2">Trade Requested</p>
+                    ) : (
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => handleTradeRequest(trade.id)}>
                             Trade Now
                         </button>
+                    )}
                     </div>
                 </div>
             ))

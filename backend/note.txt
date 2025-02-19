@@ -12,3 +12,4 @@ NextJS,
 shadcn,
 axios,
 npm install react-icons
+npm install react-spinners

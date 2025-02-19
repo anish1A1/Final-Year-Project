@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import CartSerializer, CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer
+from .serializers import CartSerializer, CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer, TradeRequestSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner, IsProductOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Cart, Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade
+from .models import Cart, Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest
 from rest_framework import serializers
 
 # Create your views here.
@@ -272,13 +272,23 @@ class TradeAllListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     
 
-# class TradeRequestListCreateView(generics.ListCreateAPIView):
-#     queryset = TradeRequest.objects.all()
-#     serializer_class = TradeRequestSerializer
-#     permission_classes = [IsAuthenticated]
+class TradeRequestListCreateView(generics.ListCreateAPIView):
+    queryset = TradeRequest.objects.all()
+    serializer_class = TradeRequestSerializer
+    permission_classes = [IsAuthenticated]
 
-#     def get_queryset(self):
-#         return TradeRequest.objects.filter(trade__user=self.request.user)
+    def get_queryset(self):
+        return TradeRequest.objects.filter(trade__user=self.request.user)
 
-#     def get_serializer_context(self):
-#         return {'request': self.request}
+    def get_serializer_context(self):
+        return {'request': self.request}
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        trade = serializer.validated_data.get("trade")
+
+        # Check if the user has already requested this trade
+        if TradeRequest.objects.filter(user=user, trade=trade).exists():
+            raise serializers.ValidationError("You have already made a trade request for this product.")
+
+        serializer.save(user=user)

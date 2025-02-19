@@ -296,9 +296,9 @@ export const ProductProvider = ({children}) => {
 
             console.log(`Data is ${data}`);
           
-            for (const da of data) {
-                console.log(`${da}`)
-            }
+            // for (const da of data) {
+            //     console.log(`${da}`)
+            // }
             const response = await axios.post('/api/trades/', data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -338,9 +338,9 @@ export const ProductProvider = ({children}) => {
         }
     }
 
-    const fetchTradeRequests = async (tradeId) => {
+    const fetchTradeRequests = async () => {
         try {
-            const response = await axios.get(`/api/trade-requests/?trade=${tradeId}`, {
+            const response = await axios.get(`/api/trade-requests/`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -361,6 +361,14 @@ export const ProductProvider = ({children}) => {
             Object.keys(formData).forEach((key) => {
                 data.append(key, formData[key]);
             });
+
+            if(user){
+                data.append('user', user.id);
+            }
+
+            for (const da of data) {
+                console.log(`${da}`)
+            }
 
             const response = await axios.post('/api/trade-requests/', data, {
                 headers: {

@@ -232,8 +232,14 @@ class TradeSerializer(serializers.ModelSerializer):
    
    
 
-class TradeRequestListCreateSerializer(serializers.ModelSerializer):
+class TradeRequestSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     class Meta:
         model = TradeRequest
         fields = '__all__'
+        
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+    
+    
