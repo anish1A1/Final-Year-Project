@@ -292,3 +292,22 @@ class TradeRequestListCreateView(generics.ListCreateAPIView):
             raise serializers.ValidationError("You have already made a trade request for this product.")
 
         serializer.save(user=user)
+
+
+
+class TradeRequestOwnersListView(generics.ListAPIView):
+    queryset = TradeRequest.objects.all()
+    serializer_class = TradeRequestSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return TradeRequest.objects.filter(trade__product__user=self.request.user)
+    
+class TradeRequestOwnersUpdateView(generics.UpdateAPIView):
+    queryset = TradeRequest.objects.all()
+    serializer_class = TradeRequestSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
