@@ -23,9 +23,9 @@ const ProductDashboard = () => {
                </div>
 
                <Link href='productDashboard/tradeProductList' className='btn btn-primary p-6 bg-slate-600 rounded'>View Trades</Link>
-               <Link href='productDashboard/requestedTrades' className='btn btn-primary p-6 bg-slate-600 rounded'>View Trades</Link>
+               <Link href='productDashboard/requestedTrades' className='btn btn-primary p-6 bg-slate-600 rounded'>Your Requested Trades</Link>
 
-
+                <Link href='productDashboard/tradeOwnerRequests' className='btn btn-primary p-6 bg-slate-600 rounded'>View Trades Requests</Link>
 
     </div>
     </PrivateRoute>

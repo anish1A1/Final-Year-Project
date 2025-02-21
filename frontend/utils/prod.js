@@ -15,6 +15,7 @@ export const ProductProvider = ({children}) => {
     const [trades, setTrades] = useState([]);
     const [tradeRequests, setTradeRequests] = useState([]);
     const[allTrades, setAllTrades] = useState([]);
+    const [tradeRequestsOfOwner, setTradeRequestsOfOwner] = useState([]);
 
     const {user} = useContext(AuthContext);
 
@@ -388,6 +389,47 @@ export const ProductProvider = ({children}) => {
     };
 
 
+    const getTradeRequestsFromUsers = async () => {
+        try {
+            const response = await axios.get('/api/trade-request-owners/', {
+                headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            if (response.data.length > 0) {
+                setTradeRequestsOfOwner(response.data);
+            }
+            console.log("Trade Requests Data:", response.data);
+
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Getting Trade's Request: ${errorMessage}`);
+            throw error.response?.data;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const updateTradeRequestStatus = async (id, status) => {
+        try {
+            const response = await axios.patch(`/api/trade-request-owners/${id}/`, {
+                status,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            setTradeRequestsOfOwner((prevRequest) => prevRequest.map(item => item.id === id ? response.data : item));
+            return { status: 'success', message: 'Updated the user request' };
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error updating Trade's Request: ${errorMessage}`);
+            throw error.response?.data;   // Throw the error to be caught in the component
+        }
+    } 
+
+
 
 
     const prodContextValue = useMemo(() => ({
@@ -400,6 +442,7 @@ export const ProductProvider = ({children}) => {
         trades,
         tradeRequests,
         allTrades,
+        tradeRequestsOfOwner,
         fetchProductByOwner,
         fetchProduct,
         createProduct,
@@ -416,8 +459,10 @@ export const ProductProvider = ({children}) => {
         fetchTradeRequests,
         createTradeRequest,
         fetchAllTrades,
+        getTradeRequestsFromUsers,
+        updateTradeRequestStatus,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category, cartItem, trades, allTrades, tradeRequests, ownerProducts, loading, error]); 
+    }), [products, category, cartItem, trades, allTrades, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 

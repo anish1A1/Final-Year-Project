@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView, CategoryView, ProductListCreateView, CategoryView, ProductOwnerListView,ProductListUpdateDeleteView, TradeListCreateView, TradeRequestListCreateView
-from .views import CartListCreateView, CartDetailView, TradeAllListView
+from .views import CartListCreateView, CartDetailView, TradeAllListView, TradeRequestOwnersUpdateView, TradeRequestOwnersListView
 urlpatterns = [
     path('equipment/', EquipmentListCreateView.as_view(), name='equipment-list-create'),
     path('equipment/<int:pk>/', EquipmentDetailView.as_view(), name='equipment-detail'),
@@ -20,5 +20,8 @@ urlpatterns = [
     path('trades/', TradeListCreateView.as_view(), name='trade-list-create'),
     path('trades-all/', TradeAllListView.as_view(), name='trade-all-list-view'),
     path('trade-requests/', TradeRequestListCreateView.as_view(), name='trade-request-list-create'),
+    
+    path('trade-request-owners/', TradeRequestOwnersListView.as_view(), name='trade-requests-for-owners-list-view'),
+    path('trade-request-owners/<int:pk>/', TradeRequestOwnersUpdateView.as_view(), name='trade-request-owners-update'),
        
 ]

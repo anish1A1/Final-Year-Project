@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner, IsProductOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Cart, Category, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest
+from .models import Cart, Category, ConfirmedTrade, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest
 from rest_framework import serializers
 
 # Create your views here.
@@ -311,3 +311,17 @@ class TradeRequestOwnersUpdateView(generics.UpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+    
+    
+    def perform_update(self, serializer):
+        instance = serializer.instance  # Get the existing TradeRequest instance
+        previous_status = instance.status  # Store the old status before update
+        serializer.save()  # Update the TradeRequest instance
+        
+        # If status changed to 'accepted' and wasn't already accepted
+        if previous_status != 'accepted' and instance.status == 'accepted':
+            # Check if a ConfirmedTrade already exists to prevent duplicates
+            if not ConfirmedTrade.objects.filter(trade_request=instance).exists():
+                ConfirmedTrade.objects.create(trade_request=instance)
+    
+    

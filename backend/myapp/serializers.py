@@ -233,6 +233,7 @@ class TradeSerializer(serializers.ModelSerializer):
    
 
 class TradeRequestSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField();
     user = serializers.ReadOnlyField(source='user.username')
     trade = TradeSerializer(read_only=True)
     trade_id = serializers.PrimaryKeyRelatedField(queryset=Trade.objects.all(), 
@@ -240,7 +241,7 @@ class TradeRequestSerializer(serializers.ModelSerializer):
     total_cost = serializers.SerializerMethodField();
     class Meta:
         model = TradeRequest
-        fields = ['trade', 'user', 'trade_id', 'delivery_location', 'product_name', 
+        fields = ['id', 'trade', 'user', 'trade_id', 'delivery_location', 'product_name', 
                   'status', 'note', 'image', 'price', 'quantity', 'total_cost']
         
     def create(self, validated_data):
