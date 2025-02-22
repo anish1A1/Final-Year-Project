@@ -344,11 +344,6 @@ class ConfirmedTradeUpdateByOwnerView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
 
     def partial_update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        
-        # Ensure only the owner of the trade can update it
-        if instance.trade_request.trade.product.user != request.user:
-            return Response({"error": "You do not have permission to update this trade."}, status=status.HTTP_403_FORBIDDEN)
         
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
