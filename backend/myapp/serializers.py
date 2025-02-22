@@ -251,4 +251,14 @@ class TradeRequestSerializer(serializers.ModelSerializer):
     def get_total_cost(self, obj):
         return obj.price * obj.quantity
     
-    
+
+class ConfirmedTradeSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField();
+    trade_request = TradeSerializer(read_only=True)
+                                    
+    class Meta:
+        model = ConfirmedTrade
+        fields = ['id', 'trade_request', 'created_at', 'updated_at', 'status', 'item_received']
+        
+        
+        

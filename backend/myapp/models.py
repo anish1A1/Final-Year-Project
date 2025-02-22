@@ -271,5 +271,7 @@ class ConfirmedTrade(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=DeliveryStatusChoices.choices, default=DeliveryStatusChoices.PROCESSING)
+    item_location = models.CharField(max_length=255, default='Not available')
+    item_received = models.BooleanField(default=False)
     def __str__(self):
         return f"Trade between {self.trade_request.user.username} and {self.trade_request.trade.user.username}"

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import CartSerializer, CategorySerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer, TradeRequestSerializer
+from .serializers import CartSerializer, CategorySerializer, ConfirmedTradeSerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer, TradeRequestSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -278,7 +278,7 @@ class TradeRequestListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return TradeRequest.objects.filter(trade__user=self.request.user)
+        return TradeRequest.objects.filter(user=self.request.user)
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -324,4 +324,35 @@ class TradeRequestOwnersUpdateView(generics.UpdateAPIView):
             if not ConfirmedTrade.objects.filter(trade_request=instance).exists():
                 ConfirmedTrade.objects.create(trade_request=instance)
     
+    
+
+class ConfirmedTradeListOfOwnerView(generics.ListAPIView):
+    queryset = ConfirmedTrade.objects.all()
+    serializer_class = ConfirmedTradeSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return ConfirmedTrade.objects.filter(trade_request__trade__product__user=self.request.user)
+    
+class ConfirmedTradeUpdateByOwnerView(generics.UpdateAPIView):
+    queryset = ConfirmedTrade.objects.all()
+    serializer_class = ConfirmedTradeSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+    
+    
+
+
+class ConfirmedTradeListView(generics.ListAPIView):
+    queryset = ConfirmedTrade.objects.all()
+    serializer_class = ConfirmedTradeSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return ConfirmedTrade.objects.filter(trade_request__user=self.request.user)
+    
+
     
