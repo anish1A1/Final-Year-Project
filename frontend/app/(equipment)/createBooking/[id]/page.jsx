@@ -1,20 +1,23 @@
 "use client";
-import React, {useContext, useEffect, useState} from 'react';
-import {useRouter, useParams} from "next/navigation";
-import styles from '../../../../styles/equipment.module.css';
-import { EquipmentContext } from '../../../../utils/equip';
+import React, { useContext, useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { EquipmentContext } from "../../../../utils/equip";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const CreateEquipmentBooking = () => {
-    const { id } = useParams();  // Get the equipment ID from the URL
+    const { id } = useParams();
     const [formData, setFormData] = useState({
         start_date: "",
         end_date: "",
         delivery_location: "",
         quantity: 0,
-        equipment: id,  // Set the initial equipment ID
+        equipment: id,
     });
     const [maxQuantity, setMaxQuantity] = useState(0);
-
     const router = useRouter();
     const { createEquipmentBookings, fetchEquipment, equipment } = useContext(EquipmentContext);
 
@@ -36,50 +39,54 @@ const CreateEquipmentBooking = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await createEquipmentBookings(formData, router);
+            toast.success("Booking created successfully!");
         } catch (error) {
-            console.error('Error:', error);
+            toast.error("Failed to create booking");
         }
     };
 
     return (
-        <div className={styles.container}>
-            <h1>Create Equipment Booking</h1>
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.formGroup}>
-                    <label>Start Date:</label>
-                    <input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                    <label>End Date:</label>
-                    <input type="date" name="end_date" value={formData.end_date} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Delivery Location:</label>
-                    <input type="text" name="delivery_location" value={formData.delivery_location} onChange={handleChange} required />
-                </div>
-                <div className={styles.formGroup}>
-                    <label>Quantity (Max: {maxQuantity}):</label>
-                    <input
-                        type="number"
-                        name="quantity"
-                        value={formData.quantity}
-                        onChange={handleChange}
-                        required
-                        max={maxQuantity}
-                    />
-                </div>
-                <button type="submit" className={styles.submitButton}>Create Booking</button>
-            </form>
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+            <Card className="w-full max-w-lg shadow-lg p-6 bg-white rounded-xl">
+                <CardHeader>
+                    <CardTitle className="text-xl font-semibold text-center">Create Equipment Booking</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <Label>Start Date:</Label>
+                            <Input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required />
+                        </div>
+                        <div>
+                            <Label>End Date:</Label>
+                            <Input type="date" name="end_date" value={formData.end_date} onChange={handleChange} required />
+                        </div>
+                        <div>
+                            <Label>Delivery Location:</Label>
+                            <Input type="text" name="delivery_location" value={formData.delivery_location} onChange={handleChange} required />
+                        </div>
+                        <div>
+                            <Label>Quantity (Max: {maxQuantity}):</Label>
+                            <Input
+                                type="number"
+                                name="quantity"
+                                value={formData.quantity}
+                                onChange={handleChange}
+                                required
+                                max={maxQuantity}
+                            />
+                        </div>
+                        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Create Booking</Button>
+                    </form>
+                </CardContent>
+            </Card>
         </div>
     );
 };

@@ -16,4 +16,5 @@ npm install react-spinners
 npm install @nextui-org/react              //found this package id deprecated so used this npm install @heroui/react
 npm install @heroui/react
 
+npm install sonner                 // For showing Toast in the App. (Messages)
 

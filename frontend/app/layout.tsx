@@ -1,9 +1,11 @@
+// "use client";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "../utils/auth";
 import { EquipProvider } from "../utils/equip";
 import { ProductProvider } from "../utils/prod";
 
+import { Toaster } from "sonner";
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
 
@@ -42,7 +44,9 @@ export default function RootLayout({
             <ProductProvider>
               <Navbar />
                   <main className="flex-grow">
-                    {children}
+                  <Toaster position="top-center" />
+            {children}
+                
                   </main>
                 </ProductProvider>
               </EquipProvider>

@@ -45,11 +45,11 @@ const ManageEquipment = () => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className='mt-36 text-center font-semibold'>Loading.....</div>;
     }
 
     if (!combinedBookings || combinedBookings.length === 0) {
-        return <div>No equipment bookings available.</div>;
+        return <div className='mt-36 text-center font-semibold'>No equipment bookings available.</div>;
     }
 
 
