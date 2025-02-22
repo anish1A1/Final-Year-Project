@@ -6,6 +6,7 @@ import ManageEquipment from './dashboardEquipment/ManageEquipment/page';
 import ToReceiveItem from './dashboardEquipment/ToReceiveItem/page';
 
 import Link from 'next/link';
+import GetConfirmedTradesByOwner from '../../components/Deliveries/GetConfirmedTradesByOwner';
 
 const DashboardPage = () => {
   return (
@@ -33,6 +34,12 @@ const DashboardPage = () => {
         <Link href="/dashboards/dashboardEquipment/ToReceiveItem" className='btn btn-primary p-6 bg-slate-600 rounded'>
           Go To page for Receiving Item
         </Link>
+
+        <div className="mt-8">
+          <p>Your Deliveries</p>
+          <GetConfirmedTradesByOwner />
+
+        </div>
       </div>
     </PrivateRoute>
   );

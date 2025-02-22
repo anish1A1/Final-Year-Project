@@ -17,6 +17,8 @@ export const ProductProvider = ({children}) => {
     const[allTrades, setAllTrades] = useState([]);
     const [tradeRequestsOfOwner, setTradeRequestsOfOwner] = useState([]);
 
+    const [confirmedTrades, setConfirmedTrades] = useState([]);
+    const [confirmedTradesOfOwner, setConfirmedTradesOfOwner] = useState([]);
     const {user} = useContext(AuthContext);
 
 
@@ -427,7 +429,95 @@ export const ProductProvider = ({children}) => {
             console.error(`Error updating Trade's Request: ${errorMessage}`);
             throw error.response?.data;   // Throw the error to be caught in the component
         }
-    } 
+    };
+    
+
+
+    // All the Confirmed Trades are available here
+    const fetchConfirmedTradesByOwner = async () => {
+        try {
+            const response = await axios.get('/api/confirmed-trades-by-owners/', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            if (response.data.length > 0) {
+                setConfirmedTradesOfOwner(response.data);
+            }
+            console.log('Fetched Confirmed Trades By Owner:', response.data);
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Fetching Confirmed Trade's Request: ${errorMessage}`);
+            throw error.response?.data;   // Throw the error to be caught in the component
+        }finally{
+            setLoading(false);
+        }
+    };
+
+
+    const updateConfirmedTrade = async (id, data) => {
+        try {
+            const response = await axios.patch(`/api/confirmed-trades-by-owners/update/${id}/`, data, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            setConfirmedTradesOfOwner((prevRequest) => prevRequest.map(item => item.id === id ? response.data : item));
+            return { status: 'success', message: 'Updated the user request' };
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Updating Confirmed Trade's Request: ${errorMessage}`);
+            throw error.response?.data;   // Throw the error to be caught in the component
+        }
+
+    };
+
+    //for Normal User
+
+    const fetchAllConfirmedTradesOfUser = async () => {
+        try {
+            const response = await axios.get('/api/confirmed-trades/', {
+                headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            if (response.data.length > 0) {
+                setConfirmedTrades(response.data);
+            };
+
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Fetching Confirmed Trade's Request: ${errorMessage}`);
+            throw error.response?.data; 
+        }
+        finally{
+            setLoading(false);
+        }
+    };
+
+
+    const updateConfirmedTradeByUser = async (id, data) => {
+        try {
+            const response = await axios.patch('/api/confirmed-trades/update/${id}/', data, {
+                headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+
+                },
+            });
+            setConfirmedTrades((prevRequest) => prevRequest.map(item => item.id === id ? response.data : item));
+            return { status: 'success', message: 'Updated the user request' };
+            
+        }catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Updating Confirmed Trade's Request By User: ${errorMessage}`);
+            throw error.response?.data; 
+        }
+    };
+
+
+
+    
 
 
 
@@ -443,6 +533,8 @@ export const ProductProvider = ({children}) => {
         tradeRequests,
         allTrades,
         tradeRequestsOfOwner,
+        confirmedTradesOfOwner,
+        confirmedTrades,
         fetchProductByOwner,
         fetchProduct,
         createProduct,
@@ -461,8 +553,13 @@ export const ProductProvider = ({children}) => {
         fetchAllTrades,
         getTradeRequestsFromUsers,
         updateTradeRequestStatus,
+        fetchConfirmedTradesByOwner,
+        updateConfirmedTrade,
+        fetchAllConfirmedTradesOfUser,
+        updateConfirmedTradeByUser,
+        
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category, cartItem, trades, allTrades, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
+    }), [products, category, cartItem, trades, allTrades, confirmedTrades, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 

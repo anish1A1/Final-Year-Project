@@ -254,11 +254,13 @@ class TradeRequestSerializer(serializers.ModelSerializer):
 
 class ConfirmedTradeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField();
-    trade_request = TradeSerializer(read_only=True)
+    trade_request_id = serializers.PrimaryKeyRelatedField(queryset=TradeRequest.objects.all(), 
+                                               write_only=True, source='trade_request')
+    trade_request =TradeRequestSerializer(read_only=True);
                                     
     class Meta:
         model = ConfirmedTrade
-        fields = ['id', 'trade_request', 'created_at', 'updated_at', 'status', 'item_received']
+        fields = ['id', 'trade_request', 'trade_request_id', 'created_at', 'updated_at', 'status', 'item_received', 'item_location']
         
         
         

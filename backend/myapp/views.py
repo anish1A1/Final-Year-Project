@@ -325,8 +325,11 @@ class TradeRequestOwnersUpdateView(generics.UpdateAPIView):
                 ConfirmedTrade.objects.create(trade_request=instance)
     
     
+    
+    
+    
 
-class ConfirmedTradeListOfOwnerView(generics.ListAPIView):
+class ConfirmedTradeListByOwnerView(generics.ListAPIView):
     queryset = ConfirmedTrade.objects.all()
     serializer_class = ConfirmedTradeSerializer
     permission_classes = [IsAuthenticated]
@@ -334,16 +337,22 @@ class ConfirmedTradeListOfOwnerView(generics.ListAPIView):
     def get_queryset(self):
         return ConfirmedTrade.objects.filter(trade_request__trade__product__user=self.request.user)
     
+    
 class ConfirmedTradeUpdateByOwnerView(generics.UpdateAPIView):
     queryset = ConfirmedTrade.objects.all()
     serializer_class = ConfirmedTradeSerializer
     permission_classes = [IsAuthenticated]
-    
+
     def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        
+        # Ensure only the owner of the trade can update it
+        if instance.trade_request.trade.product.user != request.user:
+            return Response({"error": "You do not have permission to update this trade."}, status=status.HTTP_403_FORBIDDEN)
+        
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
-    
-    
+
 
 
 class ConfirmedTradeListView(generics.ListAPIView):
@@ -355,4 +364,11 @@ class ConfirmedTradeListView(generics.ListAPIView):
         return ConfirmedTrade.objects.filter(trade_request__user=self.request.user)
     
 
+class ConfirmedTradeUpdateByUser(generics.UpdateAPIView):
+    queryset = ConfirmedTrade.objects.all()
+    serializer_class = ConfirmedTradeSerializer
+    permission_classes = [IsAuthenticated]
     
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
