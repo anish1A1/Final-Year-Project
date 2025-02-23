@@ -1,99 +1,111 @@
 "use client";
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-import styles from '../../../styles/equipment.module.css';
-import { EquipmentContext } from '../../../utils/equip';
-import { AuthContext } from "../../../utils/auth";
-
+import { EquipmentContext } from "../../../utils/equip";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const CreateEquipment = () => {
-    const [formData, SetFormData] = useState({
-        name: "",
-        description: "",
-        image: null,
-        availability_status: true,
-        quantity: 0,
-        per_day_rate: 0,
-        user_manual: null,
-        delivery_charge: 0,
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    image: null,
+    availability_status: true,
+    quantity: 0,
+    per_day_rate: 0,
+    user_manual: null,
+    delivery_charge: 0,
+  });
+  const { createEquipment } = useContext(EquipmentContext);
+  const router = useRouter();
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === "checkbox" ? checked : value,
     });
-    const { createEquipment } = useContext(EquipmentContext);  // Use useContext to access the context values
-   // const { user } = useContext(AuthContext);   // Since we also need to pass the user as it is required in the model
-    const router = useRouter();  
+  };
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        SetFormData({
-            ...formData,
-            [name]: type === "checkbox" ? checked : value,
-        });
-    };
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: files[0],
+    });
+  };
 
-    const handleFileChange = (e) => {
-        const { name, files } = e.target;
-        SetFormData({
-            ...formData,
-            [name]: files[0],
-        });
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createEquipment(formData, router);
+      toast.success("Equipment created successfully!");
+    } catch (error) {
+      toast.error("Failed to create equipment");
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await createEquipment(formData, router);  // Use createEquipment from the context
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 mt-10">
+      <Card className="w-full max-w-2xl shadow-lg rounded-lg bg-white p-6">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-center">Create Equipment</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div>
+              <Label htmlFor="name">Equipment Name</Label>
+              <Input id="name" type="text" name="name" placeholder="Enter name" value={formData.name} onChange={handleChange} required />
+            </div>
 
-    return (
-        <div className={styles.container}>
-            <h1>Create Equipment</h1>
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.formGroup}>
-                    <label>Name:</label>
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5' required />
-                </div>
+            <div>
+              <Label htmlFor="description">Description</Label>
+              <Textarea id="description" name="description" placeholder="Enter description" value={formData.description} onChange={handleChange} required />
+            </div>
 
-                <div className={styles.formGroup}>
-                    <label>Description:</label>
-                    <textarea name="description" value={formData.description} onChange={handleChange} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5' required />
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input id="quantity" type="number" name="quantity" placeholder="Enter quantity" value={formData.quantity} onChange={handleChange} required />
+              </div>
+              <div>
+                <Label htmlFor="per_day_rate">Per Day Rate</Label>
+                <Input id="per_day_rate" type="number" name="per_day_rate" placeholder="Enter rate" value={formData.per_day_rate} onChange={handleChange} required />
+              </div>
+            </div>
 
-                <div className={styles.formGroup}>
-                    <label>Image:</label>
-                    <input type="file" name="image" onChange={handleFileChange} className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5' />
-                </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="delivery_charge">Delivery Charge</Label>
+                <Input id="delivery_charge" type="number" name="delivery_charge" placeholder="Enter charge" value={formData.delivery_charge} onChange={handleChange} required />
+              </div>
+              <div className="flex items-center space-x-2 mt-6">
+                <Switch id="availability_status" checked={formData.availability_status} onCheckedChange={(checked) => setFormData({ ...formData, availability_status: checked })} />
+                <Label htmlFor="availability_status">Available</Label>
+              </div>
+            </div>
 
-                <div className={styles.formGroup}>
-                    <label>Availability Status:</label>
-                    <input type="checkbox" name="availability_status" checked={formData.availability_status} onChange={handleChange} />
-                </div>
+            <div>
+              <Label htmlFor="image">Upload Image</Label>
+              <Input id="image" type="file" name="image" onChange={handleFileChange} />
+            </div>
 
-                <div className={styles.formGroup}>
-                    <label>Quantity:</label>
-                    <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
-                </div>
+            <div>
+              <Label htmlFor="user_manual">Upload User Manual</Label>
+              <Input id="user_manual" type="file" name="user_manual" onChange={handleFileChange} />
+            </div>
 
-                <div className={styles.formGroup}>
-                    <label>Per Day Rate:</label>
-                    <input type="number" step="1" name="per_day_rate" value={formData.per_day_rate} onChange={handleChange} required />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label>User Manual:</label>
-                    <input type="file" name="user_manual" onChange={handleFileChange} />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label>Delivery Charge:</label>
-                    <input type="number" step="1" name="delivery_charge" value={formData.delivery_charge} onChange={handleChange} required />
-                </div>
-
-                <button type="submit" className={styles.submitButton}>Create Equipment</button>   
-            </form>
-        </div>
-    );
+            <Button type="submit" className="w-full">Create Equipment</Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
 
 export default CreateEquipment;

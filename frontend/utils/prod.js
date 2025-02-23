@@ -482,9 +482,9 @@ export const ProductProvider = ({children}) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
             });
-            if (response.data.length > 0) {
+          
                 setConfirmedTrades(response.data);
-            };
+          
 
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
