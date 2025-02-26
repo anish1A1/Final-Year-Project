@@ -28,5 +28,5 @@ urlpatterns = [
     path('confirmed-trades/', ConfirmedTradeListView.as_view(), name='confirmed-trades-list-view'),
     path('confirmed-trades-by-owners/update/<int:pk>/', ConfirmedTradeUpdateByOwnerView.as_view(), name='confirmed-trades-update-by-owner'),
     path('confirmed-trades-by-owners/', ConfirmedTradeListByOwnerView.as_view(), name='confirmed-trades-for-owners-list-view'),
-    path('confirmed-trades-by-owners/update/<int:pk>/', ConfirmedTradeUpdateByUser.as_view(), name='confirmed-trades-update-by-user'),   
+    path('confirmed-trades-by-users/update/<int:pk>/', ConfirmedTradeUpdateByUser.as_view(), name='confirmed-trades-update-by-user'),   
 ]

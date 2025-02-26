@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RotateCcw, Package, MapPin, CheckCircle, Truck } from "lucide-react";
+import { RotateCcw, Package, MapPin, CheckCircle, Truck, User } from "lucide-react";
 
 const GetConfirmedTradesByOwner = () => {
   const {
@@ -46,7 +46,9 @@ const GetConfirmedTradesByOwner = () => {
     setLocationInputs((prev) => ({
       ...prev,
       [id]: value,
-    }));
+    })
+
+    );
   };
 
   const saveLocation = async (id) => {
@@ -54,10 +56,12 @@ const GetConfirmedTradesByOwner = () => {
     setSavingLocationId(id);
     try {
       await updateConfirmedTrade(id, { item_location: locationInputs[id] });
+
     } catch (error) {
       console.error("Failed to update location:", error);
     } finally {
       setSavingLocationId(null);
+    //   setLocationInputs(null); 
     }
   };
 
@@ -92,6 +96,11 @@ const GetConfirmedTradesByOwner = () => {
                   <strong>Delivery Location:</strong> {trade.trade_request.delivery_location}
                 </p>
 
+                <p className="text-gray-600 flex items-center gap-2">
+                    <User className="w-4 h-4 text-green-600" />
+                    <strong>Customer Name:</strong> {trade.trade_request.user.charAt(0).toUpperCase() + trade.trade_request.user.slice(1)}
+                </p>
+
                 {/* Trade Item Location (Editable) */}
                 <div className="mt-2">
                   <p className="text-gray-600 flex items-center gap-2">
@@ -99,21 +108,29 @@ const GetConfirmedTradesByOwner = () => {
                     <strong>Trade Item Location:</strong> {trade.item_location || "Not available"}
                   </p>
                   <div className="flex items-center gap-2 mt-2">
-                    <Input
-                      type="text"
-                      placeholder="Enter new location"
-                      value={locationInputs[trade.id] || ""}
-                      onChange={(e) => handleLocationChange(trade.id, e.target.value)}
-                      className="w-full"
-                    />
-                    <Button
-                      onClick={() => saveLocation(trade.id)}
-                      disabled={savingLocationId === trade.id}
-                      className="bg-blue-500 text-white"
-                    >
-                      {savingLocationId === trade.id ? "Saving..." : "Save"}
-                    </Button>
+                    {trade.item_received === false ? (
+                        <>
+                            <Input
+                            type="text"
+                            placeholder="Enter new location"
+                            value={locationInputs[trade.id] || ""}
+                            onChange={(e) => handleLocationChange(trade.id, e.target.value)}
+                            className="w-full"
+                          />
+                          <Button
+                            onClick={() => saveLocation(trade.id)}
+                            disabled={savingLocationId === trade.id}
+                            className="bg-blue-500 text-white"
+                          >
+                            {savingLocationId === trade.id ? "Saving..." : "Save"}
+                          </Button>
+                          </>
+                    ) : (
+                        null
+                    ) }
+                    
                   </div>
+
                 </div>
 
                 {/* Item Received Status */}
@@ -148,7 +165,9 @@ const GetConfirmedTradesByOwner = () => {
 
                 {/* Status Update Dropdown */}
                 <div className="mt-4">
-                  <Select
+                  {trade.item_received === false ? (
+                    <>
+                    <Select
                     defaultValue={trade.status}
                     onValueChange={(newStatus) => handleStatusChange(trade.id, newStatus)}
                   >
@@ -161,6 +180,8 @@ const GetConfirmedTradesByOwner = () => {
                       <SelectItem value="delivered">Delivered</SelectItem>
                     </SelectContent>
                   </Select>
+                    </>
+                  ) : null}
                 </div>
 
                 {/* Updating Message */}
@@ -171,6 +192,7 @@ const GetConfirmedTradesByOwner = () => {
                   <Button variant="outline" className="text-blue-600">
                     View Details
                   </Button>
+                  {trade.item_received === false ? (
                   <Button
                     variant="destructive"
                     className="text-white"
@@ -178,6 +200,8 @@ const GetConfirmedTradesByOwner = () => {
                   >
                     Cancel Trade
                   </Button>
+
+                  ) : null}
                 </div>
               </CardContent>
             </Card>

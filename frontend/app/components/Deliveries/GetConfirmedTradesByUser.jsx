@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useContext } from "react";
-import { ProductContext } from "../../../utils/prod";
+import { ProductContext  } from "../../../utils/prod";
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ const GetConfirmedTradesByUser = () => {
   const {
     fetchAllConfirmedTradesOfUser,
     confirmedTrades,
-    updateConfirmedTrade,
+    updateConfirmedTradeByUser,
     loading,
   } = useContext(ProductContext);
 
@@ -30,8 +30,8 @@ const GetConfirmedTradesByUser = () => {
   const handleItemReceivedChange = async (id, newValue) => {
     setUpdatingTradeId(id);
     try {
-      await updateConfirmedTrade(id, { item_received: newValue });
-
+      await updateConfirmedTradeByUser(id, { item_received: newValue });
+        // fetchAllConfirmedTradesOfUser();
       
     } catch (error) {
       console.error("Failed to update trade:", error);
@@ -83,12 +83,15 @@ const GetConfirmedTradesByUser = () => {
                       <CheckCircle className="w-4 h-4 text-yellow-500" />
                       <strong>Item Received:</strong>
                     </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <Switch
-                        checked={trade.item_received}
-                        onCheckedChange={(newValue) => handleItemReceivedChange(trade.id, newValue)}
-                        disabled={updatingTradeId === trade.id}
-                      />
+                    <div className="flex items-center gap-2 mt-2 pr-4">
+                        {trade.item_received === false ?(
+                            <Switch
+                              checked={trade.item_received}
+                              onCheckedChange={(newValue) => handleItemReceivedChange(trade.id, newValue)}
+                              disabled={updatingTradeId === trade.id}
+                            />
+
+                        ) : null}
                       <span>
                         {trade.item_received ? "Yes ✅" : "No ❌"}
                       </span>

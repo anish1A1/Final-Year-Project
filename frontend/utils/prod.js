@@ -499,7 +499,7 @@ export const ProductProvider = ({children}) => {
 
     const updateConfirmedTradeByUser = async (id, data) => {
         try {
-            const response = await axios.patch('/api/confirmed-trades/update/${id}/', data, {
+            const response = await axios.patch(`/api/confirmed-trades-by-users/update/${id}/`, data, {
                 headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
 
