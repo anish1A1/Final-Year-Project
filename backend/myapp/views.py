@@ -165,7 +165,8 @@ class EquipmentDeliveryUpdateView(generics.UpdateAPIView):
     queryset = EquipmentDelivery.objects.all()
     serializer_class = EquipmentDeliverySerializer
     permission_classes = [IsAuthenticated]
-    
+
+
 class EquipmentDeliveryReceiveListView(generics.ListAPIView):
     queryset = EquipmentDelivery.objects.all()
     serializer_class = EquipmentDeliverySerializer

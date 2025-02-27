@@ -141,7 +141,7 @@ class EquipmentDelivery(models.Model):
     status = models.CharField(max_length=50, choices=DeliveryStatusChoices.choices, default=DeliveryStatusChoices.PROCESSING)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    equipment_received = models.BooleanField(default=False)
     def __str__(self):
         return f"Delivery for Payment ID: {self.equipment_payment.id}, Status: {self.status}"
     

@@ -44,6 +44,11 @@ const CreateEquipmentBooking = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!user) {
+            toast.error(`You must be logged in to create a booking.`);
+            return;
+        }
+        
         try {
             await createEquipmentBookings(formData, router);
             toast.success("Booking created successfully!");

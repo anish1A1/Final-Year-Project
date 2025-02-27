@@ -38,6 +38,10 @@ const EquipmentList = () => {
   };
 
   const handleCreateBooking = (id) => {
+    if (!user) {
+        toast.error("You need to be logged in to create a booking.");
+        return;
+    }
     router.push(`/createBooking/${id}`);
   };
 
@@ -49,11 +53,11 @@ const EquipmentList = () => {
     <div className="container mx-auto px-4 py-10 mt-24">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Equipment List</h1>
-        {user && (
+        {user ? (
           <Link href="/createEquipment">
             <Button>Create Equipment</Button>
           </Link>
-        )}
+        ) : null}
       </div>
       <Separator className="mb-6" />
 
