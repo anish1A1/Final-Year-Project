@@ -12,6 +12,7 @@ export const ProductProvider = ({children}) => {
     const [ownerProducts, setOwnerProducts] = useState([]);
     const [category, setCategory] = useState([]);
     const [cartItem, setCartItem] = useState([]);
+    const [totalCartAmounts, setTotalCartAmounts] = useState([]);
     const [trades, setTrades] = useState([]);
     const [tradeRequests, setTradeRequests] = useState([]);
     const[allTrades, setAllTrades] = useState([]);
@@ -131,7 +132,9 @@ export const ProductProvider = ({children}) => {
     const getProductById = async (id) => {
         try {
             const response = await axios.get(`/api/product-list/${id}/`);
+            console.log(response.data);
             return response.data;
+
         } catch (error) {
             console.error(`Error fetching product by ID: ${error}`);
             throw error;
@@ -180,6 +183,8 @@ export const ProductProvider = ({children}) => {
                 },
             });
             if (response.data.length > 0) {
+            console.log(response.data);
+
                 setCartItem(response.data);
             }
         } catch (error) {
@@ -199,7 +204,7 @@ export const ProductProvider = ({children}) => {
             Object.keys(formData).forEach((key) => {
                 data.append(key, formData[key]);
             });
-
+            
             if (user) {
                 data.append('user', user.id);
             } else{
@@ -212,6 +217,7 @@ export const ProductProvider = ({children}) => {
                 'Authorization': `Bearer ${token}`,
                 },
             });
+            console.log(response.data);
             
             setCartItem((prevCart) => [...prevCart, response.data]);
             return { status: 'success', message: 'Product added to cart successfully!' };
@@ -224,10 +230,16 @@ export const ProductProvider = ({children}) => {
         }
     };
 
-    const updateCart = async (id, product_qty) => {
+    const updateCart = async (id, formData) => {
         try {
+            const data = new FormData();
+
+            Object.keys(formData).forEach((key) => {
+                data.append(key, formData[key]);
+            });
             const response = await axios.patch(`/api/cart/${id}/`, {
-                product_qty,
+
+                data
             }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -259,6 +271,27 @@ export const ProductProvider = ({children}) => {
             throw error.response?.data;  // Throw the error to be caught in the component
         }
     };
+
+
+    const totalCartAmount = async () => {
+        try {
+            const response = await axios.get(`/api/cart/total-cost/`, {
+                headers:{
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                }});
+            
+            setTotalCartAmounts(response.data);
+            console.log(response.data);
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error getting Total Cost from cart: ${errorMessage}`);
+            throw error.response?.data; 
+        } finally {
+            setLoading(false);
+        };
+    };
+
 
 
 
@@ -529,6 +562,7 @@ export const ProductProvider = ({children}) => {
         category,
         ownerProducts,
         cartItem,
+        totalCartAmounts,
         trades,
         tradeRequests,
         allTrades,
@@ -546,6 +580,7 @@ export const ProductProvider = ({children}) => {
         addToCart,
         updateCart,
         removeFromCart,
+        totalCartAmount,
         fetchTrades,
         createTrade,
         fetchTradeRequests,
@@ -559,7 +594,7 @@ export const ProductProvider = ({children}) => {
         updateConfirmedTradeByUser,
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category, cartItem, trades, allTrades, confirmedTrades, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
+    }), [products, category, cartItem, trades, allTrades, totalCartAmounts, confirmedTrades, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 
@@ -567,5 +602,4 @@ export const ProductProvider = ({children}) => {
         </ProductContext.Provider>
     );
 }
-
-export {ProductContext}
+export {ProductContext};

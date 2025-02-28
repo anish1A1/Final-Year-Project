@@ -3,25 +3,30 @@ import React, { useState, useEffect, useContext } from 'react';
 import { ProductContext } from '../../../utils/prod';
 
 const CartPage = () => {
-    const { fetchCart, updateCart, removeFromCart, loading, cartItem } = useContext(ProductContext);
+    const { fetchCart, updateCart, removeFromCart, totalCartAmount, loading, cartItem } = useContext(ProductContext);
     const [quantity, setQuantity] = useState({});
+    const [selectedItems, setSelectedItems] = useState({});
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
             await fetchCart();
+            await totalCartAmount();
         };
         fetchData();
     }, []);
 
     useEffect(() => {
         const initialQuantities = {};
+        const initialSelections = {};
         if (cartItem) {
             cartItem.forEach(item => {
                 initialQuantities[item.id] = item.product_qty;
+                initialSelections[item.id] = item.is_selected;
             });
             setQuantity(initialQuantities);
+            setSelectedItems(initialSelections);
         }
     }, [cartItem]);
 
@@ -35,11 +40,15 @@ const CartPage = () => {
     const handleUpdateCart = async (id) => {
         const product_qty = quantity[id];
         try {
-            const response =await updateCart(id, product_qty);
+            const data = {
+                product_id: id,
+                product_qty: product_qty,
+                is_selected: selectedItems[id]
+            };
+            const response = await updateCart(id, data);
             setSuccessMessage(response.message);
         } catch (error) {
             setError(error.product_qty ? error.product_qty[0] : 'Error updating quantity in cart.');
-
             console.error('Error updating cart:', error);
         }
     };
@@ -52,6 +61,13 @@ const CartPage = () => {
             setError(error.message);
             console.error('Error removing item from cart:', error);
         }
+    };
+
+    const toggleSelection = (id) => {
+        setSelectedItems(prevSelections => ({
+            ...prevSelections,
+            [id]: !prevSelections[id]
+        }));
     };
 
     if (loading) {
@@ -74,23 +90,20 @@ const CartPage = () => {
                             </div>
                         </div>
                         <div className="flex items-center">
-
-                        <label htmlFor={`quantity-${item.id}`} className="mr-2">Quantity:</label>
+                            <label htmlFor={`quantity-${item.id}`} className="mr-2">Quantity:</label>
                             <input
                                 id={`quantity-${item.id}`}
                                 type="number"
-                                // value={quantity[item.id] || 1}
                                 value={item.product_qty}
-                                // onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                                onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
                                 className="w-16 p-2 border rounded"
                                 min="1"
                                 max={item.product.quantity}
                                 disabled
                             />
-
-                            <label htmlFor={`quantity-${item.id}`} className="mr-2">Update:</label>
+                            <label htmlFor={`quantity-update-${item.id}`} className="mr-2">Update:</label>
                             <input
-                                id={`quantity-${item.id}`}
+                                id={`quantity-update-${item.id}`}
                                 type="number"
                                 value={quantity[item.id] || 1}
                                 onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
@@ -104,13 +117,20 @@ const CartPage = () => {
                             >
                                 Update
                             </button>
+                            <p>Total Cost {item.total_cost} </p>
                         </div>
-                        <div className="flex items-center justify-end">
+                        <div className="flex items-center justify-end gap-4">
                             <button
                                 onClick={() => handleRemoveFromCart(item.id)}
                                 className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700"
                             >
                                 Remove
+                            </button>
+                            <button
+                                onClick={() => toggleSelection(item.id)}
+                                className={`py-2 px-4 rounded ${selectedItems[item.id] ? 'bg-green-500 hover:bg-green-700' : 'bg-gray-500 hover:bg-gray-700'} text-white`}
+                            >
+                                {selectedItems[item.id] ? 'Deselect' : 'Select'}
                             </button>
                         </div>
                     </div>

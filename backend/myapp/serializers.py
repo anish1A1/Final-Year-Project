@@ -154,7 +154,8 @@ class ProductSerializer(serializers.ModelSerializer):
     product_owner = serializers.SerializerMethodField();
     class Meta:
         model = Product
-        fields = ['category', 'category_id', 'user', 'name', 'id', 'slug', 'product_image','small_description', 'quantity', 'description', 'original_price', 'selling_price', 'tag', 'delivery_sell_charge', 'created_at', 'total_time','product_owner' ]
+        fields = ['category', 'category_id', 'user', 'name', 'id', 'slug', 
+                  'product_image','small_description', 'quantity', 'description', 'original_price', 'selling_price', 'tag', 'delivery_sell_charge', 'created_at', 'total_time','product_owner' ]
     
     def get_total_time(self, obj):
         return obj.total_time
@@ -168,25 +169,63 @@ class ProductSerializer(serializers.ModelSerializer):
     
 class CartSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
+    product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only = True, 
+                                                    source='product')
+    total_cost = serializers.SerializerMethodField()
     class Meta:
         model = Cart
-        fields = ['id', 'user', 'product', 'product_qty']
-       
-    def validate_product_qty(self, value):
-        product = self.instance.product.id if self.instance else self.initial_data.get('product')
-        product_instance = Product.objects.get(id=product)
+        fields = ['id', 'product_id', 'user', 'product', 
+                  'product_qty', 'created_at', 'is_selected', 'total_cost']
         
-        if value > product_instance.quantity: 
-            raise serializers.ValidationError(f'Only {product_instance.quantity} is available')
+        # extra_kwargs = {
+        #     'product_qty: {required: False}'
+        # }
+       
+    def get_total_cost(self, obj):
+        return obj.total_cost
+    
+    def validate_product_qty(self, value):
+        product_id = self.initial_data.get('product_id')
+        # self.initial_data.get('product_id')
+        if not product_id:
+            raise serializers.ValidationError("Product ID is required.")
+        
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise serializers.ValidationError("Product does not exist.")
+        
+        
+        # print(product_id)
+        # try:
+        #     product = Product.objects.get(id=product_id)
+        # except Product.DoesNotExist:
+        #     raise serializers.ValidationError("Product does not exist from product_qty validation.")
+        
+        # product_instance = Product.objects.get(id=product_id)
+        
+        if value > product.quantity: 
+            raise serializers.ValidationError(f'Only {product.quantity} is available')
         
         return value
     
    
     def validate(self, data):
         user = self.context['request'].user
+        # product_id = self.initial_data.get('product_id')
+        # product = Product.objects.get(id=product_id) if product_id else self.instance.product_id
+        product = data.get('product')
+        # print(f'validating product id: {product_id}, data: {data}')
+        
+        # try:
+        #     product = Product.objects.get(id=product_id)
+        # except Product.DoesNotExist:
+        #     raise serializers.ValidationError('Product Does not Exist')
         product_id = self.initial_data.get('product')
-        product = Product.objects.get(id=product_id) if product_id else self.instance.product
 
+        print("user: ", user)
+        print("product_id: ", product_id)
+        
         # Check if the user created the product
         if product.user == user:
             raise serializers.ValidationError('You cannot add a product you created to your cart.')

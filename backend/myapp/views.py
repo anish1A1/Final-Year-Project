@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner, IsProductOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Cart, Category, ConfirmedTrade, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest
+from .models import Cart, Category, ConfirmedTrade, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest, get_total_cart_cost
 from rest_framework import serializers
 
 # Create your views here.
@@ -221,7 +221,7 @@ class ProductListUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         return super().get_permissions()
 
 class CartListCreateView(generics.ListCreateAPIView):
-    queryset = Cart.objects.all()
+    # queryset = Cart.objects.all()
     serializer_class = CartSerializer
     permission_classes = [IsAuthenticated]
     
@@ -229,9 +229,15 @@ class CartListCreateView(generics.ListCreateAPIView):
         return {'request': self.request}   
     def perform_create(self, serializer):
         user = self.request.user
-        product_id = self.request.data.get('product')
+        product_id = self.request.data.get('product_id')
         product_qty = self.request.data.get('product_qty')
-        product = Product.objects.get(id=product_id)
+        
+        print(f'Product ID: ${product_id} and Product QTY: ${product_qty}')
+        
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise serializers.ValidationError("Product does not exist.")
         
         # Check if the product is already in the cart
         if Cart.objects.filter(user=user, product=product).exists():
@@ -251,7 +257,22 @@ class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Cart.objects.filter(user=self.request.user)
     
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)    
+
+class CartTotalCostView(APIView):
+    permission_classes = [IsAuthenticated]
     
+    def get(self, request):
+        total_cost = get_total_cart_cost(request.user)
+        return Response({"total_cost": total_cost})
+    
+    
+    
+    
+    
+    # Trade Views     # 
 class TradeListCreateView(generics.ListCreateAPIView):
     queryset = Trade.objects.all()
     serializer_class = TradeSerializer

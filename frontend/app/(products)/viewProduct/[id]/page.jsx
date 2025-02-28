@@ -48,7 +48,8 @@ const ViewProductById = () => {
     }
 
     try {
-      await addToCart({ product: product.id, product_qty: productQty, user: user.id });
+      console.log(product.id, productQty, user.id);
+      await addToCart({product_id: product.id, product_qty: productQty, user: user.id });
       toast.success("Product added to cart successfully!");
     } catch (error) {
       if (error.non_field_errors) {

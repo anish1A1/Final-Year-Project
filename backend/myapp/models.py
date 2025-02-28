@@ -199,14 +199,28 @@ class Product(models.Model):
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
     product_qty = models.IntegerField(null=False, blank= False)
     created_at = models.DateTimeField(auto_now_add=True)   
+    is_selected = models.BooleanField(default=True)
     
+    @property
+    def total_cost(self):
+        if self.is_selected:
+            return self.product.selling_price * self.product_qty
+        return 0
+            
     def __str__(self):
         return self.product.name + " " +"Ordered by " + self.user.username
 
-
+    # This classmethod describes it is a method of the class
+#  Helper function to get the total cost of **all selected products**
+def get_total_cart_cost(user):
+    return sum(cart_item.total_cost for cart_item in Cart.objects.filter(user=user, is_selected=True))
+        # This  returns the total cost of all selected cart items for the specified user.
+   
+    
+      
 class Trade(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='trade_product')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
