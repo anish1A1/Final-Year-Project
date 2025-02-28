@@ -230,16 +230,11 @@ export const ProductProvider = ({children}) => {
         }
     };
 
-    const updateCart = async (id, formData) => {
+    const updateCart = async (id, product_qty, product_id, is_selected) => {
         try {
-            const data = new FormData();
-
-            Object.keys(formData).forEach((key) => {
-                data.append(key, formData[key]);
-            });
+            
             const response = await axios.patch(`/api/cart/${id}/`, {
-
-                data
+                 product_qty, product_id, is_selected
             }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -251,6 +246,26 @@ export const ProductProvider = ({children}) => {
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error(`Error updating cart: ${errorMessage}`);
+            throw error.response?.data;   // Throw the error to be caught in the component
+        }
+    };
+
+    const updateCartProductSelection = async (id, is_selected, product_id) => {
+        try {
+            
+            const response = await axios.patch(`/api/cart/${id}/`, {
+                is_selected, product_id
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            setCartItem((prevCart) => prevCart.map(item => item.id === id ? response.data : item));
+            return { status: 'success', message: 'Product Selected successfully!' };
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error selecting product in cart: ${errorMessage}`);
             throw error.response?.data;   // Throw the error to be caught in the component
         }
     };
@@ -273,7 +288,7 @@ export const ProductProvider = ({children}) => {
     };
 
 
-    const totalCartAmount = async () => {
+    const fetchtotalCartAmount = async () => {
         try {
             const response = await axios.get(`/api/cart/total-cost/`, {
                 headers:{
@@ -282,7 +297,7 @@ export const ProductProvider = ({children}) => {
                 }});
             
             setTotalCartAmounts(response.data);
-            console.log(response.data);
+            console.log(`Total Cart Amounts: ${response.data}`);
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error(`Error getting Total Cost from cart: ${errorMessage}`);
@@ -579,8 +594,9 @@ export const ProductProvider = ({children}) => {
         fetchCart,
         addToCart,
         updateCart,
+        updateCartProductSelection,
         removeFromCart,
-        totalCartAmount,
+        fetchtotalCartAmount,
         fetchTrades,
         createTrade,
         fetchTradeRequests,

@@ -261,6 +261,34 @@ class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)    
 
+
+    def update(self, request, *args, **kwargs):
+        
+        cart_item = self.get_object()   #Gets the cart item 
+        # Check if 'product_id' is provided and update product
+        product_id = request.data.get('product_id')
+        if product_id:
+            try:
+                product= Product.objects.get(id=product_id)
+                cart_item.product = product  #Updating the product explicitly
+            
+            except Product.DoesNotExist:
+                raise serializers.ValidationError("Product does not exist.")
+            
+         # Update 'product_qty' if provided    
+        product_qty = request.data.get('product_qty')
+        if product_qty is not None:
+            cart_item.product_qty = product_qty
+        
+         # Update 'is_selected' if provided
+        is_selected = request.data.get('is_selected')
+        if is_selected is not None:
+            cart_item.is_selected = is_selected   # Update selection status
+        
+        # Save the cart item after updating
+        cart_item.save()
+        return super().update(request, *args, **kwargs)
+    
 class CartTotalCostView(APIView):
     permission_classes = [IsAuthenticated]
     

@@ -2,6 +2,7 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 import os
+from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 import uuid
@@ -202,13 +203,18 @@ class Cart(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
     product_qty = models.IntegerField(null=False, blank= False)
     created_at = models.DateTimeField(auto_now_add=True)   
-    is_selected = models.BooleanField(default=True)
+    is_selected = models.BooleanField(default=False)
     
+   
     @property
     def total_cost(self):
-        if self.is_selected:
-            return self.product.selling_price * self.product_qty
-        return 0
+        try:
+            qty = int(self.product_qty)
+            price = Decimal(self.product.selling_price)
+            return price * qty
+        except (ValueError, TypeError):
+            return Decimal('0.00')
+        
             
     def __str__(self):
         return self.product.name + " " +"Ordered by " + self.user.username

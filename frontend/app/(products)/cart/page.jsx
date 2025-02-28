@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { ProductContext } from '../../../utils/prod';
 
 const CartPage = () => {
-    const { fetchCart, updateCart, removeFromCart, totalCartAmount, loading, cartItem } = useContext(ProductContext);
+    const { fetchCart, updateCart, removeFromCart, loading, cartItem, updateCartProductSelection, totalCartAmounts, fetchtotalCartAmount } = useContext(ProductContext);
     const [quantity, setQuantity] = useState({});
     const [selectedItems, setSelectedItems] = useState({});
     const [error, setError] = useState('');
@@ -12,7 +12,15 @@ const CartPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             await fetchCart();
-            await totalCartAmount();
+            // await fetchtotalCartAmount();
+        };
+        fetchData();
+    }, []);
+    
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchtotalCartAmount();
         };
         fetchData();
     }, []);
@@ -37,16 +45,15 @@ const CartPage = () => {
         }));
     };
 
-    const handleUpdateCart = async (id) => {
+    const handleUpdateCart = async (id, product_id) => {
         const product_qty = quantity[id];
+        const is_selected = selectedItems[id];
         try {
-            const data = {
-                product_id: id,
-                product_qty: product_qty,
-                is_selected: selectedItems[id]
-            };
-            const response = await updateCart(id, data);
+           
+            const response = await updateCart(id, product_qty, product_id, is_selected);
+            await fetchtotalCartAmount();
             setSuccessMessage(response.message);
+
         } catch (error) {
             setError(error.product_qty ? error.product_qty[0] : 'Error updating quantity in cart.');
             console.error('Error updating cart:', error);
@@ -56,6 +63,7 @@ const CartPage = () => {
     const handleRemoveFromCart = async (id) => {
         try {
             const data = await removeFromCart(id);
+            await fetchtotalCartAmount();
             setSuccessMessage(data.message);
         } catch (error) {
             setError(error.message);
@@ -63,11 +71,23 @@ const CartPage = () => {
         }
     };
 
-    const toggleSelection = (id) => {
-        setSelectedItems(prevSelections => ({
-            ...prevSelections,
-            [id]: !prevSelections[id]
-        }));
+    const toggleSelection = async (id, product_id) => {
+        const newSelection = {
+            ...selectedItems,
+            [id]: !selectedItems[id]     // Toggle the selection state
+        };
+        setSelectedItems(newSelection);
+
+        const is_selected = newSelection[id];  // New selection state (true/false)
+
+        try {
+            const response = await updateCartProductSelection(id, is_selected, product_id);
+            await fetchtotalCartAmount();
+            setSuccessMessage(response.message);
+
+        } catch (error) {
+            setError(error.message || 'Error selecting product in cart.');
+        }
     };
 
     if (loading) {
@@ -112,7 +132,7 @@ const CartPage = () => {
                                 max={item.product.quantity}
                             />
                             <button
-                                onClick={() => handleUpdateCart(item.id)}
+                                onClick={() => handleUpdateCart(item.id, item.product.id)}
                                 className="ml-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
                             >
                                 Update
@@ -127,17 +147,26 @@ const CartPage = () => {
                                 Remove
                             </button>
                             <button
-                                onClick={() => toggleSelection(item.id)}
+                                onClick={() => toggleSelection(item.id, item.product.id)}
+                                // value={item.is_selected}
                                 className={`py-2 px-4 rounded ${selectedItems[item.id] ? 'bg-green-500 hover:bg-green-700' : 'bg-gray-500 hover:bg-gray-700'} text-white`}
                             >
-                                {selectedItems[item.id] ? 'Deselect' : 'Select'}
+                                {/* {selectedItems[item.id] ? 'Deselect' : 'Select'} */}
+                                {item.is_selected ? 'De Select' : 'Select'}
                             </button>
+
                         </div>
                     </div>
                 ))
             ) : (
                 <p className="text-center text-lg">Your cart is empty.</p>
             )}
+
+                {totalCartAmounts && totalCartAmounts.total_cost ? (
+                    <p className="text-center text-lg">Total Amount: ${totalCartAmounts.total_cost}</p>
+                ) : (
+                    <p className="text-center text-lg">Nothing to show</p>
+                )}
         </div>
     );
 };

@@ -185,30 +185,44 @@ class CartSerializer(serializers.ModelSerializer):
         return obj.total_cost
     
     def validate_product_qty(self, value):
-        product_id = self.initial_data.get('product_id')
-        # self.initial_data.get('product_id')
+        product_id = self.initial_data.get('product_id')  # Or from the request data
         if not product_id:
             raise serializers.ValidationError("Product ID is required.")
-        
+            
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             raise serializers.ValidationError("Product does not exist.")
         
-        
-        # print(product_id)
-        # try:
-        #     product = Product.objects.get(id=product_id)
-        # except Product.DoesNotExist:
-        #     raise serializers.ValidationError("Product does not exist from product_qty validation.")
-        
-        # product_instance = Product.objects.get(id=product_id)
-        
-        if value > product.quantity: 
+        if value > product.quantity:
             raise serializers.ValidationError(f'Only {product.quantity} is available')
-        
-        return value
     
+        return value
+
+    
+    
+    
+    # def validate_product_qty(self, value):
+        
+    #     product = self.instance.product if self.instance else self.initial_data.get('product')
+    #     print(product)
+    #     product_id = Product.objects.get(id=product)
+    #     print(product_id)
+        
+    #     # product_id = self.initial_data.get('product_id')
+    #     # self.initial_data.get('product_id')
+    #     if not product_id:
+    #         raise serializers.ValidationError("Product ID is required.")
+        
+    #     try:
+    #         product = Product.objects.get(id=product_id)
+    #     except Product.DoesNotExist:
+    #         raise serializers.ValidationError("Product does not exist.")
+        
+    #     if value > product.quantity: 
+    #         raise serializers.ValidationError(f'Only {product.quantity} is available')
+        
+    #     return value
    
     def validate(self, data):
         user = self.context['request'].user
