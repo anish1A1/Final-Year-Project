@@ -262,7 +262,12 @@ export const ProductProvider = ({children}) => {
                 },
             });
             setCartItem((prevCart) => prevCart.map(item => item.id === id ? response.data : item));
-            return { status: 'success', message: 'Product Selected successfully!' };
+            // Return a message based on selection state
+                const message = is_selected 
+                ? 'Product Selected successfully!' 
+                : 'Product Deselected successfully!';
+
+            return { status: 'success', message };
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error(`Error selecting product in cart: ${errorMessage}`);
