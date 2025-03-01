@@ -46,7 +46,7 @@ const CreateEquipment = () => {
       await createEquipment(formData, router);
       toast.success("Equipment created successfully!");
     } catch (error) {
-      toast.error("Failed to create equipment");
+      toast.error(error.message || "Failed to create equipment");
     }
   };
 

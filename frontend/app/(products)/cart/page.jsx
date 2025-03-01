@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 const CartPage = () => {
   const {
@@ -66,9 +67,12 @@ const CartPage = () => {
       const response = await updateCart(id, product_qty, product_id, is_selected);
       await fetchtotalCartAmount();
       toast.success(response.message);
+
     } catch (error) {
-      setError(error.product_qty ? error.product_qty[0] : "Error updating quantity in cart.");
-      console.error("Error updating cart:", error);
+    //   setError(error.product_qty ? error.product_qty[0] : "Error updating quantity in cart.");
+      toast.error(error.product_qty ? error.product_qty[0] : "Error updating quantity in cart.");
+
+    //   console.error("Error updating cart:", error);
     }
   };
 
@@ -181,9 +185,11 @@ const CartPage = () => {
 
 
     <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg py-4 border-t flex justify-between px-6 items-center">
-        <p className="text-xl font-semibold">Total: ${totalCartAmounts?.total_cost || "0.00"}</p>
+        <p className="text-xl font-semibold">Total Amount: Rs.<span className="text-blue-600 ml-0.5">{totalCartAmounts?.total_cost || "0.00"}</span></p>
         <button className="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-700">
+          <Link href='/cart/makePayment'>
           Make Payment
+          </Link>
         </button>
       </div>
 

@@ -17,4 +17,6 @@ npm install @nextui-org/react              //found this package id deprecated so
 npm install @heroui/react
 
 npm install sonner                 // For showing Toast in the App. (Messages)
+npm install react-hot-toast --legacy-peer-deps
+
 

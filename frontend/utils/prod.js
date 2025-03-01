@@ -476,7 +476,7 @@ export const ProductProvider = ({children}) => {
                 },
             });
             setTradeRequestsOfOwner((prevRequest) => prevRequest.map(item => item.id === id ? response.data : item));
-            return { status: 'success', message: 'Updated the user request' };
+            return { status: 'success', message: 'Updated the trade request successfully!' };
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error(`Error updating Trade's Request: ${errorMessage}`);
@@ -517,7 +517,7 @@ export const ProductProvider = ({children}) => {
                 },
             });
             setConfirmedTradesOfOwner((prevRequest) => prevRequest.map(item => item.id === id ? response.data : item));
-            return { status: 'success', message: 'Updated the user request' };
+            return { status: 'success', message: 'Updated the Trade successfully!' };
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error(`Error Updating Confirmed Trade's Request: ${errorMessage}`);
@@ -559,7 +559,7 @@ export const ProductProvider = ({children}) => {
                 },
             });
             setConfirmedTrades((prevRequest) => prevRequest.map(item => item.id === id ? response.data : item));
-            return { status: 'success', message: 'Updated the user request' };
+            return { status: 'success', message: 'Updated the trade received!' };
             
         }catch (error) {
             const errorMessage = error.response?.data || error.message;

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { ProductContext} from '../../..//utils/prod';
 import { AuthContext } from '../../../utils/auth';
+import { toast } from 'sonner';
 
 const CreateTradePage = () => {
     const { fetchProductByOwner, ownerProducts, createTrade, loading, error } = useContext(ProductContext);
@@ -33,7 +34,7 @@ const CreateTradePage = () => {
             ...prevData,
             product_id: value,  // Ensure it's the ID, not name
         }));
-        console.log(`value is ${value}`);
+        // console.log(`value is ${value}`);
     };
 
     const handleChange = (e) => {
@@ -60,9 +61,11 @@ const CreateTradePage = () => {
             console.log(formData);
             const response = await createTrade(formData, router);
             setSuccessMessage(response.message);
+            toast.success(response.message);
             setFormError('');
         } catch (error) {
             setFormError(error.message || 'Error creating trade.');
+            toast.error(error.message || 'Error creating trade.');
             console.error('Error creating trade:', error);
         }
     };

@@ -14,7 +14,7 @@ const CreateEquipmentBooking = () => {
         start_date: "",
         end_date: "",
         delivery_location: "",
-        quantity: 0,
+        quantity: 1,
         equipment: id,
     });
     const [maxQuantity, setMaxQuantity] = useState(0);
@@ -44,10 +44,10 @@ const CreateEquipmentBooking = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!user) {
-            toast.error(`You must be logged in to create a booking.`);
-            return;
-        }
+        // if (!user) {
+        //     toast.error(`You must be logged in to create a booking.`);
+        //     return;
+        // }
         
         try {
             await createEquipmentBookings(formData, router);
@@ -86,6 +86,7 @@ const CreateEquipmentBooking = () => {
                                 onChange={handleChange}
                                 required
                                 max={maxQuantity}
+                                min={1}
                             />
                         </div>
                         <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Create Booking</Button>

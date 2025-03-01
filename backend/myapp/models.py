@@ -227,6 +227,23 @@ def get_total_cart_cost(user):
    
     
       
+class CartPayment(CommonPayments):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_payment')
+    id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"Payment for Cart ID: {self.cart.id}, Status: {self.status} by {self.user.username}"      
+      
+    def save(self, *args, **kwargs):
+     
+        if self.payment_method in [self.PaymentMethodChoices.ESEWA, self.PaymentMethodChoices.KHALTI]:
+            self.status = self.PaymentStatusChoices.CLEARED
+            self.payment_type = self.PaymentTypeChoices.ONLINE
+        super().save(*args, **kwargs)
+      
+      
+      
 class Trade(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='trade_product')
     user = models.ForeignKey(User, on_delete=models.CASCADE)

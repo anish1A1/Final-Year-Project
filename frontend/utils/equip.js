@@ -58,9 +58,12 @@ export const EquipProvider = ({children}) => {
                 response.data
             ]);
             router.push('/equipmentList');
+            return { status: 'success', message: 'Cart updated successfully!' };
         } catch (error) {
-            console.error(`Error creating equipment: ${error}`);
-            setError(error.response.data);
+            
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error creating equipment: ${errorMessage}`);
+            throw error.response?.data;
         } 
     };
 
@@ -78,8 +81,9 @@ export const EquipProvider = ({children}) => {
             if (error.response && error.response.status === 404) {
                 throw new Error('Equipment not found');
             } else {
-                throw error;
+                throw error.response?.data;
             }
+            
         }
     }
 
@@ -100,9 +104,12 @@ export const EquipProvider = ({children}) => {
             });
             setEquipment((prevEquipment) => prevEquipment.map(item => item.id === id ? response.data : item));
             router.push('/equipmentList');
+            return { status: 'success', message: 'Equipment updated successfully!' };
         } catch (error) {
-            console.error(`Error updating equipment: ${error}`);
-            setError(error.response.data);
+            
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error updating equipment: ${errorMessage}`);
+            throw error.response?.data;
         }
     };
 
@@ -115,9 +122,12 @@ export const EquipProvider = ({children}) => {
                 }
             });
             setEquipmentBooks((prevBookedEquipment) => prevBookedEquipment.map(item => item.id === id ? response.data : item));
+            return { status: 'success', message: 'Equipment deleted successfully!' };
         } catch (error) {
             console.error(`Error deleting equipment: ${error}`);
             setError(error.response.data);
+
+            throw error.response?.data;
         }
     };
 
@@ -135,6 +145,7 @@ export const EquipProvider = ({children}) => {
         } catch (error) {
             console.error(`Error fetching equipment bookings: ${error}`);
             setError(error.response?.data || error.message);
+            throw error.response?.data;
         } finally {
             setLoading(false);
         }
@@ -164,6 +175,7 @@ export const EquipProvider = ({children}) => {
                 response.data
             ]);
             router.push('/equipmentList');
+            return { status: 'success', message: 'Equipment created successfully!' };
         } catch (error) {
             console.error(`Error creating equipment: ${error}`);
             setError(error.response.data);
@@ -178,6 +190,7 @@ export const EquipProvider = ({children}) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            return {status: 'success', message: 'Booking status updated successfully!' };
         } catch (error) {
             console.error(`Error updating booking status: ${error}`);
         }
@@ -194,6 +207,7 @@ export const EquipProvider = ({children}) => {
         } catch (error) {
             console.error(`Error fetching the payments`, error);
             setError(error); 
+            throw error.response?.data;
         }
         finally {
             setLoading(false);
@@ -224,11 +238,13 @@ export const EquipProvider = ({children}) => {
                 response.data
             ]);
              router.push('/dashboards');
+             return {status: 'success', message: 'Equipment Payment created successfully!' };
             
 
         } catch (error) {
             console.error(`Error Doing Payment of equipment: ${error}`);
             setError(error.response.data);
+            throw error.response?.data;
         }
     };
 
@@ -245,6 +261,9 @@ export const EquipProvider = ({children}) => {
             setDeliveries(response.data);
         } catch (error) {
             console.error(`Error fetching deliveries: ${error}`);
+            throw error.response?.data;
+        } finally{
+            setLoading(false);
         }
     };
     
@@ -257,11 +276,13 @@ export const EquipProvider = ({children}) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            console.log('Updated Delivery:', id, status);
+            // console.log('Updated Delivery:', id, status);
+            return { status: 'success', message: 'Equipment Delivery updated successfully!' };
             
         } catch (error) {
             console.error(`Error Updating Equipment's Delivery: ${error}`);
             setError(error.response.data);
+            throw error.response?.data;
         }
     };
 
@@ -277,6 +298,9 @@ export const EquipProvider = ({children}) => {
             setDeliveryReceive(response.data);
         } catch (error) {
             console.error(`Error fetching deliveries: ${error}`);
+            throw error.response?.data;
+        } finally {
+            setFetching(false);
         }
     };
     

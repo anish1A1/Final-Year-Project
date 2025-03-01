@@ -3,6 +3,7 @@ import React, {useState, useContext, useEffect} from 'react'
 import { ProductContext } from '../../../utils/prod'
 import { AuthContext } from '../../../utils/auth'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 const CreateProduct = () => {
     const {user} = useContext(AuthContext);
 
@@ -51,9 +52,11 @@ const CreateProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await createProduct(formData, category, router);
+            const response = await createProduct(formData, category, router);
+            toast.success(response.message);
         } catch (error) {
             console.log(error);
+            toast.error(error.message || 'Something went wrong');
         }
     }
     console.log('Category:', category);  // Debugging category state

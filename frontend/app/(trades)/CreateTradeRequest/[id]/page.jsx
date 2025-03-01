@@ -3,6 +3,7 @@ import React, { useState, useContext } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ProductContext } from "../../../../utils/prod";
 import { ClipLoader } from "react-spinners";
+import { toast } from "sonner";
 
 const CreateTradeRequestPage = () => {
     const { id } = useParams();
@@ -37,17 +38,22 @@ const CreateTradeRequestPage = () => {
         try {
             const response = await createTradeRequest(formData);
             setSuccessMessage(response.message);
+            toast.success(response.message);
+
             setFormError("");
             setTimeout(() => {
                 router.push("/allTrades"); // Redirect after success
             }, 2000);
         } catch (error) {
+
             if (error.response && error.response.data) {
                 console.log("Backend error response data:", error.response.data);
+                toast.error(error.response.data || error.response.data[0]);
             console.log("Backend error response status:", error.response.status);
                 setFormError(error.response.data[0]); // Assuming error is an array with the first element as error message
             } else {
                 setFormError(error || "Error creating trade request.");
+                toast.error(error.message || "Error creating trade request.");
             }
             console.error("Error creating trade request:", error);
         }

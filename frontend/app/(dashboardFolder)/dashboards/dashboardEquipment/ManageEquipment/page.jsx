@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { EquipmentContext } from '../../../../../utils/equip';
 import { AuthContext } from '../../../../../utils/auth';
+import { toast } from 'sonner';
 
 
 const ManageEquipment = () => {
@@ -33,13 +34,15 @@ const ManageEquipment = () => {
     }, [equipmentBooks, equipment, user]);
 
     const handleAccept = async (id) => {
-        await updateBookingStatus(id, 'accepted');
+        const data =await updateBookingStatus(id, 'accepted');
+        toast.success(data.message || "Booking has been accepted");
         const updatedBookings = combinedBookings.map((booking) => (booking.id === id ? { ...booking, status: 'accepted' } : booking));
         setCombinedBookings(updatedBookings);
     }
 
     const handleReject = async (id) => {
-        await updateBookingStatus(id, 'rejected');
+        const response = await updateBookingStatus(id, 'rejected');
+        toast.error(response.message || "Booking has been rejected");
         const updatedBookings = combinedBookings.map(booking => booking.id === id ? { ...booking, status: 'rejected' } : booking);
         setCombinedBookings(updatedBookings);
     };
@@ -68,8 +71,10 @@ const ManageEquipment = () => {
                             <p className="text-sm mb-1">Total Days: {item.total_date}</p>
                             <p className="text-sm mb-1">Quantity: {item.quantity}</p>
                             <p className="text-sm mb-1">Total Price: Rs{item.total_cost}</p>
+                            <p className="text-sm mb-1">Applied By: {item.user}</p>
                             <p className="text-sm mb-1">Location: {item.delivery_location}</p>
                             <p className="text-sm mb-1">Booking Status: {item.status}</p>
+
                             <div className="card-actions justify-end mt-4">
                                 {item.status === 'pending' && (
                                     <>

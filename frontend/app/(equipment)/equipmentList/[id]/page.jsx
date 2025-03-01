@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { EquipmentContext } from '../../../../utils/equip';
 import { motion } from 'framer-motion';
 import { Download, ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 
 const EquipmentDetail = () => {
   const [equipment, setEquipment] = useState(null);
@@ -24,6 +25,7 @@ const EquipmentDetail = () => {
           setEquipment(data);
         } catch (error) {
           console.error('Error fetching equipment details:', error);
+          toast.error('Error fetching equipment details');
         }
       };
       fetchData();

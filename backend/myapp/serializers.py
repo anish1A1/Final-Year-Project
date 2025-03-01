@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Cart, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
+from .models import Cart, CartPayment, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
 from .models import Trade, TradeRequest, ConfirmedTrade
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -87,7 +87,10 @@ class EquipmentBookingSerializer(serializers.ModelSerializer):
         return obj.total_cost
         
     def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
+        # Sets the user from the context
+        user = self.context['request'].user
+        validated_data['user'] = user
+        print("validated Data: ", validated_data)
         return super().create(validated_data)
 
     # def update(self, instance, validated_data):
@@ -122,8 +125,8 @@ class EquipmentPaymentSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         payment = super().create(validated_data)
-        if payment.status ==  EquipmentPayment.PaymentStatusChoices.CLEARED:
-            EquipmentDelivery.objects.create(equipment_payment=payment)
+        # if payment.status ==  EquipmentPayment.PaymentStatusChoices.CLEARED:
+        EquipmentDelivery.objects.create(equipment_payment=payment)
         return payment
     
     
@@ -199,46 +202,14 @@ class CartSerializer(serializers.ModelSerializer):
     
         return value
 
-    
-    
-    
-    # def validate_product_qty(self, value):
-        
-    #     product = self.instance.product if self.instance else self.initial_data.get('product')
-    #     print(product)
-    #     product_id = Product.objects.get(id=product)
-    #     print(product_id)
-        
-    #     # product_id = self.initial_data.get('product_id')
-    #     # self.initial_data.get('product_id')
-    #     if not product_id:
-    #         raise serializers.ValidationError("Product ID is required.")
-        
-    #     try:
-    #         product = Product.objects.get(id=product_id)
-    #     except Product.DoesNotExist:
-    #         raise serializers.ValidationError("Product does not exist.")
-        
-    #     if value > product.quantity: 
-    #         raise serializers.ValidationError(f'Only {product.quantity} is available')
-        
-    #     return value
    
     def validate(self, data):
         user = self.context['request'].user
-        # product_id = self.initial_data.get('product_id')
-        # product = Product.objects.get(id=product_id) if product_id else self.instance.product_id
         product = data.get('product')
-        # print(f'validating product id: {product_id}, data: {data}')
         
-        # try:
-        #     product = Product.objects.get(id=product_id)
-        # except Product.DoesNotExist:
-        #     raise serializers.ValidationError('Product Does not Exist')
-        product_id = self.initial_data.get('product')
-
-        print("user: ", user)
-        print("product_id: ", product_id)
+        # product_id = self.initial_data.get('product')
+        # print("user: ", user)
+        # print("product_id: ", product_id)
         
         # Check if the user created the product
         if product.user == user:
@@ -258,7 +229,20 @@ class CartSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     
-
+class CartPaymentSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source = 'user.username')
+    
+    class Meta:
+        model = CartPayment
+        fields = '__all__'
+        
+    # def create(self, validated_data):
+    #     payment = super().create(validated_data)
+    #     if payment.status ==  CartPayment.PaymentStatusChoices.CLEARED:
+    #         EquipmentDelivery.objects.create(equipment_payment=payment)
+    #     return payment
+        
+    
         
 class TradeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
@@ -272,13 +256,13 @@ class TradeSerializer(serializers.ModelSerializer):
         fields = ['id', 'product', 'product_id', 'user', 'created_at', 'wanted_product', 'wanted_price', 'wanted_quantity', 
                   'note', 'trade_ending_date', 'total_amount']
         
-    def validate(self, data):
-        user = self.context['request'].user
-        product_id = self.initial_data.get('product')
+    # def validate(self, data):
+    #     user = self.context['request'].user
+    #     product_id = self.initial_data.get('product')
 
-        print("user: ", user)
-        print("product_id: ", product_id)
-        return data
+    #     print("user: ", user)
+    #     print("product_id: ", product_id)
+    #     return data
     
     def get_total_amount(self,obj):
         return obj.wanted_price * obj.wanted_quantity

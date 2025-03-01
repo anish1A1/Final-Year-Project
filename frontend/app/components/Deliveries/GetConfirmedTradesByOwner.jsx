@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RotateCcw, Package, MapPin, CheckCircle, Truck, User } from "lucide-react";
+import { toast } from "sonner";
 
 const GetConfirmedTradesByOwner = () => {
   const {
@@ -34,8 +35,10 @@ const GetConfirmedTradesByOwner = () => {
   const handleStatusChange = async (id, newStatus) => {
     setUpdatingTradeId(id);
     try {
-      await updateConfirmedTrade(id, { status: newStatus });
+      const response =await updateConfirmedTrade(id, { status: newStatus });
+      toast.success(response.message || "Trade status updated successfully!");
     } catch (error) {
+      toast.error(error.message || "Failed to update trade status.");
       console.error("Failed to update trade:", error);
     } finally {
       setUpdatingTradeId(null);
@@ -55,9 +58,10 @@ const GetConfirmedTradesByOwner = () => {
     if (!locationInputs[id]) return;
     setSavingLocationId(id);
     try {
-      await updateConfirmedTrade(id, { item_location: locationInputs[id] });
-
+      const data = await updateConfirmedTrade(id, { item_location: locationInputs[id] });
+      toast.success(data.message || "Location updated successfully!");
     } catch (error) {
+      toast.error(error.message || "Failed to update location.");
       console.error("Failed to update location:", error);
     } finally {
       setSavingLocationId(null);

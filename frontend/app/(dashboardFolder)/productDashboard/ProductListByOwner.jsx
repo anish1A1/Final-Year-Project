@@ -2,6 +2,7 @@
 import React, {useContext, useEffect} from 'react'
 import { ProductContext } from '../../../utils/prod'
 import {useRouter} from 'next/navigation';
+import { toast } from 'sonner';
 const ProductListByOwner = () => {
     const {fetchProductByOwner, ownerProducts, loading,deleteProduct } = useContext(ProductContext);
     const router = useRouter();
@@ -14,7 +15,8 @@ const ProductListByOwner = () => {
   }, []);
 
   const deletProduct = async (id) => {
-    await deleteProduct(id, router);
+    const response = await deleteProduct(id, router);
+    toast.success(response.message || 'Product deleted successfully');
   }
 
   const updateProduct = async (id) => {

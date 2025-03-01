@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Package, MapPin, RotateCcw, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const GetConfirmedTradesByUser = () => {
   const {
@@ -30,10 +31,12 @@ const GetConfirmedTradesByUser = () => {
   const handleItemReceivedChange = async (id, newValue) => {
     setUpdatingTradeId(id);
     try {
-      await updateConfirmedTradeByUser(id, { item_received: newValue });
+      const response = await updateConfirmedTradeByUser(id, { item_received: newValue });
+      toast.success( response.message || "Item Received updated successfully!");
         // fetchAllConfirmedTradesOfUser();
       
     } catch (error) {
+      toast.error(error.message || "Failed to update trade.");
       console.error("Failed to update trade:", error);
     } finally {
       setUpdatingTradeId(null);
