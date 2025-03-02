@@ -11,7 +11,8 @@ export const CartProvider = ({children}) => {
     const [totalCartAmounts, setTotalCartAmounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [paymentByUser, setPaymentByUser] = useState([]);
-    
+    const [cartDeliveries, setCartDeliveries] = useState([]);
+    const [productDeliveries, setProductDeliveries] = useState([]);
     
     const {user} = useContext(AuthContext);
     
@@ -176,12 +177,82 @@ export const CartProvider = ({children}) => {
         }
     };
 
+    // Fetch all cart deliveries
+    const fetchCartDeliveries = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`/api/cart-deliveries/`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setCartDeliveries(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error("Error fetching cart deliveries:", error.response?.data || error.message);
+            throw error.response?.data;
+        } finally{
+            setLoading(false);
+        }
+    };
+
+    // Fetch all product deliveries
+    const fetchProductDeliveries = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`/api/cart-product-deliveries/`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setProductDeliveries(response.data);
+        } catch (error) {
+            console.error("Error fetching product deliveries:", error.response?.data || error.message);
+            throw error.response?.data;
+        } finally{
+            setLoading(false);
+        }
+    };    
+
+    // Mark product as received by admin
+    const markProductReceivedByAdmin = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`/api/cart-product-deliveries/${id}/mark-received/`, {}, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setProductDeliveries(prevDeliveries =>
+                prevDeliveries.map(item => item.id === id ? { ...item, status: 'delivered_to_admin' } : item)
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error marking product as received:", error.response?.data || error.message);
+            throw error.response?.data || error.message;
+        }
+    };
+
+     // Update cart delivery status
+     const updateCartDelivery = async (id, status) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(`/api/cart-deliveries/${id}/`, { status }, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setCartDeliveries(prevDeliveries =>
+                prevDeliveries.map(item => item.id === id ? response.data : item)
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error updating cart delivery:", error.response?.data || error.message);
+            throw error.response?.data || error.message;
+        }
+    };
+
+
 
 const cartContext = useMemo(() => ({
     cartItem,
     totalCartAmounts,
     loading,
     paymentByUser,
+    cartDeliveries,
+    productDeliveries,
     fetchCart,
     addToCart,
     updateCart,
@@ -189,9 +260,13 @@ const cartContext = useMemo(() => ({
     removeFromCart,
     fetchtotalCartAmount,
     createPaymentOfCart,
-
+    
+    fetchCartDeliveries,
+    fetchProductDeliveries,
+    markProductReceivedByAdmin,
+    updateCartDelivery
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}),[ cartItem, totalCartAmounts,paymentByUser, loading]);
+}),[cartItem, totalCartAmounts, paymentByUser, loading, cartDeliveries, productDeliveries]);
 
     return (
         <CartContext.Provider value={cartContext}>

@@ -13,6 +13,8 @@ from rest_framework import viewsets
 from rest_framework import generics
 from .models import Cart, CartPayment, Category, ConfirmedTrade, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest, get_total_cart_cost
 from rest_framework import serializers
+from .models import CartDelivery, CartProductDelivery
+from .serializers import CartDeliverySerializer, CartProductDeliverySerializer
 
 # Create your views here.
 
@@ -305,6 +307,77 @@ class CartPaymentListCreateView(generics.ListCreateAPIView):
     
     def get_serializer_context(self):
         return {"request": self.request}
+    
+    
+
+
+class CartDeliveryListCreateView(generics.ListAPIView):
+    """
+    Get all deliveries or create a new delivery.
+    """
+    serializer_class = CartDeliverySerializer
+    permission_classes = [IsAuthenticated]
+        
+    def get_queryset(self):
+        return CartDelivery.objects.filter(cart_payment__user=self.request.user).order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(admin=self.request.user)
+
+
+class CartDeliveryAdminListCreateView(generics.ListCreateAPIView):
+    """
+    Get all deliveries or create a new delivery By the Admin.
+    """
+    queryset = CartDelivery.objects.all()
+    serializer_class = CartDeliverySerializer
+    permission_classes = [IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        serializer.save(admin=self.request.user)
+    
+class CartDeliveryDetailView(generics.RetrieveUpdateAPIView):
+    """
+    Retrieve or update a specific cart delivery.
+    """
+    queryset = CartDelivery.objects.all()
+    serializer_class = CartDeliverySerializer
+    permission_classes = [IsAuthenticated]
+
+
+class CartProductDeliveryListCreateView(generics.ListCreateAPIView):
+    """
+    Get all product deliveries or create a new one.
+    """
+    queryset = CartProductDelivery.objects.all()
+    serializer_class = CartProductDeliverySerializer
+    permission_classes = [IsAuthenticated]
+
+
+class CartProductDeliveryDetailView(generics.RetrieveUpdateAPIView):
+    """
+    Retrieve or update a specific product delivery.
+    """
+    queryset = CartProductDelivery.objects.all()
+    serializer_class = CartProductDeliverySerializer
+    permission_classes = [IsAuthenticated]
+
+
+class MarkProductReceivedByAdminView(APIView):
+    """
+    API to mark a product as received by the admin.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            product_delivery = CartProductDelivery.objects.get(pk=pk)
+            product_delivery.mark_received_by_admin()
+            return Response({"message": "Product received by admin", "status": product_delivery.status})
+        except CartProductDelivery.DoesNotExist:
+            return Response({"error": "Product delivery not found"}, status=404)
+    
+
     
     
     

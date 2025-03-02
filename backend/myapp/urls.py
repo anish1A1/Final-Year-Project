@@ -2,6 +2,8 @@ from django.urls import path
 from .views import CartPaymentListCreateView, EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView, CategoryView, ProductListCreateView, CategoryView, ProductOwnerListView,ProductListUpdateDeleteView, TradeListCreateView, TradeRequestListCreateView
 from .views import CartListCreateView, CartDetailView, TradeAllListView, TradeRequestOwnersUpdateView, TradeRequestOwnersListView
 from .views import ConfirmedTradeListByOwnerView, ConfirmedTradeUpdateByOwnerView, ConfirmedTradeListView, ConfirmedTradeUpdateByUser, CartTotalCostView
+from .views import CartDeliveryListCreateView,CartDeliveryDetailView,CartProductDeliveryListCreateView,CartProductDeliveryDetailView,MarkProductReceivedByAdminView, CartDeliveryAdminListCreateView
+
 urlpatterns = [
     path('equipment/', EquipmentListCreateView.as_view(), name='equipment-list-create'),
     path('equipment/<int:pk>/', EquipmentDetailView.as_view(), name='equipment-detail'),
@@ -23,6 +25,12 @@ urlpatterns = [
     path('cart/total-cost/', CartTotalCostView.as_view(), name='cart-total-cost'),
     path('cart/payment/', CartPaymentListCreateView.as_view(), name='cart-payment-list-create'),
     
+    path('cart-deliveries/', CartDeliveryListCreateView.as_view(), name='cart-delivery-list'),
+    path('cart-deliveries-admin/', CartDeliveryAdminListCreateView.as_view(), name='cart-deliveries-admin-list'),
+    path('cart-deliveries/<int:pk>/', CartDeliveryDetailView.as_view(), name='cart-delivery-detail'),
+    path('cart-product-deliveries/', CartProductDeliveryListCreateView.as_view(), name='cart-product-delivery-list'),
+    path('cart-product-deliveries/<int:pk>/', CartProductDeliveryDetailView.as_view(), name='cart-product-delivery-detail'),
+    path('cart-product-deliveries/<int:pk>/mark-received/', MarkProductReceivedByAdminView.as_view(), name='mark-product-received'),
     
     
     path('trades/', TradeListCreateView.as_view(), name='trade-list-create'),

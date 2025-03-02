@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Cart, CartDelivery, CartPayment, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
+from .models import Cart, CartDelivery, CartPayment, CartProductDelivery, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
 from .models import Trade, TradeRequest, ConfirmedTrade
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -232,7 +232,8 @@ class CartSerializer(serializers.ModelSerializer):
 class CartPaymentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source = 'user.username')
     email = serializers.ReadOnlyField(source = 'user.email')
-    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all())
+    cart_id = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all())
+    cart = CartSerializer(read_only=True)
     class Meta:
         model = CartPayment
         fields = '__all__'
@@ -245,7 +246,47 @@ class CartPaymentSerializer(serializers.ModelSerializer):
         CartDelivery.objects.create(cart_payment=payment)
         return payment
         
+
+
+class CartProductDeliverySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartProductDelivery
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        """
+        Custom update logic to handle status changes.
+        """
+        instance.status = validated_data.get('status', instance.status)
+        instance.handover_date = validated_data.get('handover_date', instance.handover_date)
+        instance.save()
+
+        # If status is updated to 'delivered_to_admin', check all received
+        if instance.status == CartProductDelivery.DeliveryStatusChoices.DELIVERED_TO_ADMIN:
+            instance.cart_delivery.check_all_received()
+
+        return instance
+
+
+class CartDeliverySerializer(serializers.ModelSerializer):
+    cart_product_deliveries = CartProductDeliverySerializer(many=True, read_only=True)
+    cart_payment = CartPaymentSerializer(read_only=True)
+    class Meta:
+        model = CartDelivery
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        """
+        Custom update logic to handle delivery status changes.
+        """
+        instance.status = validated_data.get('status', instance.status)
+        instance.delivery_date = validated_data.get('delivery_date', instance.delivery_date)
+        instance.delivery_time = validated_data.get('delivery_time', instance.delivery_time)
+        instance.item_received_by_user = validated_data.get('item_received_by_user', instance.item_received_by_user)
+        instance.save()
+        return instance
     
+        
         
 class TradeSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')

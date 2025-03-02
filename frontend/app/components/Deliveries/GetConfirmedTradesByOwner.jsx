@@ -23,6 +23,8 @@ const GetConfirmedTradesByOwner = () => {
     confirmedTradesOfOwner,
     updateConfirmedTrade,
   } = useContext(ProductContext);
+
+  
   const {user} = useContext(AuthContext);
   const [updatingTradeId, setUpdatingTradeId] = useState(null);
   const [locationInputs, setLocationInputs] = useState({}); // Store input values for each trade

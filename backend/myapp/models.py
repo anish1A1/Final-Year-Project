@@ -287,25 +287,66 @@ class CartPayment(CommonPayments):
         super().save(*args, **kwargs)
       
 
+      
 class CartDelivery(models.Model):
-    class DeliveryStatusChoices(models.TextChoices):
-        PROCESSING = 'processing', 'Processing'
-        DELIVERING = 'delivering', 'Delivering'
+    class DeliveryStatusChoicesOfCart(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        OWNER_TO_ADMIN = 'owner_to_admin', 'Owner to Admin'
+        ADMIN_RECEIVED = 'admin_received', 'Admin Received'
+        DELIVERING_TO_USER = 'delivering_to_user', 'Delivering to User'
         DELIVERED = 'delivered', 'Delivered'
         CANCELED = 'canceled', 'Canceled'
         
     cart_payment = models.OneToOneField(CartPayment, on_delete=models.CASCADE, related_name='cart_delivery')
-    delivery_date = models.DateField(null=True, blank=True)
-    delivery_time = models.TimeField(null=True, blank=True)
+    admin = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='admin_deliveries')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=50, choices=DeliveryStatusChoices.choices, default=DeliveryStatusChoices.PROCESSING)
-    item_location = models.CharField(max_length=255, default='Not available')
+    status = models.CharField(max_length=50, choices=DeliveryStatusChoicesOfCart.choices, default=DeliveryStatusChoicesOfCart.PENDING)
+    delivery_date = models.DateField(null=True, blank=True)
+    delivery_time = models.TimeField(null=True, blank=True)
     item_received_by_user = models.BooleanField(default=False)
+    delivery_location = models.CharField(max_length=50, default="Not Available")
+    def __str__(self):
+        return f"Delivery for Cart Payment ID: {self.cart_payment.id}, Status: {self.status}"
+
+    def check_all_received(self):
+        """
+        Check if all product owners have delivered their products.
+        If all are received, update the main delivery status.
+        """
+        if not self.cart_product_deliveries.filter(status=CartProductDelivery.DeliveryStatusChoices.OWNER_TO_ADMIN).exists():
+            self.status = self.DeliveryStatusChoicesOfCart.ADMIN_RECEIVED
+            self.save()
+
+            
+class CartProductDelivery(models.Model):
+    """
+    Tracks product owners handing over items to the admin.
+    Each product owner is responsible for delivering their products.
+    """
+    class DeliveryStatusChoicesOfOwner(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        OWNER_TO_ADMIN = 'owner_to_admin', 'Owner to Admin'
+        DELIVERED_TO_ADMIN = 'delivered_to_admin', 'Delivered to Admin'
+        
+    cart_delivery = models.ForeignKey(CartDelivery, on_delete=models.CASCADE, related_name='cart_product_deliveries')
+    product_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_deliveries')
+    status = models.CharField(max_length=50, choices=DeliveryStatusChoicesOfOwner.choices, default=DeliveryStatusChoicesOfOwner.PENDING)
+    handover_date = models.DateTimeField(null=True, blank=True)
     
     def __str__(self):
-        return f"Delivery for Cart Payment ID: {self.cart_payment.id}, Status: {self.status} by {self.user.username}"
-      
+        return f"Owner {self.product_owner.username} | Status: {self.status}"
+
+    def mark_received_by_admin(self):
+        """
+        Called when the admin confirms receiving all products from this owner.
+        """
+        self.status = self.DeliveryStatusChoicesOfCart.DELIVERED_TO_ADMIN
+        self.save()
+
+        # Check if all product owners have delivered their products
+        self.cart_delivery.check_all_received()
+
       
       
 class Trade(models.Model):

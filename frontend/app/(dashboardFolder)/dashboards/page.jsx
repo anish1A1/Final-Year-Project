@@ -7,6 +7,7 @@ import ToReceiveItem from './dashboardEquipment/ToReceiveItem/page';
 
 import Link from 'next/link';
 import GetConfirmedTradesByOwner from '../../components/Deliveries/GetConfirmedTradesByOwner';
+import UserCartDelivery from '../../components/Deliveries/cartDeliveries/UserCartDelivery';
 
 const DashboardPage = () => {
   return (
@@ -39,6 +40,9 @@ const DashboardPage = () => {
           <p>Your Deliveries</p>
           <GetConfirmedTradesByOwner />
 
+        </div>
+        <div className="mt-6">
+          <UserCartDelivery />
         </div>
       </div>
     </PrivateRoute>
