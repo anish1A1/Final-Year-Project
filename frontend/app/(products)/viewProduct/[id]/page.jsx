@@ -7,10 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { CartContext } from "../../../../utils/cart";
 
 const ViewProductById = () => {
   const { id } = useParams();
-  const { getProductById, loading, addToCart } = useContext(ProductContext);
+  const { getProductById, loading } = useContext(ProductContext);
+  const { addToCart } = useContext(CartContext);
   const [product, setProduct] = useState(null);
   const [productQty, setProductQty] = useState(1);
   const { user } = useContext(AuthContext);

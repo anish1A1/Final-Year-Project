@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RotateCcw, Package, MapPin, CheckCircle, Truck, User } from "lucide-react";
 import { toast } from "sonner";
-
+import { AuthContext } from "../../../utils/auth";
 const GetConfirmedTradesByOwner = () => {
   const {
     fetchConfirmedTradesByOwner,
@@ -23,14 +23,14 @@ const GetConfirmedTradesByOwner = () => {
     confirmedTradesOfOwner,
     updateConfirmedTrade,
   } = useContext(ProductContext);
-
+  const {user} = useContext(AuthContext);
   const [updatingTradeId, setUpdatingTradeId] = useState(null);
   const [locationInputs, setLocationInputs] = useState({}); // Store input values for each trade
   const [savingLocationId, setSavingLocationId] = useState(null); // Track saving state for location
 
   useEffect(() => {
     fetchConfirmedTradesByOwner();
-  }, []);
+  }, [user]);
 
   const handleStatusChange = async (id, newStatus) => {
     setUpdatingTradeId(id);

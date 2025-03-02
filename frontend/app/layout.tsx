@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "../utils/auth";
 import { EquipProvider } from "../utils/equip";
 import { ProductProvider } from "../utils/prod";
-
+import {CartProvider} from "../utils/cart";
 import { Toaster } from "sonner";
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
@@ -42,12 +42,18 @@ export default function RootLayout({
         <AuthProvider>
         <EquipProvider>
             <ProductProvider>
+              <CartProvider>
+
+              
               <Navbar />
                   <main className="flex-grow">
                   <Toaster position="top-center" />
             {children}
                 
                   </main>
+
+                  
+                  </CartProvider>
                 </ProductProvider>
               </EquipProvider>
         </AuthProvider>

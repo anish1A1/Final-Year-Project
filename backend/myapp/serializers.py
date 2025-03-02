@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Cart, CartPayment, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
+from .models import Cart, CartDelivery, CartPayment, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
 from .models import Trade, TradeRequest, ConfirmedTrade
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -231,16 +231,19 @@ class CartSerializer(serializers.ModelSerializer):
     
 class CartPaymentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source = 'user.username')
-    
+    email = serializers.ReadOnlyField(source = 'user.email')
+    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all())
     class Meta:
         model = CartPayment
         fields = '__all__'
         
-    # def create(self, validated_data):
-    #     payment = super().create(validated_data)
-    #     # if payment.status ==  CartPayment.PaymentStatusChoices.CLEARED:
-    #     CartDelivery.objects.create(cart=payment)
-    #     return payment
+    def create(self, validated_data):
+        user = self.context['request'].user
+        validated_data['user'] = user
+        payment = super().create(validated_data)
+        # if payment.status ==  CartPayment.PaymentStatusChoices.CLEARED:
+        CartDelivery.objects.create(cart_payment=payment)
+        return payment
         
     
         

@@ -274,7 +274,8 @@ class CartPayment(CommonPayments):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     delivery_address = models.CharField(max_length=255)
-    
+    updated_at = models.DateTimeField(auto_now=True)
+    # total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     def __str__(self):
         return f"Payment for Cart ID: {self.cart.id}, Status: {self.status} by {self.user.username}"      
       
@@ -294,9 +295,8 @@ class CartDelivery(models.Model):
         CANCELED = 'canceled', 'Canceled'
         
     cart_payment = models.OneToOneField(CartPayment, on_delete=models.CASCADE, related_name='cart_delivery')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    delivery_date = models.DateField()
-    delivery_time = models.TimeField()
+    delivery_date = models.DateField(null=True, blank=True)
+    delivery_time = models.TimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=DeliveryStatusChoices.choices, default=DeliveryStatusChoices.PROCESSING)

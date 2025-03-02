@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { ProductContext } from "../../../utils/prod";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CartContext } from "../../../utils/cart";
 
 const CartPage = () => {
   const {
@@ -20,100 +20,78 @@ const CartPage = () => {
     updateCartProductSelection,
     totalCartAmounts,
     fetchtotalCartAmount,
-  } = useContext(ProductContext);
+  } = useContext(CartContext);
 
   const [quantity, setQuantity] = useState({});
   const [selectedItems, setSelectedItems] = useState({});
-  const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchCart();
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchtotalCartAmount();
-    };
-    fetchData();
+    fetchCart();
+    fetchtotalCartAmount();
   }, []);
 
   useEffect(() => {
     const initialQuantities = {};
     const initialSelections = {};
-    if (cartItem) {
-      cartItem.forEach((item) => {
-        initialQuantities[item.id] = item.product_qty;
-        initialSelections[item.id] = item.is_selected;
-      });
-      setQuantity(initialQuantities);
-      setSelectedItems(initialSelections);
-    }
+    cartItem?.forEach((item) => {
+      initialQuantities[item.id] = item.product_qty;
+      initialSelections[item.id] = item.is_selected;
+    });
+    setQuantity(initialQuantities);
+    setSelectedItems(initialSelections);
   }, [cartItem]);
 
-  // Group products by product owner
-  const groupedCart = {};
-  if (cartItem) {
-    cartItem.forEach((item) => {
-        const owner = item.product.product_owner;
-        if (!groupedCart[owner]) {
-            groupedCart[owner] = [];
-        }
-        groupedCart[owner].push(item);
-    });
-  }
+  const groupedCart = cartItem?.reduce((acc, item) => {
+    const owner = item.product.product_owner;
+    acc[owner] = acc[owner] || [];
+    acc[owner].push(item);
+    return acc;
+  }, {});
 
-  const handleQuantityChange = (id, qty) => {
-    setQuantity((prevQuantities) => ({
-      ...prevQuantities,
-      [id]: qty,
-    }));
-  };
+  const handleQuantityChange = (id, qty) => setQuantity({ ...quantity, [id]: qty });
 
   const handleUpdateCart = async (id, product_id) => {
-    const product_qty = quantity[id];
-    const is_selected = selectedItems[id];
     try {
-      const response = await updateCart(id, product_qty, product_id, is_selected);
+      await updateCart(id, quantity[id], product_id, selectedItems[id]);
       await fetchtotalCartAmount();
-      toast.success(response.message);
-
+      toast.success("Cart updated successfully");
     } catch (error) {
-    //   setError(error.product_qty ? error.product_qty[0] : "Error updating quantity in cart.");
-      toast.error(error.product_qty ? error.product_qty[0] : "Error updating quantity in cart.");
-
-    //   console.error("Error updating cart:", error);
+        toast.error(error.product_qty ? error.product_qty[0] : "Error updating quantity in cart.");
+    //   toast.error("Error updating cart");
     }
   };
 
   const handleRemoveFromCart = async (id) => {
     try {
-      const data = await removeFromCart(id);
+      await removeFromCart(id);
       await fetchtotalCartAmount();
-      toast.success(data.message);
+      toast.success("Item removed from cart");
     } catch (error) {
-      setError(error.message);
-      console.error("Error removing item from cart:", error);
+      toast.error("Error removing item from cart");
     }
   };
 
   const toggleSelection = async (id, product_id) => {
     const newSelection = { ...selectedItems, [id]: !selectedItems[id] };
     setSelectedItems(newSelection);
-
-    const is_selected = newSelection[id];
-
     try {
-      const response = await updateCartProductSelection(id, is_selected, product_id);
+      await updateCartProductSelection(id, newSelection[id], product_id);
       await fetchtotalCartAmount();
-      toast.success(response.message);
+      toast.success("Selection updated");
     } catch (error) {
-      setError(error.message || "Error selecting product in cart.");
-      toast.error(error.message || "Error selecting product in cart.");
+      toast.error("Error selecting product");
     }
   };
+
+  const handleCheckout = (cartId) => {
+    if (!cartId) {
+      console.error("Cart ID is missing!");
+      return;
+    }
+    router.push(`/cart/makePayment?id=${cartId}`);
+  };
+    
 
   if (loading) {
     return (
@@ -125,35 +103,24 @@ const CartPage = () => {
 
   return (
     <div className="container mx-auto mt-24 p-8 bg-gray-50 rounded-lg shadow-xl">
-      <h1 className="text-4xl font-bold text-center mb-6 text-gray-900">🛒 Your Shopping Cart</h1>
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-
-      {cartItem && cartItem.length > 0 ? (
+      <h1 className="text-4xl font-bold text-center mb-6">🛒 Your Shopping Cart</h1>
+      {cartItem?.length ? (
         <div className="grid gap-4">
-          {Object.keys(groupedCart).map((owner) => (
+          {Object.entries(groupedCart || {}).map(([owner, items]) => (
             <div key={owner} className="bg-white p-4 rounded-lg shadow-lg border">
-              {/* Product Owner Name */}
-              <h2 className="text-2xl font-semibold text-gray-800 border-b pb-2 mb-4">
-                👤 Sold by: {owner}
-              </h2>
-
-              {groupedCart[owner].map((item) => (
+              <h2 className="text-2xl font-semibold border-b pb-2 mb-4">👤 Sold by: {owner}</h2>
+              {items.map((item) => (
                 <Card key={item.id} className="flex flex-col lg:flex-row gap-6 p-3 shadow-md border mb-4">
-                  {/* Product Image */}
                   <div className="w-full lg:w-1/4">
-                    <img src={item.product.product_image} alt={item.product.name} className="w-full h-32 object-cover rounded-lg shadow-sm" />
+                    <img src={item.product.product_image} alt={item.product.name} className="w-full h-32 object-cover rounded-lg" />
                   </div>
-
-                  {/* Product Details */}
                   <div className="flex-1">
                     <CardHeader>
                       <CardTitle className="text-xl font-semibold">{item.product.name}</CardTitle>
                       <p className="text-gray-600 text-lg">Price: Rs. {item.product.selling_price}</p>
                       <p className="text-gray-500 text-sm">Delivery Charge: Rs. {item.product.delivery_sell_charge}</p>
                     </CardHeader>
-
                     <CardContent className="flex flex-col gap-4">
-                      {/* Quantity Input */}
                       <div className="flex items-center gap-3">
                         <span className="text-gray-700 font-medium">Quantity:</span>
                         <Input
@@ -164,26 +131,18 @@ const CartPage = () => {
                           min="1"
                           max={item.product.quantity}
                         />
-                        <Button size="sm" onClick={() => handleUpdateCart(item.id, item.product.id)} className="bg-blue-500 hover:bg-blue-700 text-white">
+                        <Button size="sm" onClick={() => handleUpdateCart(item.id, item.product.id)} className="bg-blue-500 text-white">
                           Update
                         </Button>
                       </div>
-
-                      {/* Selection Checkbox */}
                       <div className="flex items-center gap-3">
                         <Checkbox id={`select-${item.id}`} checked={selectedItems[item.id]} onCheckedChange={() => toggleSelection(item.id, item.product.id)} />
-                        <label htmlFor={`select-${item.id}`} className="cursor-pointer text-gray-700">
-                          {selectedItems[item.id] ? "Deselect" : "Select"}
-                        </label>
+                        <label htmlFor={`select-${item.id}`} className="cursor-pointer">{selectedItems[item.id] ? "Deselect" : "Select"}</label>
                       </div>
-
-                      {/* Remove Button */}
                       <Button onClick={() => handleRemoveFromCart(item.id)} variant="destructive" className="w-full lg:w-auto">
                         Remove
                       </Button>
-
-                      {/* Total Cost */}
-                      <p className="text-lg font-semibold text-gray-800">Total Cost: Rs. {item.total_cost}</p>
+                      <p className="text-lg font-semibold">Total Cost: Rs. {item.total_cost}</p>
                     </CardContent>
                   </div>
                 </Card>
@@ -192,27 +151,17 @@ const CartPage = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-lg text-gray-700">Your cart is empty.</p>
+        <p className="text-center text-lg">Your cart is empty.</p>
       )}
-
-      {/* Total Cart Amount */}
-      {totalCartAmounts && totalCartAmounts.total_cost ? (
-        <div className="mt-6 text-center text-lg font-semibold text-gray-900">
-          🏷️ Total Amount: Rs. <span className="text-blue-600">{totalCartAmounts.total_cost}</span>
+      {cartItem?.length > 0 && (
+        <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg py-4 border-t flex justify-between px-6 items-center">
+            <p className="text-xl font-semibold">Total Amount: Rs. {totalCartAmounts.total_cost}</p>
+            <Button className="bg-green-500 text-white" onClick={() => handleCheckout(cartItem[0]?.id)}>
+            Checkout
+            </Button>
         </div>
-      ) : (
-        <p className="text-center text-lg text-gray-700 mt-6">Total Amount: Null</p>
-      )}
+    )}
 
-      {/* Checkout Button */}
-      <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg py-4 border-t flex justify-between px-6 items-center">
-        <p className="text-xl font-semibold">
-          Total Amount: Rs. <span className="text-blue-600 ml-0.5">{totalCartAmounts?.total_cost || "0.00"}</span>
-        </p>
-        <Button className="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-700">
-          <Link href="/cart/makePayment">Make Payment</Link>
-        </Button>
-      </div>
     </div>
   );
 };

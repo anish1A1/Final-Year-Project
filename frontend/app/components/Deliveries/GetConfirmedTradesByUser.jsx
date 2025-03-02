@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useContext } from "react";
 import { ProductContext  } from "../../../utils/prod";
+import { AuthContext } from "../../../utils/auth";
+
 import {
   Card,
   CardContent,
@@ -23,10 +25,11 @@ const GetConfirmedTradesByUser = () => {
   } = useContext(ProductContext);
 
   const [updatingTradeId, setUpdatingTradeId] = useState(null);
+  const {user} = useContext(AuthContext);
   
   useEffect(() => {
     fetchAllConfirmedTradesOfUser();
-  }, []);
+  }, [user]);
 
   const handleItemReceivedChange = async (id, newValue) => {
     setUpdatingTradeId(id);

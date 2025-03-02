@@ -294,7 +294,8 @@ class CartTotalCostView(APIView):
     
     def get(self, request):
         total_cost = get_total_cart_cost(request.user)
-        return Response({"total_cost": total_cost})
+        email = request.user.email
+        return Response({"total_cost": total_cost, "email": email})
     
 
 class CartPaymentListCreateView(generics.ListCreateAPIView):
