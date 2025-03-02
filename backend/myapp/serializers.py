@@ -238,8 +238,8 @@ class CartPaymentSerializer(serializers.ModelSerializer):
         
     # def create(self, validated_data):
     #     payment = super().create(validated_data)
-    #     if payment.status ==  CartPayment.PaymentStatusChoices.CLEARED:
-    #         EquipmentDelivery.objects.create(equipment_payment=payment)
+    #     # if payment.status ==  CartPayment.PaymentStatusChoices.CLEARED:
+    #     CartDelivery.objects.create(cart=payment)
     #     return payment
         
     

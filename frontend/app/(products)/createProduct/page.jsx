@@ -27,7 +27,7 @@ const CreateProduct = () => {
         original_price : 0,
         selling_price : 0,
         tag: '',
-        delivery_sell_charge : 0,
+        delivery_sell_charge : 75,
         category: ''
     });
 
@@ -53,7 +53,7 @@ const CreateProduct = () => {
         e.preventDefault();
         try {
             const response = await createProduct(formData, category, router);
-            toast.success(response.message);
+            toast.success(response.message || "Product created successfully!");
         } catch (error) {
             console.log(error);
             toast.error(error.message || 'Something went wrong');
@@ -171,7 +171,8 @@ const CreateProduct = () => {
                 value={formData.delivery_sell_charge} 
                 onChange={handleChange} 
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                required 
+                // required 
+                disabled
             />
         </div>
         <div className="mb-4">

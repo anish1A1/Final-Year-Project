@@ -1,3 +1,4 @@
+from collections import defaultdict
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
@@ -181,7 +182,8 @@ class Product(models.Model):
     trending = models.BooleanField(default = False, help_text = "0=default, 1=Trending")
     tag= models.CharField(max_length=150, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)         #This field stores the date and time when the category was created.
-    delivery_sell_charge = models.DecimalField(max_digits=10, decimal_places=2)
+    delivery_sell_charge = models.DecimalField(max_digits=10, decimal_places=2, default=125.00)
+    
     
     def __str__(self):           #This method returns a string representation of the category object.
         return self.name
@@ -211,7 +213,9 @@ class Cart(models.Model):
         try:
             qty = int(self.product_qty)
             price = Decimal(self.product.selling_price)
-            return price * qty
+            # delivery_charge = Decimal(self.product.delivery_sell_charge)
+            return price * qty         # Delivery charge will be handled separately
+        
         except (ValueError, TypeError):
             return Decimal('0.00')
         
@@ -221,16 +225,55 @@ class Cart(models.Model):
 
     # This classmethod describes it is a method of the class
 #  Helper function to get the total cost of **all selected products**
+
+# Function to calculate total cart cost while ensuring delivery charge is added only once per product owner
 def get_total_cart_cost(user):
-    return sum(cart_item.total_cost for cart_item in Cart.objects.filter(user=user, is_selected=True))
-        # This  returns the total cost of all selected cart items for the specified user.
-   
+
+    cart_items =Cart.objects.filter(user=user, is_selected=True)
     
+    total_price = Decimal('0.00')
+    
+    # Python Defaultdict is a container-like dictionaries present in the module collections.
+# It is a sub-class of the dictionary class that returns a dictionary-like object.
+# The difference from dictionary is, It provides a default value for the key that does not exist and never raises a KeyError.
+    deliver_charge_per_owner = defaultdict(lambda: Decimal('0.00'))
+    
+    for item in cart_items:
+        total_price += item.total_cost
+        owner = item.product.user
+        
+        # Remember it is in for loop. i.e. for each product in cart the this loop is running 
+        # Add the delivery charge only once per product owner
+        if deliver_charge_per_owner[owner] == Decimal('0.00') :
+            deliver_charge_per_owner[owner] = item.product.delivery_sell_charge
+            # Adds the delivery charge only once per unique owner when summing up the total.
+            
+    total_price += sum(deliver_charge_per_owner.values())
+    return total_price
+        # This  returns the total cost of all selected cart items for the specified user.
+
+# Previous Calculation (Wrong)
+# (2 * $100) + $50 (Owner A Delivery)
+# + (1 * $200) + $75 (Owner B Delivery)
+# = $200 + $50 + $200 + $75
+# = **$525**
+
+# New Calculation (Correct)
+
+# (2 * $100) + (1 * $200)
+# + $50 (One-time Owner A Delivery)
+# + $75 (One-time Owner B Delivery)
+# = $200 + $200 + $50 + $75
+# = **$525**
+
+
+
       
 class CartPayment(CommonPayments):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_payment')
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    delivery_address = models.CharField(max_length=255)
     
     def __str__(self):
         return f"Payment for Cart ID: {self.cart.id}, Status: {self.status} by {self.user.username}"      
@@ -241,6 +284,27 @@ class CartPayment(CommonPayments):
             self.status = self.PaymentStatusChoices.CLEARED
             self.payment_type = self.PaymentTypeChoices.ONLINE
         super().save(*args, **kwargs)
+      
+
+class CartDelivery(models.Model):
+    class DeliveryStatusChoices(models.TextChoices):
+        PROCESSING = 'processing', 'Processing'
+        DELIVERING = 'delivering', 'Delivering'
+        DELIVERED = 'delivered', 'Delivered'
+        CANCELED = 'canceled', 'Canceled'
+        
+    cart_payment = models.OneToOneField(CartPayment, on_delete=models.CASCADE, related_name='cart_delivery')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    delivery_date = models.DateField()
+    delivery_time = models.TimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=50, choices=DeliveryStatusChoices.choices, default=DeliveryStatusChoices.PROCESSING)
+    item_location = models.CharField(max_length=255, default='Not available')
+    item_received_by_user = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Delivery for Cart Payment ID: {self.cart_payment.id}, Status: {self.status} by {self.user.username}"
       
       
       

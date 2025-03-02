@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from .serializers import CartSerializer, CategorySerializer, ConfirmedTradeSerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer, TradeRequestSerializer
+from .serializers import CartPaymentSerializer, CartSerializer, CategorySerializer, ConfirmedTradeSerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer, TradeRequestSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +11,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from .permissions import HasRole, IsOwner, IsEquipmentOwner, IsProductOwner
 from rest_framework import viewsets
 from rest_framework import generics
-from .models import Cart, Category, ConfirmedTrade, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest, get_total_cart_cost
+from .models import Cart, CartPayment, Category, ConfirmedTrade, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest, get_total_cart_cost
 from rest_framework import serializers
 
 # Create your views here.
@@ -296,7 +296,14 @@ class CartTotalCostView(APIView):
         total_cost = get_total_cart_cost(request.user)
         return Response({"total_cost": total_cost})
     
+
+class CartPaymentListCreateView(generics.ListCreateAPIView):
+    queryset = CartPayment.objects.all()
+    serializer_class = CartPaymentSerializer
+    permission_classes = [IsAuthenticated]
     
+    def get_serializer_context(self):
+        return {"request": self.request}
     
     
     

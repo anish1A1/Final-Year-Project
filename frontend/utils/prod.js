@@ -69,6 +69,7 @@ export const ProductProvider = ({children}) => {
                 response.data
             ]);
             router.push('/viewProduct');
+            return {status : "success", message: "Product has been created successfully!"}
         } catch (error) {
             console.log(`Error creating product: ${error}`);
             setError(error.response?.data || error.message);
@@ -311,6 +312,25 @@ export const ProductProvider = ({children}) => {
             setLoading(false);
         };
     };
+
+    const createPaymentOfCart = async (formData) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post('/api/cart/payment/', formData, {
+                headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                },
+            });
+            console.log(response.data);
+            return {status: "success", message : "Payment Successfull!"};
+
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Doing Payment: ${errorMessage}`);
+            throw error.response?.data;
+        }
+    }
 
 
 

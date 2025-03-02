@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView, CategoryView, ProductListCreateView, CategoryView, ProductOwnerListView,ProductListUpdateDeleteView, TradeListCreateView, TradeRequestListCreateView
+from .views import CartPaymentListCreateView, EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView, CategoryView, ProductListCreateView, CategoryView, ProductOwnerListView,ProductListUpdateDeleteView, TradeListCreateView, TradeRequestListCreateView
 from .views import CartListCreateView, CartDetailView, TradeAllListView, TradeRequestOwnersUpdateView, TradeRequestOwnersListView
 from .views import ConfirmedTradeListByOwnerView, ConfirmedTradeUpdateByOwnerView, ConfirmedTradeListView, ConfirmedTradeUpdateByUser, CartTotalCostView
 urlpatterns = [
@@ -21,6 +21,8 @@ urlpatterns = [
     path('cart/', CartListCreateView.as_view(), name='cart-list-create'),
     path('cart/<int:pk>/', CartDetailView.as_view(), name='cart-detail'),
     path('cart/total-cost/', CartTotalCostView.as_view(), name='cart-total-cost'),
+    path('cart/payment/', CartPaymentListCreateView.as_view(), name='cart-payment-list-create'),
+    
     
     
     path('trades/', TradeListCreateView.as_view(), name='trade-list-create'),
