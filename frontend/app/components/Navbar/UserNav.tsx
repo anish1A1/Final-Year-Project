@@ -10,6 +10,7 @@ const UserNav = () => {
     const { user, logout } = useContext(AuthContext);
     const router = useRouter();
     const [isFarmer, setIsFarmer] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         if (user && user.user_roles) {
@@ -17,6 +18,12 @@ const UserNav = () => {
             const farmerRole = user.user_roles.some((role: { role: { name: string; }; }) => role.role.name === 'farmer');
            
             setIsFarmer(farmerRole);
+        }
+        if (user && user.user_roles) {
+            
+            const adminRole = user.user_roles.some((role: { role: { name: string; }; }) => role.role.name === 'admin');
+           
+            setIsAdmin(adminRole);
         }
     }, [user]);
 
@@ -50,6 +57,13 @@ const UserNav = () => {
                                      
                                      <MenuLink label="Product Dashboard" onClick={() => {
                                         router.push('/productDashboard');
+                                        setIsOpen(false);  // This will close the Menu
+                                    }} />
+                            ) : null}
+                            {isAdmin ?(
+                                     
+                                     <MenuLink label="Admin Dashboard" onClick={() => {
+                                        router.push('/dashboards/adminDashboard');
                                         setIsOpen(false);  // This will close the Menu
                                     }} />
                             ) : null}

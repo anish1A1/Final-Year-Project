@@ -271,6 +271,7 @@ class CartProductDeliverySerializer(serializers.ModelSerializer):
 class CartDeliverySerializer(serializers.ModelSerializer):
     cart_product_deliveries = CartProductDeliverySerializer(many=True, read_only=True)
     cart_payment = CartPaymentSerializer(read_only=True)
+    admin_username = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = CartDelivery
         fields = '__all__'
@@ -279,12 +280,18 @@ class CartDeliverySerializer(serializers.ModelSerializer):
         """
         Custom update logic to handle delivery status changes.
         """
+        
+        if not instance.admin:
+            instance.admin = self.context['request'].user 
+        
         instance.status = validated_data.get('status', instance.status)
         instance.delivery_date = validated_data.get('delivery_date', instance.delivery_date)
-        instance.delivery_time = validated_data.get('delivery_time', instance.delivery_time)
         instance.item_received_by_user = validated_data.get('item_received_by_user', instance.item_received_by_user)
         instance.save()
         return instance
+    
+    def get_admin_username(self, obj):
+        return obj.admin.username
     
         
         

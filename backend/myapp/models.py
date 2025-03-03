@@ -32,7 +32,15 @@ class UserRole(models.Model):
         
     def __str__(self):
         return self.user.username + ' ' + self.role.name    
-        
+    
+    def is_user(self):
+        return self.role.name == 'user'
+
+    def is_admin(self):
+        return self.role.name == 'admin'
+
+    def is_farmer(self):
+        return self.role.name == 'farmer'
         
 class FarmerProfile(models.Model):
     user_role = models.OneToOneField(UserRole, on_delete=models.CASCADE, related_name='Farmer_Profile')
@@ -317,6 +325,10 @@ class CartDelivery(models.Model):
         if not self.cart_product_deliveries.filter(status=CartProductDelivery.DeliveryStatusChoices.OWNER_TO_ADMIN).exists():
             self.status = self.DeliveryStatusChoicesOfCart.ADMIN_RECEIVED
             self.save()
+            
+    @property
+    def admin_username(self):
+        return self.admin.username
 
             
 class CartProductDelivery(models.Model):

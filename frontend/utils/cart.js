@@ -13,7 +13,7 @@ export const CartProvider = ({children}) => {
     const [paymentByUser, setPaymentByUser] = useState([]);
     const [cartDeliveries, setCartDeliveries] = useState([]);
     const [productDeliveries, setProductDeliveries] = useState([]);
-    
+    const [cartDeliveriesForAdmin, setCartDeliveriesForAdmin] = useState([]);
     const {user} = useContext(AuthContext);
     
 
@@ -194,6 +194,80 @@ export const CartProvider = ({children}) => {
         }
     };
 
+    const fetchCartDeliveriesForAdmin = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`/api/cart-deliveries-admin/`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setCartDeliveriesForAdmin(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error("Error fetching cart deliveries:", error.response?.data || error.message);
+            throw error.response?.data;
+        } finally{
+            setLoading(false);
+        }
+    };
+
+    const addAdminToCartDelivery = async (id, user) => {
+
+    const token = localStorage.getItem('token');
+        try {
+            const response = await axios.patch(`/api/cart-deliveries/${id}/`, user, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                }
+            });
+            setCartDeliveriesForAdmin((prevDeliveries) => {
+                return prevDeliveries.map((delivery) => {
+                    if (delivery.id === id) {
+                        return response.data;
+                    }
+                    return delivery;
+                });
+
+            }); 
+            return {staus: "success", message: "Updated the Cart Delivery Successfully!"};
+        } catch (error) {
+            console.error("Error updating cart deliveries:", error.response?.data || error.message);
+            throw error.response?.data;
+        }
+    };
+
+
+
+    const updateCartDeliveryByAdmin = async (id, data) => {
+
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.put(`/api/cart-deliveries/${id}/`, data, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                }
+            });
+            setCartDeliveriesForAdmin((prevDeliveries) => {
+                return prevDeliveries.map((delivery) => {
+                    if (delivery.id === id) {
+                        return response.data;
+                    }
+                    return delivery;
+                });
+
+            }); 
+            return {staus: "success", message: "Updated the Cart Delivery Successfully!"};
+        } catch (error) {
+            console.error("Error updating cart deliveries:", error.response?.data || error.message);
+            throw error.response?.data;
+        }
+    }
+    
+    
+
+
+
     // Fetch all product deliveries
     const fetchProductDeliveries = async () => {
         try {
@@ -253,6 +327,7 @@ const cartContext = useMemo(() => ({
     paymentByUser,
     cartDeliveries,
     productDeliveries,
+    cartDeliveriesForAdmin,
     fetchCart,
     addToCart,
     updateCart,
@@ -260,13 +335,15 @@ const cartContext = useMemo(() => ({
     removeFromCart,
     fetchtotalCartAmount,
     createPaymentOfCart,
-    
+    fetchCartDeliveriesForAdmin,
     fetchCartDeliveries,
     fetchProductDeliveries,
     markProductReceivedByAdmin,
-    updateCartDelivery
+    updateCartDelivery,
+    updateCartDeliveryByAdmin,
+    addAdminToCartDelivery,
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}),[cartItem, totalCartAmounts, paymentByUser, loading, cartDeliveries, productDeliveries]);
+}),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries, productDeliveries]);
 
     return (
         <CartContext.Provider value={cartContext}>

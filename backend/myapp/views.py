@@ -333,8 +333,7 @@ class CartDeliveryAdminListCreateView(generics.ListCreateAPIView):
     serializer_class = CartDeliverySerializer
     permission_classes = [IsAuthenticated]
     
-    def perform_create(self, serializer):
-        serializer.save(admin=self.request.user)
+
     
 class CartDeliveryDetailView(generics.RetrieveUpdateAPIView):
     """
@@ -343,6 +342,24 @@ class CartDeliveryDetailView(generics.RetrieveUpdateAPIView):
     queryset = CartDelivery.objects.all()
     serializer_class = CartDeliverySerializer
     permission_classes = [IsAuthenticated]
+    
+    def partial_update(self, request, *args, **kwargs):
+        """
+        Custom partial update logic to handle setting admin.
+        """
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if not instance.admin:
+            instance.admin = self.request.user  # Set the admin if it's not already set
+            instance.save()  # Save the instance again to update the admin field
+
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()  # Save the instance
 
 
 class CartProductDeliveryListCreateView(generics.ListCreateAPIView):
