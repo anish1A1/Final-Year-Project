@@ -232,8 +232,8 @@ class CartSerializer(serializers.ModelSerializer):
 class CartPaymentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source = 'user.username')
     email = serializers.ReadOnlyField(source = 'user.email')
-    cart_id = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all())
-    cart = CartSerializer(read_only=True)
+    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all())
+    cart_name = CartSerializer(read_only=True, source='cart')
     class Meta:
         model = CartPayment
         fields = '__all__'
@@ -291,7 +291,9 @@ class CartDeliverySerializer(serializers.ModelSerializer):
         return instance
     
     def get_admin_username(self, obj):
-        return obj.admin.username
+        return obj.admin.username if obj.admin else None
+    
+
     
         
         

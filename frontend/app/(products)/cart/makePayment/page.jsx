@@ -50,7 +50,7 @@ const MakePayment = () => {
 
     try {
       const data = {
-        cart_id: cartID,
+        cart: cartID,
         payment_method: paymentMethod,
         delivery_address: location,
         amount: totalCartAmounts?.total_cost || 0,

@@ -322,9 +322,35 @@ class CartDeliveryListCreateView(generics.ListAPIView):
         return CartDelivery.objects.filter(cart_payment__user=self.request.user).order_by('-created_at')
 
     def perform_create(self, serializer):
-        serializer.save(admin=self.request.user)
+        
+        """
+        Create a CartDelivery instance and automatically generate
+        CartProductDelivery instances for each product owner in the cart.
+        """
+        cart_delivery = serializer.save(admin=self.request.user)
 
+        cart_products = cart_delivery.cart_payment.cart.cart_items.all()         # This will Fetch all cart items
 
+        product_owner_mapping = {}  # Dictionary to store products grouped by owner
+        
+        for cart_item in cart_products:
+            product = cart_item.product
+            owner = product.user  
+            
+            if owner not in product_owner_mapping:
+                product_owner_mapping[owner] = []
+            
+            product_owner_mapping[owner].append(cart_item)
+        # Create CartProductDelivery instances for each product owner
+        for owner, items in product_owner_mapping.items():
+            cart_product_delivery = CartProductDelivery.objects.create(
+                cart_delivery=cart_delivery,
+                owner=owner
+            )
+            cart_product_delivery.products.set([item.product for item in items])  # Associate products
+
+        return cart_delivery
+        
 class CartDeliveryAdminListCreateView(generics.ListCreateAPIView):
     """
     Get all deliveries or create a new delivery By the Admin.
@@ -332,6 +358,8 @@ class CartDeliveryAdminListCreateView(generics.ListCreateAPIView):
     queryset = CartDelivery.objects.all()
     serializer_class = CartDeliverySerializer
     permission_classes = [IsAuthenticated]
+    
+
     
 
     
@@ -366,9 +394,12 @@ class CartProductDeliveryListCreateView(generics.ListCreateAPIView):
     """
     Get all product deliveries or create a new one.
     """
-    queryset = CartProductDelivery.objects.all()
+    # queryset = CartProductDelivery.objects.all()
     serializer_class = CartProductDeliverySerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return CartDelivery.objects.filter(cart_payment__cart__product__user=self.request.user).order_by('-created_at')
 
 
 class CartProductDeliveryDetailView(generics.RetrieveUpdateAPIView):
