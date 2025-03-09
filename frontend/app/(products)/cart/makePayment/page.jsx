@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Loader2, AlertCircle } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-
+import { useSearchParams, useRouter } from "next/navigation";
 const MakePayment = () => {
 
   const { totalCartAmounts, fetchtotalCartAmount, createPaymentOfCart } = useContext(CartContext);
@@ -18,8 +17,8 @@ const MakePayment = () => {
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
   const [location, setLocation] = useState("");
-  const [cartID, setCartId] = useState(null);
-
+  const [cartIDs, setCartIds] = useState([]);
+  const router = useRouter();
 
 
   useEffect(() => {
@@ -28,10 +27,12 @@ const MakePayment = () => {
 
   
   useEffect(() => {
-    const id = searchParams.get("id");
-    setCartId(id);
+    const id = searchParams.getAll("id");
+    console.log("IDs are: " + JSON.stringify(id));
     
-    if (!id) {
+    if (id) {
+      setCartIds(id); // Convert to array for ManyToMany support
+    } else {
       toast.error("Cart ID is missing!");
       console.error("Cart ID is missing!");
     }
@@ -50,7 +51,7 @@ const MakePayment = () => {
 
     try {
       const data = {
-        cart: cartID,
+        cart: cartIDs,
         payment_method: paymentMethod,
         delivery_address: location,
         amount: totalCartAmounts?.total_cost || 0,
@@ -58,9 +59,11 @@ const MakePayment = () => {
 
       await createPaymentOfCart(data);
       toast.success("Payment Successful!");
+      router.push("/cart/successOrderPage")
+
     } catch (err) {
       setError("Payment failed. Please try again.");
-      toast.error("Payment failed!");
+      toast.error("Payment failed!", err.message);
     } finally {
       setProcessing(false);
     }

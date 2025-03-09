@@ -243,8 +243,9 @@ class CartPaymentSerializer(serializers.ModelSerializer):
         carts = validated_data.pop('cart')   #Extracting the cart items before saving
         validated_data['user'] = user
         payment = CartPayment.objects.create(**validated_data)
-        #Add all cart items to the ManyToManyField
-        payment.set(carts)
+
+        # Set ManyToMany carts
+        payment.cart.set(carts)
         CartDelivery.objects.create(cart_payment=payment)
         return payment
         

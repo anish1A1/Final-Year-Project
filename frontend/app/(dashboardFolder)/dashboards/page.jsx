@@ -36,12 +36,9 @@ const DashboardPage = () => {
           Go To page for Receiving Item
         </Link>
 
-        <div className="mt-8">
-          <p>Your Deliveries</p>
-          <GetConfirmedTradesByOwner />
 
-        </div>
         <div className="mt-6">
+          <Link href='/dashboards/productOrders'>Ordered Products</Link>
           <UserCartDelivery />
         </div>
       </div>

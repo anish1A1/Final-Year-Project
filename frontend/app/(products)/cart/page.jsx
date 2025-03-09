@@ -84,13 +84,18 @@ const CartPage = () => {
     }
   };
 
-  const handleCheckout = (cartId) => {
-    if (!cartId) {
-      console.error("Cart ID is missing!");
+  const handleCheckout = () => {
+    const selectedCartIds = Object.keys(selectedItems).filter((id) => selectedItems[id]);
+  
+    if (selectedCartIds.length === 0) {
+      toast.error("Please select at least one item to proceed to checkout.");
       return;
     }
-    router.push(`/cart/makePayment?id=${cartId}`);
+  
+    const queryString = selectedCartIds.map((id) => `id=${id}`).join("&");
+    router.push(`/cart/makePayment?${queryString}`);
   };
+  
     
 
   if (loading) {
@@ -156,7 +161,7 @@ const CartPage = () => {
       {cartItem?.length > 0 && (
         <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg py-4 border-t flex justify-between px-6 items-center">
             <p className="text-xl font-semibold">Total Amount: Rs. {totalCartAmounts.total_cost}</p>
-            <Button className="bg-green-500 text-white" onClick={() => handleCheckout(cartItem[0]?.id)}>
+            <Button className="bg-green-500 text-white" onClick={() => handleCheckout()}>
             Checkout
             </Button>
         </div>

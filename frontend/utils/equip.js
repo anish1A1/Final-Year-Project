@@ -300,7 +300,7 @@ export const EquipProvider = ({children}) => {
             console.error(`Error fetching deliveries: ${error}`);
             throw error.response?.data;
         } finally {
-            setFetching(false);
+            setLoading(false);
         }
     };
     

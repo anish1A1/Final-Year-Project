@@ -172,6 +172,7 @@ export const CartProvider = ({children}) => {
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error(`Error Doing Payment: ${errorMessage}`);
+            console.error( error.table());
             throw error.response?.data;
         }
     };

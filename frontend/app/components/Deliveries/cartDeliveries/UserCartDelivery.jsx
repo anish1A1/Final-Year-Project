@@ -37,7 +37,7 @@ const UserCartDelivery = () => {
   return (
     <div className="mt-8 p-6 bg-gray-100 min-h-screen">
           <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
-            📦 Your Confirmed Trades
+            📦 Your Ordered Product Deliveries
           </h1>
     
           {loading ? (
@@ -110,8 +110,17 @@ const UserCartDelivery = () => {
 
                     <p className="text-gray-600 flex items-center gap-2 mt-2">
                       <User className="w-4 h-4 text-purple-500" />
-                      <strong>Providing By:</strong> {items.admin_username.charAt(0).toUpperCase() + items.admin_username.slice(1)  || "Not Available"}
+                      {items.admin_username ? (
+                        <>
+                          <strong>Providing By:</strong> {items.admin_username.charAt(0).toUpperCase() + items.admin_username.slice(1)}
+                        </>
+                      ) : (
+                        <>
+                        <strong>Providing User:</strong> Not Available
+                        </>
+                      )}
                     </p>
+
 
                     <p className="text-gray-600 flex items-center gap-2 mt-2">
                       <RotateCcw className="w-4 h-4 text-purple-500" />
@@ -122,6 +131,9 @@ const UserCartDelivery = () => {
     
                     {/* Status Badge */}
                     <div className="mt-4 flex items-center gap-2">
+                    <p className="text-gray-600 flex items-center">
+                      <strong>Status: </strong> 
+                    </p>
                         <Badge variant="outline" className={`text-white py-1 px-3 rounded-lg ${statusColors[items.status] || "bg-gray-500"}`}>
                             {items.status.replace(/_/g, " ").charAt(0).toUpperCase() + items.status.slice(1)}
                         </Badge>
