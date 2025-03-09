@@ -232,17 +232,19 @@ class CartSerializer(serializers.ModelSerializer):
 class CartPaymentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source = 'user.username')
     email = serializers.ReadOnlyField(source = 'user.email')
-    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all())
-    cart_name = CartSerializer(read_only=True, source='cart')
+    cart = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all(), many=True)
+    cart_name = CartSerializer(read_only=True, many=True, source='cart')
     class Meta:
         model = CartPayment
         fields = '__all__'
         
     def create(self, validated_data):
         user = self.context['request'].user
+        carts = validated_data.pop('cart')   #Extracting the cart items before saving
         validated_data['user'] = user
-        payment = super().create(validated_data)
-        # if payment.status ==  CartPayment.PaymentStatusChoices.CLEARED:
+        payment = CartPayment.objects.create(**validated_data)
+        #Add all cart items to the ManyToManyField
+        payment.set(carts)
         CartDelivery.objects.create(cart_payment=payment)
         return payment
         

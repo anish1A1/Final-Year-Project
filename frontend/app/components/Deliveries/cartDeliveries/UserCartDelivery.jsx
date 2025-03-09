@@ -67,6 +67,7 @@ const UserCartDelivery = () => {
     
                     {/* Item Location */}
                     <p className="text-gray-600 flex items-center gap-2 mt-2">
+                    <MapPin className="w-4 h-4 text-blue-600" />
                       <strong>Item Location:</strong> {items.delivery_location || "Not available"}
                     </p>
     
@@ -109,7 +110,7 @@ const UserCartDelivery = () => {
 
                     <p className="text-gray-600 flex items-center gap-2 mt-2">
                       <User className="w-4 h-4 text-purple-500" />
-                      <strong>Providing By:</strong> {items.admin || "Not Available"}
+                      <strong>Providing By:</strong> {items.admin_username.charAt(0).toUpperCase() + items.admin_username.slice(1)  || "Not Available"}
                     </p>
 
                     <p className="text-gray-600 flex items-center gap-2 mt-2">

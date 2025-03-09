@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, Clock } from "lucide-react";
+import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns"
  
@@ -113,15 +113,23 @@ const AdminDashboard = () => {
                   <strong>Delivery Location:</strong> {delivery.cart_payment.delivery_address}
                 </p>
 
-                <p className="text-gray-600 flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-blue-600" />
-                  <strong>Delivery Item:</strong> {delivery.cart_payment.cart_name.product.name}
-                </p>
                 
                 <p className="text-gray-600 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-yellow-500" />
-                  <strong>Item Received By User:</strong> {delivery.item_received_by_user ? "Yes ✅" : "No ❌"}
+                  <MapPin className="w-4 h-4 text-blue-600" />
+                  <strong>Delivery Item:</strong> 
+                  {delivery.cart_payment.cart_name.length > 0 
+                    ? delivery.cart_payment.cart_name.map(item => item?.product?.name || "Undefined").join(", ") 
+                    : "Undefined"}
                 </p>
+
+                <p className="text-gray-600 flex items-center gap-2">
+                  <UsersRound className="w-4 h-4 text-blue-600" />
+                  <strong>Product Owners:</strong> 
+                  {delivery.cart_payment.cart_name.length > 0 
+                    ? delivery.cart_payment.cart_name.map(item => item?.product?.product_owner || "Undefined").join(", ") 
+                    : "Undefined"}
+                </p>
+
                 <p className="text-gray-600 flex items-center gap-2">
                   <RotateCcw className="w-4 h-4 text-purple-500" />
                   <strong>Last Updated:</strong> {new Date(delivery.updated_at).toLocaleString()}
