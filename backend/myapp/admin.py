@@ -1,5 +1,5 @@
 from django.contrib import admin
-from myapp.models import UserRole, Role, FarmerProfile, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Product, Category, Cart,Trade, TradeRequest, ConfirmedTrade, CartPayment, CartDelivery, CartProductDelivery
+from myapp.models import UserRole, Role, FarmerProfile, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Product, Category, Cart,Trade, TradeRequest, ConfirmedTrade, CartPayment, CartDelivery
 # Register your models here.
 
 admin.site.register(Role)
@@ -17,4 +17,3 @@ admin.site.register(TradeRequest)
 admin.site.register(ConfirmedTrade)
 admin.site.register(CartPayment)
 admin.site.register(CartDelivery)
-admin.site.register(CartProductDelivery)

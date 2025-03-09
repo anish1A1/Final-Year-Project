@@ -12,7 +12,6 @@ export const CartProvider = ({children}) => {
     const [loading, setLoading] = useState(true);
     const [paymentByUser, setPaymentByUser] = useState([]);
     const [cartDeliveries, setCartDeliveries] = useState([]);
-    const [productDeliveries, setProductDeliveries] = useState([]);
     const [cartDeliveriesForAdmin, setCartDeliveriesForAdmin] = useState([]);
     const {user} = useContext(AuthContext);
     
@@ -268,39 +267,6 @@ export const CartProvider = ({children}) => {
 
 
 
-    // Fetch all product deliveries
-    const fetchProductDeliveries = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`/api/cart-product-deliveries/`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            setProductDeliveries(response.data);
-        } catch (error) {
-            console.error("Error fetching product deliveries:", error.response?.data || error.message);
-            throw error.response?.data;
-        } finally{
-            setLoading(false);
-        }
-    };    
-
-    // Mark product as received by admin
-    const markProductReceivedByAdmin = async (id) => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post(`/api/cart-product-deliveries/${id}/mark-received/`, {}, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            setProductDeliveries(prevDeliveries =>
-                prevDeliveries.map(item => item.id === id ? { ...item, status: 'delivered_to_admin' } : item)
-            );
-            return response.data;
-        } catch (error) {
-            console.error("Error marking product as received:", error.response?.data || error.message);
-            throw error.response?.data || error.message;
-        }
-    };
-
      // Update cart delivery status
      const updateCartDelivery = async (id, status) => {
         try {
@@ -326,7 +292,6 @@ const cartContext = useMemo(() => ({
     loading,
     paymentByUser,
     cartDeliveries,
-    productDeliveries,
     cartDeliveriesForAdmin,
     fetchCart,
     addToCart,
@@ -337,13 +302,11 @@ const cartContext = useMemo(() => ({
     createPaymentOfCart,
     fetchCartDeliveriesForAdmin,
     fetchCartDeliveries,
-    fetchProductDeliveries,
-    markProductReceivedByAdmin,
     updateCartDelivery,
     updateCartDeliveryByAdmin,
     addAdminToCartDelivery,
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries, productDeliveries]);
+}),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries]);
 
     return (
         <CartContext.Provider value={cartContext}>

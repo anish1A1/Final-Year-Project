@@ -298,6 +298,9 @@ class CartPayment(CommonPayments):
       
 class CartDelivery(models.Model):
     class DeliveryStatusChoicesOfCart(models.TextChoices):
+        DELIVERED_TO_ADMIN = 'delivered_to_admin', 'Delivered to Admin'
+        DELIVERING_TO_ADMIN = 'delivering_to_admin', 'Delivering to Admin'
+        
         PENDING = 'pending', 'Pending'
         OWNER_TO_ADMIN = 'owner_to_admin', 'Owner to Admin'
         ADMIN_RECEIVED = 'admin_received', 'Admin Received'
@@ -314,50 +317,17 @@ class CartDelivery(models.Model):
     delivery_time = models.TimeField(null=True, blank=True)
     item_received_by_user = models.BooleanField(default=False)
     delivery_location = models.CharField(max_length=50, default="Not Available")
+    handover_date = models.DateTimeField(null=True, blank=True)
     def __str__(self):
         return f"Delivery for Cart Payment ID: {self.cart_payment.id}, Status: {self.status}"
 
-    def check_all_received(self):
-        """
-        Check if all product owners have delivered their products.
-        If all are received, update the main delivery status.
-        """
-        if not self.cart_product_deliveries.filter(status=CartProductDelivery.DeliveryStatusChoices.OWNER_TO_ADMIN).exists():
-            self.status = self.DeliveryStatusChoicesOfCart.ADMIN_RECEIVED
-            self.save()
+
             
     @property
     def admin_username(self):
         return self.admin.username
 
             
-class CartProductDelivery(models.Model):
-    """
-    Tracks product owners handing over items to the admin.
-    Each product owner is responsible for delivering their products.
-    """
-    class DeliveryStatusChoicesOfOwner(models.TextChoices):
-        PENDING = 'pending', 'Pending'
-        OWNER_TO_ADMIN = 'owner_to_admin', 'Owner to Admin'
-        DELIVERED_TO_ADMIN = 'delivered_to_admin', 'Delivered to Admin'
-        
-    cart_delivery = models.ForeignKey(CartDelivery, on_delete=models.CASCADE, related_name='cart_product_deliveries')
-    product_owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_deliveries')
-    status = models.CharField(max_length=50, choices=DeliveryStatusChoicesOfOwner.choices, default=DeliveryStatusChoicesOfOwner.PENDING)
-    handover_date = models.DateTimeField(null=True, blank=True)
-    
-    def __str__(self):
-        return f"Owner {self.product_owner.username} | Status: {self.status}"
-
-    def mark_received_by_admin(self):
-        """
-        Called when the admin confirms receiving all products from this owner.
-        """
-        self.status = self.DeliveryStatusChoicesOfCart.DELIVERED_TO_ADMIN
-        self.save()
-
-        # Check if all product owners have delivered their products
-        self.cart_delivery.check_all_received()
 
       
       

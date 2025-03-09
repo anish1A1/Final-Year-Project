@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Cart, CartDelivery, CartPayment, CartProductDelivery, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
+from .models import Cart, CartDelivery, CartPayment, Category, FarmerProfile, Product, UserRole, Role, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Role, UserRole
 from .models import Trade, TradeRequest, ConfirmedTrade
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -248,28 +248,10 @@ class CartPaymentSerializer(serializers.ModelSerializer):
         
 
 
-class CartProductDeliverySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CartProductDelivery
-        fields = '__all__'
 
-    def update(self, instance, validated_data):
-        """
-        Custom update logic to handle status changes.
-        """
-        instance.status = validated_data.get('status', instance.status)
-        instance.handover_date = validated_data.get('handover_date', instance.handover_date)
-        instance.save()
-
-        # If status is updated to 'delivered_to_admin', check all received
-        if instance.status == CartProductDelivery.DeliveryStatusChoices.DELIVERED_TO_ADMIN:
-            instance.cart_delivery.check_all_received()
-
-        return instance
 
 
 class CartDeliverySerializer(serializers.ModelSerializer):
-    cart_product_deliveries = CartProductDeliverySerializer(many=True, read_only=True)
     cart_payment = CartPaymentSerializer(read_only=True)
     admin_username = serializers.SerializerMethodField(read_only=True)
     class Meta:

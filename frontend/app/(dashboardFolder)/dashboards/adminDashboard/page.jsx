@@ -112,6 +112,12 @@ const AdminDashboard = () => {
                   <MapPin className="w-4 h-4 text-blue-600" />
                   <strong>Delivery Location:</strong> {delivery.cart_payment.delivery_address}
                 </p>
+
+                <p className="text-gray-600 flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-blue-600" />
+                  <strong>Delivery Item:</strong> {delivery.cart_payment.cart_name.product.name}
+                </p>
+                
                 <p className="text-gray-600 flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-yellow-500" />
                   <strong>Item Received By User:</strong> {delivery.item_received_by_user ? "Yes ✅" : "No ❌"}
