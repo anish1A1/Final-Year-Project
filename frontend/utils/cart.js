@@ -285,6 +285,20 @@ export const CartProvider = ({children}) => {
         }
     };
 
+    const fetchDeliveryProductOwner = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`/api/cart-deliveries/product-owner/`, {
+                headers: { 'Authorization': `Bearer ${token}`}
+            });
+            return response.data();
+
+        } catch (error) {
+            console.error("Error fetching the carts product owners who made product:", error.response?.data || error.message);
+            throw error.response?.data || error.message;
+        }
+    }
+
 
 
 const cartContext = useMemo(() => ({
@@ -306,6 +320,7 @@ const cartContext = useMemo(() => ({
     updateCartDelivery,
     updateCartDeliveryByAdmin,
     addAdminToCartDelivery,
+    fetchDeliveryProductOwner,
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries]);
 

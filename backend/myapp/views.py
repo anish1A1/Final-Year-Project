@@ -363,6 +363,14 @@ class CartDeliveryDetailView(generics.RetrieveUpdateAPIView):
 
 
 
+class CartDeliveryOwnerViewListView(generics.ListAPIView):
+    
+    def get_queryset(self):
+        return CartDelivery.objects.filter(cart_payment__cart__product__user=self.request.user)
+    
+
+    
+    
 
     
     
