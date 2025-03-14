@@ -62,8 +62,8 @@ const UserNav = () => {
                             ) : null}
                             {isAdmin ?(
                                      
-                                     <MenuLink label="Admin Dashboard" onClick={() => {
-                                        router.push('/dashboards/adminDashboard');
+                                     <MenuLink label="Admin Deliveries" onClick={() => {
+                                        router.push('/adminDashboard');
                                         setIsOpen(false);  // This will close the Menu
                                     }} />
                             ) : null}

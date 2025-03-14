@@ -67,11 +67,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         </Sidebar>
 
         {/* Main Dashboard Content */}
-        <main className="flex-1 p-6">
-          <SidebarTrigger />
-          {children}
-          </main>
-      </div>
+            <main className="flex-1 p-6">
+              <SidebarTrigger />
+              {children}
+              </main>
+          </div>
     </SidebarProvider>
   );
 };

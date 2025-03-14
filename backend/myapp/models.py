@@ -318,7 +318,7 @@ class CartDelivery(models.Model):
     item_received_by_user = models.BooleanField(default=False)
     delivery_location = models.CharField(max_length=50, default="Not Available")
     handover_date = models.DateTimeField(null=True, blank=True)
-    def __str__(self):
+    def __str__(self):        
         return f"Delivery for Cart Payment ID: {self.cart_payment.id}, Status: {self.status}"
 
 
