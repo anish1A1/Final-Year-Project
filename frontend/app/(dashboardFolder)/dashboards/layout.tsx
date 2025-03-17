@@ -56,7 +56,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
                       <Link href="/dashboards/dashboardEquipment/ToReceiveItem">
-                        <Package className="mr-2" /> Receiving Items
+                        <Package className="mr-2" /> Receiving Equipments
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

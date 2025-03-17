@@ -13,6 +13,7 @@ export const CartProvider = ({children}) => {
     const [paymentByUser, setPaymentByUser] = useState([]);
     const [cartDeliveries, setCartDeliveries] = useState([]);
     const [cartDeliveriesForAdmin, setCartDeliveriesForAdmin] = useState([]);
+    const [deliveryProductOwner, setDeliveryProductOwner] = useState([]);
     const {user} = useContext(AuthContext);
     
 
@@ -194,6 +195,25 @@ export const CartProvider = ({children}) => {
         }
     };
 
+    const updateCartDeliveryForBuyer = async (id, item_received_by_user) =>{
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(`/api/cart-deliveries/${id}/`, item_received_by_user, {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                }
+            });
+            setCartDeliveries(prevDeliveries =>
+                prevDeliveries.map(item => item.id === id ? response.data : item)
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error updating the item received by user for cart deliveries:", error.response?.data || error.message);
+            throw error.response?.data;
+        }
+    }
+
     const fetchCartDeliveriesForAdmin = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -280,10 +300,12 @@ export const CartProvider = ({children}) => {
             );
             return response.data;
         } catch (error) {
-            console.error("Error updating cart delivery:", error.response?.data || error.message);
+            console.error("Error updating for cart delivery:", error.response?.data || error.message);
             throw error.response?.data || error.message;
         }
     };
+
+
 
     const fetchDeliveryProductOwner = async () => {
         try {
@@ -291,8 +313,8 @@ export const CartProvider = ({children}) => {
             const response = await axios.get(`/api/cart-deliveries/product-owner/`, {
                 headers: { 'Authorization': `Bearer ${token}`}
             });
-            return response.data();
-
+            setDeliveryProductOwner(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error("Error fetching the carts product owners who made product:", error.response?.data || error.message);
             throw error.response?.data || error.message;
@@ -308,6 +330,7 @@ const cartContext = useMemo(() => ({
     paymentByUser,
     cartDeliveries,
     cartDeliveriesForAdmin,
+    deliveryProductOwner,
     fetchCart,
     addToCart,
     updateCart,
@@ -317,12 +340,13 @@ const cartContext = useMemo(() => ({
     createPaymentOfCart,
     fetchCartDeliveriesForAdmin,
     fetchCartDeliveries,
+    updateCartDeliveryForBuyer,
     updateCartDelivery,
     updateCartDeliveryByAdmin,
     addAdminToCartDelivery,
     fetchDeliveryProductOwner,
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries]);
+}),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries, deliveryProductOwner]);
 
     return (
         <CartContext.Provider value={cartContext}>

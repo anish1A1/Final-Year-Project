@@ -1,154 +1,135 @@
 "use client"
-import React, {useState, useEffect, useContext} from 'react'
-
-import { CartContext } from '../../../../utils/cart'
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card";
-  import { Badge } from "@/components/ui/badge";
-  import { Button } from "@/components/ui/button";
-  import { Switch } from "@/components/ui/switch";
-  import { Package, MapPin, RotateCcw, CheckCircle , DollarSign, User} from "lucide-react";
-  import { toast } from "sonner";
+import React, { useState, useEffect, useContext } from 'react';
+import { CartContext } from '../../../../utils/cart';
 import { AuthContext } from '../../../../utils/auth';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Truck, PackageCheck, Clock, MapPin, DollarSign, User } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 const statusColors = {
-    pending: "bg-yellow-500",
-    owner_to_admin: "bg-gray-500",
-    admin_received: "bg-blue-500",
-    delivering_to_user: "bg-blue-500",
-    delivered: "bg-green-500",
-    canceled: "bg-red-500",
-  };
-  
-const UserCartDelivery = () => {
-    const {fetchCartDeliveries, cartDeliveries, loading} = useContext(CartContext);
-    const [updatingDeliveryId, setUpdatingDeliveryId] = useState(null);
-    const {user} = useContext(AuthContext);
+  pending: "border-yellow-600 text-yellow-600",
+  owner_to_admin: "border-gray-600 text-gray-600",
+  admin_received: "border-blue-600 text-blue-600",
+  delivering_to_user: "border-blue-600 text-blue-600",
+  delivered: "border-green-600 text-green-600",
+  canceled: "border-red-600 text-red-600",
+};
 
-      useEffect(() => {
-        fetchCartDeliveries();
-      }, [user]);
+const UserCartDelivery = () => {
+  const { fetchCartDeliveries, cartDeliveries, updateCartDeliveryForBuyer, loading } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
+  const [updatingDeliveryId, setUpdatingDeliveryId] = useState(null);
+
+  useEffect(() => {
+    fetchCartDeliveries();
+  }, [user]);
+
+  const handleItemReceivedChange = async (id, newStatus) => {
+    setUpdatingDeliveryId(id);
+    try {
+      console.log('Item received change, newStatus);', newStatus);
+      const response = await updateCartDeliveryForBuyer(id, {item_received_by_user: newStatus});
+        toast.success( response.message || 'Delivery status updated successfully');
+          
+    } catch (error) {
+      toast.error(error.message || 'Failed to Update the Delivery Status');
+
+    } finally{
+      setUpdatingDeliveryId(null);
+    }
+  }
 
 
   return (
-    <div className="mt-8 p-6 bg-gray-100 min-h-screen">
-          <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
-            📦 Your Ordered Product Deliveries
-          </h1>
-    
-          {loading ? (
-            <div className="flex justify-center items-center h-screen text-xl font-semibold">
-              Loading...
-            </div>
-          ) : cartDeliveries.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {cartDeliveries.map((items) => (
-                <Card
-                  key={items.id}
-                  className="bg-white p-5 rounded-xl shadow-lg transition-transform transform hover:scale-105"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-                      <Package className="w-6 h-6 text-blue-600" />
-                      Delivery of Cart ID: {items.cart_payment.id}
-                    </CardTitle>
-                  </CardHeader>
-    
-                  <CardContent>
-                    {/* Delivery Location */}
-                    <p className="text-gray-600 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-green-600" />
-                      <strong>Delivery Location:</strong> {items.cart_payment.delivery_address || "Not available"}
-                    </p>
-    
-                    {/* Item Location */}
-                    <p className="text-gray-600 flex items-center gap-2 mt-2">
-                    <MapPin className="w-4 h-4 text-blue-600" />
-                      <strong>Item Location:</strong> {items.delivery_location || "Not available"}
-                    </p>
-    
-                    {/* Item Received */}
-                    {items.status === "delivered" && (
-                      <div className="mt-4 bg-gray-100 p-3 rounded-lg">
-                        <p className="text-gray-600 flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4 text-yellow-500" />
-                          <strong>Item Received:</strong>
-                        </p>
-                        <div className="flex items-center gap-2 mt-2 pr-4">
-                            {items.item_received_by_user === false ?(
-                                <Switch
-                                  checked={items.item_received_by_user}
-                                  onCheckedChange={(newValue) => handleItemReceivedChange(items.id, newValue)}
-                                  disabled={updatingDeliveryId === items.id}
-                                />
-    
-                            ) : null}
-                          <span>
-                            {items.item_received_by_user ? "Yes ✅" : "No ❌"}
-                          </span>
-                        </div>
-                        {updatingDeliveryId === items.id && (
-                          <p className="text-blue-500 text-sm mt-2">Updating...</p>
-                        )}
-                      </div>
-                    )}
-    
-                    {/* Last Updated */}
-                    <p className="text-gray-600 flex items-center gap-2 mt-2">
-                      <RotateCcw className="w-4 h-4 text-purple-500" />
-                      <strong>Last Updated:</strong> {new Date(items.updated_at).toLocaleString()}
-                    </p>
-
-                    <p className="text-gray-600 flex items-center gap-2 mt-2">
-                      <DollarSign className="w-4 h-4 text-purple-500" />
-                      <strong>Total Payment:</strong> {items.cart_payment.amount}
-                    </p>
-
-                    <p className="text-gray-600 flex items-center gap-2 mt-2">
-                      <User className="w-4 h-4 text-purple-500" />
-                      {items.admin_username ? (
-                        <>
-                          <strong>Providing By:</strong> {items.admin_username.charAt(0).toUpperCase() + items.admin_username.slice(1)}
-                        </>
-                      ) : (
-                        <>
-                        <strong>Providing User:</strong> Not Available
-                        </>
-                      )}
-                    </p>
-
-
-                    <p className="text-gray-600 flex items-center gap-2 mt-2">
-                      <RotateCcw className="w-4 h-4 text-purple-500" />
-                      <strong>Date To Receive:</strong> {items.delivery_date || "Not Available"}
-                    </p>
-
-
-    
-                    {/* Status Badge */}
-                    <div className="mt-4 flex items-center gap-2">
-                    <p className="text-gray-600 flex items-center">
-                      <strong>Status: </strong> 
-                    </p>
-                        <Badge variant="outline" className={`text-white py-1 px-3 rounded-lg ${statusColors[items.status] || "bg-gray-500"}`}>
-                            {items.status.replace(/_/g, " ").charAt(0).toUpperCase() + items.status.slice(1)}
-                        </Badge>
-                    </div>
-
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <p className="text-lg font-semibold text-gray-800 text-center">
-              No confirmed itemss found.
-            </p>
-          )}
+    <div className="max-w-2xl mx-auto p-6 space-y-6 mt-28">
+      <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
+        📦 Your Ordered Product Deliveries
+      </h1>
+      {loading ? (
+        <div className="flex justify-center items-center text-xl font-semibold">
+          Loading...
         </div>
-      );
+      ) : cartDeliveries.length > 0 ? (
+        cartDeliveries.map((item) => (
+          <Card key={item.id}>
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Truck className="text-green-600" /> Delivery of Cart ID: {item.cart_payment.id}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Status:</span>
+                  <Badge variant="outline" className={statusColors[item.status] || "border-gray-600 text-gray-600"}>
+                    {item.status.replace(/_/g, " ").charAt(0).toUpperCase() + item.status.slice(1)}
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Delivery Location:</span>
+                  <span className="font-medium flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-green-600" /> {item.cart_payment.delivery_address || "Not available"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Item Location:</span>
+                  <span className="font-medium flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-blue-600" /> {item.delivery_location || "Not available"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Total Payment:</span>
+                  <span className="font-medium flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-purple-600" /> {item.cart_payment.amount}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Providing By:</span>
+                  <span className="font-medium flex items-center gap-2">
+                    <User className="w-4 h-4 text-purple-600" /> {item.admin_username ? item.admin_username.charAt(0).toUpperCase() + item.admin_username.slice(1) : "Not Available"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Date To Receive:</span>
+                  <span className="font-medium">{item.delivery_date || "Not Available"}</span>
+                </div>
+                <Separator />
+                {item.status === "delivered" && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Item Received:</span>
+                    <div className="flex items-center gap-2">
+                      {item.item_received_by_user === false ? (
+                        <Switch
+                          checked={item.item_received_by_user}
+                          onCheckedChange={(newValue) => handleItemReceivedChange(item.id, newValue)}
+                          disabled={updatingDeliveryId === item.id}
+                        />
+                      ): null}
+                      <span>{item.item_received_by_user ? "Yes ✅" : "No ❌"}</span>
+                    </div>
+                  </div>
+                )}
+                <div className="flex justify-end gap-2 mt-4">
+                  {/* <Button variant="outline">Track Package</Button> */}
+                  <Button className="bg-green-600 hover:bg-green-700 text-white cursor-not-allowed">
+                    <PackageCheck className="w-4 h-4 mr-2 " /> Confirmed Delivery
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        <p className="text-lg font-semibold text-gray-800 text-center">
+          No confirmed items found.
+        </p>
+      )}
+    </div>
+  );
 };
-export default UserCartDelivery
+
+export default UserCartDelivery;
