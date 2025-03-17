@@ -31,7 +31,7 @@ const UserCartDelivery = () => {
   const handleItemReceivedChange = async (id, newStatus) => {
     setUpdatingDeliveryId(id);
     try {
-      console.log('Item received change, newStatus);', newStatus);
+      // console.log('Item received change, newStatus);', newStatus);
       const response = await updateCartDeliveryForBuyer(id, {item_received_by_user: newStatus});
         toast.success( response.message || 'Delivery status updated successfully');
           
@@ -97,6 +97,13 @@ const UserCartDelivery = () => {
                   <span className="text-gray-500">Date To Receive:</span>
                   <span className="font-medium">{item.delivery_date || "Not Available"}</span>
                 </div>
+                        {/* <div className="flex justify-between items-center ">
+                        <span className="text-gray-500">User Info:</span>
+                      <div className="flex justify-between items-center gap-3">
+                        <span className="font-medium">{item.cart_payment.user.charAt(0).toUpperCase() + item.cart_payment.user.slice(1)}</span>   ||
+                        <span className="font-medium">Email: {item.cart_payment.email || "Not Available"}</span> </div>
+                      </div>
+                       */}
                 <Separator />
                 {item.status === "delivered" && (
                   <div className="flex justify-between items-center">

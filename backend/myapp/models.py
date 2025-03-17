@@ -299,8 +299,7 @@ class CartPayment(CommonPayments):
 class CartDelivery(models.Model):
     class DeliveryStatusChoicesOfCart(models.TextChoices):
         DELIVERED_TO_ADMIN = 'delivered_to_admin', 'Delivered to Admin'
-        DELIVERING_TO_ADMIN = 'delivering_to_admin', 'Delivering to Admin'
-        
+        DELIVERING_TO_ADMIN = 'delivering_to_admin', 'Delivering to Admin'   
         PENDING = 'pending', 'Pending'
         OWNER_TO_ADMIN = 'owner_to_admin', 'Owner to Admin'
         ADMIN_RECEIVED = 'admin_received', 'Admin Received'

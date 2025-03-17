@@ -289,11 +289,13 @@ export const CartProvider = ({children}) => {
 
 
      // Update cart delivery status
-     const updateCartDelivery = async (id, status) => {
+     const updateCartDelivery = async (id, newstatus) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.patch(`/api/cart-deliveries/${id}/`, { status }, {
-                headers: { 'Authorization': `Bearer ${token}` }
+            const response = await axios.patch(`/api/cart-deliveries/${id}/`,  newstatus , {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
             });
             setCartDeliveries(prevDeliveries =>
                 prevDeliveries.map(item => item.id === id ? response.data : item)
@@ -319,8 +321,25 @@ export const CartProvider = ({children}) => {
             console.error("Error fetching the carts product owners who made product:", error.response?.data || error.message);
             throw error.response?.data || error.message;
         }
-    }
+    };
 
+    const UpdateDeliveryProductByOwner= async (id, status) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(`/api/cart-deliveries/${id}/`, status ,
+                {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                    }
+                    );
+                    setDeliveryProductOwner(prevDeliveries => 
+                        prevDeliveries.map(deliery => deliery.id === id ? response.data : deliery) );
+                    return {status: 'success', message: 'Delivery Updated Successfully!'};
+    }
+    catch (error){
+        console.error("Error updating delivery product owner:", error.response?.data || error.message);
+        throw error.response?.data || error.message;
+    }   
+    };
 
 
 const cartContext = useMemo(() => ({
@@ -345,6 +364,7 @@ const cartContext = useMemo(() => ({
     updateCartDeliveryByAdmin,
     addAdminToCartDelivery,
     fetchDeliveryProductOwner,
+    UpdateDeliveryProductByOwner,
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries, deliveryProductOwner]);
 
