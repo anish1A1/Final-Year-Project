@@ -341,6 +341,24 @@ export const CartProvider = ({children}) => {
     }   
     };
 
+    const UpdateDeliveryDateProductByOwner = async (id, handover_date) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(`/api/cart-deliveries/${id}/`, handover_date ,
+                {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                    }
+                    );
+                    setDeliveryProductOwner(prevDeliveries => 
+                        prevDeliveries.map(deliery => deliery.id === id ? response.data : deliery) );
+                    return {status: 'success', message: 'Delivery Date Updated Successfully!'};
+    }
+    catch (error){
+        console.error("Error updating delivery product owner:", error.response?.data || error.message);
+        throw error.response?.data || error.message;
+    }   
+    } 
+
 
 const cartContext = useMemo(() => ({
     cartItem,
@@ -365,6 +383,7 @@ const cartContext = useMemo(() => ({
     addAdminToCartDelivery,
     fetchDeliveryProductOwner,
     UpdateDeliveryProductByOwner,
+    UpdateDeliveryDateProductByOwner,
 // eslint-disable-next-line react-hooks/exhaustive-deps
 }),[cartItem, totalCartAmounts, paymentByUser,cartDeliveriesForAdmin, loading, cartDeliveries, deliveryProductOwner]);
 

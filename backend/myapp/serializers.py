@@ -273,6 +273,8 @@ class CartDeliverySerializer(serializers.ModelSerializer):
         instance.delivery_date = validated_data.get('delivery_date', instance.delivery_date)
         instance.item_received_by_user = validated_data.get('item_received_by_user', instance.item_received_by_user)
         instance.delivery_location = validated_data.get('delivery_location', instance.delivery_location)
+        instance.handover_date = validated_data.get('handover_date', instance.handover_date)
+        
         instance.save()
         return instance
     
