@@ -286,7 +286,7 @@ class CartDeliverySerializer(serializers.ModelSerializer):
         
         
 class TradeSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user_name = serializers.ReadOnlyField(source='user.username')
     product = ProductSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),
                                                  write_only = True, source = 'product')
@@ -294,8 +294,14 @@ class TradeSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Trade
-        fields = ['id', 'product', 'product_id', 'user', 'created_at', 'wanted_product', 'wanted_price', 'wanted_quantity', 
+        fields = ['id', 'product', 'product_id', 'user', 'user_name', 'created_at', 'wanted_product', 'wanted_price', 'wanted_quantity', 
                   'note', 'trade_ending_date', 'total_amount']
+        
+        def create(self, validated_data):
+            user = self.context['request'].user
+            validated_data['user'] = user
+            return Trade.objects.create(**validated_data)
+            
         
     # def validate(self, data):
     #     user = self.context['request'].user
@@ -304,6 +310,8 @@ class TradeSerializer(serializers.ModelSerializer):
     #     print("user: ", user)
     #     print("product_id: ", product_id)
     #     return data
+    
+    
     
     def get_total_amount(self,obj):
         return obj.wanted_price * obj.wanted_quantity

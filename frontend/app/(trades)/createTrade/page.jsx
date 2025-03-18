@@ -4,6 +4,13 @@ import { useRouter } from 'next/navigation';
 import { ProductContext} from '../../..//utils/prod';
 import { AuthContext } from '../../../utils/auth';
 import { toast } from 'sonner';
+import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
+
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar"
+import {Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
+import { format } from 'date-fns';
+
 
 const CreateTradePage = () => {
     const { fetchProductByOwner, ownerProducts, createTrade, loading, error } = useContext(ProductContext);
@@ -11,11 +18,13 @@ const CreateTradePage = () => {
     const [selectedProduct, setSelectedProduct] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [formError, setFormError] = useState('');
+    const [date, setDate] = useState(null);
+    
     const router = useRouter();
+
 
     const [formData, SetFormData] = useState({
         product_id: '',
-        user : '',
         wanted_product: '',
         wanted_quantity: 0,
         wanted_price: 0,
@@ -113,6 +122,7 @@ const CreateTradePage = () => {
                         <input
                             type="number"
                             name="wanted_quantity"
+                            min='1'
                             value={formData.wanted_quantity}
                             onChange={handleChange}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -125,6 +135,7 @@ const CreateTradePage = () => {
                         <input
                             type="number"
                             name="wanted_price"
+                            min='1'
                             value={formData.wanted_price}
                             onChange={handleChange}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -139,10 +150,30 @@ const CreateTradePage = () => {
                             name="trade_ending_date"
                             value={formData.trade_ending_date}
                             onChange={handleChange}
+                            min={new Date().toISOString().split('T')[0]}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             required
                         />
                     </div>
+
+                    {/* <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" className="w-full flex items-center gap-3 text-lg px-4 py-2 border-gray-300 shadow-sm rounded-lg">
+                          <CalendarIcon /> {date ? format(date, "PPP") : "Pick a date"}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          name="trade_ending_date"
+                          selected={date}
+                        //   onSelect={handleChange}
+                        value={formData.trade_ending_date}
+                          onChange={handleChange}
+                          disabled={(day) => day < new Date()}
+                        />
+                      </PopoverContent>
+                    </Popover> */}
 
                     <div className="mb-4">
                         <label>Note for the Trade:</label>

@@ -384,6 +384,7 @@ class TradeListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return Trade.objects.filter(user=self.request.user)
+    
 
     def get_serializer_context(self):
         return {'request': self.request}

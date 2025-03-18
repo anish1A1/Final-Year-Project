@@ -86,13 +86,15 @@ const AllTrades = () => {
                     )}
 
                     <h2 className="text-xl font-semibold text-gray-900 mb-1">{trade.product.name}</h2>
-                    <p className="text-gray-600">{trade.product.small_description}</p>
 
                     <div className="mt-3">
-                        <p className="text-gray-900 font-semibold">Selling Price: <span className="text-blue-600">${trade.product.selling_price}</span></p>
+                        <div className="flex justify-between items-center">
+                        <p className="text-gray-900 font-semibold">S.Price: <span className="text-blue-600">Rs.{trade.product.selling_price}</span></p>
+                        <p className="text-gray-700">Wanted Price: <span className="font-semibold">Rs.{trade.wanted_price}</span></p>
+
+                        </div>
                         <p className="text-gray-700">Wanted Product: <span className="font-semibold">{trade.wanted_product}</span></p>
                         <p className="text-gray-700">Wanted Quantity (per Unit): <span className="font-semibold">{trade.wanted_quantity}</span></p>
-                        <p className="text-gray-700">Wanted Price: <span className="font-semibold">${trade.wanted_price}</span></p>
                         <p className="text-gray-700">Note: <span className="font-semibold">{trade.note}</span></p>
                         <p className="text-gray-700">Total Trade Amount: <span className="font-semibold">{trade.total_amount}</span></p>
 
@@ -100,7 +102,7 @@ const AllTrades = () => {
 
                     <div className="mt-4 border-t pt-3">
                         <div className="flex justify-between items-center text-gray-700 text-sm">
-                            <span className="flex items-center"><FaUser className="mr-2 text-blue-500" /> {trade.user}</span>
+                            <span className="flex items-center"><FaUser className="mr-2 text-blue-500" /> {trade.user_name}</span>
                             <span className="flex items-center"><FaBoxOpen className="mr-2 text-green-500" /> {trade.product.category.name}</span>
                         </div>
                     </div>
