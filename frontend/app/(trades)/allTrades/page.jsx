@@ -5,7 +5,7 @@ import { FaClock, FaUser, FaBoxOpen, FaProductHunt} from "react-icons/fa"
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
-    
+
 const AllTrades = () => {
     const {fetchAllTrades, allTrades} = useContext(ProductContext);
     const [timeLeft, setTimeLeft] = useState({});
@@ -80,11 +80,11 @@ const AllTrades = () => {
 
 
   return (
-    <div className="container mx-auto mt-24 px-6">
+    <div className="container mx-auto mt-28 px-6">
         <BreadCrumbs />
-    <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">All Trades</h1>
+    {/* <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">All Trades</h1>1 */}
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
       {allTrades.length > 0 ? (
         allTrades.map((trade) => (
           <div

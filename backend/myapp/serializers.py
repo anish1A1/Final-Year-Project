@@ -79,6 +79,9 @@ class EquipmentBookingSerializer(serializers.ModelSerializer):
         user =self.context['request'].user
         equipment = data.get('equipment')
         
+        if data['start_date'] > data['end_date']:
+            raise serializers.ValidationError({'error': 'Start date cannot be greater than end date.'})
+        
         if EquipmentBooking.objects.filter(equipment=equipment, user=user).exists():
             raise serializers.ValidationError("Equipment is already booked by you")
         return data

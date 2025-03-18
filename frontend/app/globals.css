@@ -89,3 +89,7 @@
     @apply bg-background text-foreground;
   }
 }
+.image-overlay:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  color: white; /* White text on overlay */
+}

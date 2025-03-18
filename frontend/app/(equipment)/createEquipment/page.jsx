@@ -53,9 +53,15 @@ const CreateEquipment = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 mt-10">
-      <BreadCrumbs />
-      <Card className="w-full max-w-2xl shadow-lg rounded-lg bg-white p-6">
+    <div className="mt-24 min-h-screen bg-gray-100">
+
+      
+    <div className="flex justify-center items-center ">
+      
+      <Card className="w-full max-w-2xl shadow-lg rounded-lg bg-white mt-2">
+      <div className=" p-2 border-b bg-gray-100 ">
+          <BreadCrumbs />
+        </div>
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Create Equipment</CardTitle>
         </CardHeader>
@@ -108,6 +114,8 @@ const CreateEquipment = () => {
         </CardContent>
       </Card>
     </div>
+    </div>
+
   );
 };
 

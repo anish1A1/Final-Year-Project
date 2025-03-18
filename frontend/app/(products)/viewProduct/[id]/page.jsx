@@ -3,12 +3,24 @@ import React, { useEffect, useState, useContext } from "react";
 import { ProductContext } from "../../../../utils/prod";
 import { useParams } from "next/navigation";
 import { AuthContext } from "../../../../utils/auth";
+import { CartContext } from "../../../../utils/cart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { CartContext } from "../../../../utils/cart";
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+import { motion } from "framer-motion";
+import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
+import { Skeleton } from '@/components/ui/skeleton';
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+
 
 const ViewProductById = () => {
   const { id } = useParams();
@@ -25,19 +37,13 @@ const ViewProductById = () => {
         setProduct(data);
       } catch (error) {
         toast.error("Error fetching product details");
-        console.error("Error fetching product details:", error);
       }
     };
     fetchProduct();
   }, [id]);
 
-  if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
-  }
-
-  if (!product) {
-    return <div className="text-center text-gray-500 text-xl mt-20">No product found</div>;
-  }
+  
+  
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
@@ -49,10 +55,8 @@ const ViewProductById = () => {
       toast.error("Quantity must be at least 1.");
       return;
     }
-
     try {
-      console.log(product.id, productQty, user.id);
-      await addToCart({product_id: product.id, product_qty: productQty, user: user.id });
+      await addToCart({ product_id: product.id, product_qty: productQty, user: user.id });
       toast.success("Product added to cart successfully!");
     } catch (error) {
       if (error.non_field_errors) {
@@ -65,55 +69,175 @@ const ViewProductById = () => {
     }
   };
 
+  if (loading) {
+    return (
+        <div className="flex justify-center items-center h-screen bg-gray-100">
+            <p className="text-gray-600 text-lg animate-pulse">Loading trade details...</p>
+        </div>
+    );
+}
+
+  if (!product) {
+    return (
+        <div className="flex justify-center items-center h-screen bg-gray-100">
+            <p className="text-gray-600 text-lg animate-pulse">No Product Found...</p>
+        </div>
+    );
+}
+
+
   return (
-    <div className="container mx-auto px-4 py-10 mt-24">
-      <BreadCrumbs />
-      <Card className="max-w-5xl mx-auto p-6 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold text-center">{product.name}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex justify-center">
-              {product.product_image && (
-                <img
-                  src={product.product_image}
-                  alt={product.name}
-                  className="rounded-lg shadow-lg w-full max-h-96 object-cover hover:scale-105 transition-transform"
-                />
-              )}
-            </div>
-            <div>
-              <p className="text-gray-700 text-lg"><strong>Owner:</strong> {product.product_owner}</p>
-              <p className="text-gray-700 text-lg"><strong>Price:</strong> ${product.selling_price}</p>
-              <p className="text-gray-700 text-lg"><strong>Quantity Available:</strong> {product.quantity}</p>
-              <p className="text-gray-700 text-lg"><strong>Tag:</strong> {product.tag}</p>
-              <p className="text-gray-700 text-lg"><strong>Delivery Charge:</strong> ${product.delivery_sell_charge}</p>
-              <p className="text-gray-700 text-lg"><strong>Created At:</strong> {new Date(product.created_at).toLocaleString()}</p>
-              <p className="text-gray-700 text-lg"><strong>Total Time Active:</strong> {product.total_time} days</p>
-            </div>
-          </div>
-          <div className="mt-6">
-            <h2 className="text-2xl font-semibold">Product Description</h2>
-            <p className="text-gray-700 text-lg mt-2">{product.description}</p>
-          </div>
-          <form onSubmit={handleAddToCart} className="mt-6">
-            <div className="flex items-center gap-4">
-              <Input
-                type="number"
-                value={productQty}
-                onChange={(e) => setProductQty(Number(e.target.value))}
-                min="1"
-                max={product.quantity}
-                required
-                className="w-24"
+    <div className="container mx-auto px-4 py-8 mt-24">
+  <BreadCrumbs />
+
+  {product && (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-6xl mx-auto bg-white p-8 shadow-lg rounded-2xl border border-gray-200"
+    >
+      {/* Product Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        {/* Product Image */}
+        <div>
+          <img
+            src={product.product_image}
+            alt={product.name}
+            className="w-full h-96 object-cover rounded-xl shadow-md mt-1"
+          />
+          <div className="flex mt-4 space-x-4">
+            {[1, 2, 3].map((_, index) => (
+              <img
+                key={index}
+                src={product.product_image}
+                alt="Thumbnail"
+                className="w-16 h-16 object-cover border border-gray-200 rounded-lg hover:ring-2 hover:ring-blue-500 transition-all"
               />
-              <Button type="submit">Add to Cart</Button>
+            ))}
+          </div>
+          
+        </div>
+
+        {/* Product Details */}
+        <div className="col-span-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            {product.name}
+          </h1>
+          <CardContent className="space-y-2 bg-white rounded-md shadow-md p-6 border border-gray-200">
+            {/* Pricing */}
+            <div className="flex justify-between items-center bg-gray-50 p-4 rounded-md shadow-sm">
+              <p className="text-xl font-bold text-green-600">
+                <span className="text-gray-600 block text-sm">Selling Price</span>
+                Rs {product.selling_price}/kg
+              </p>
+              <p className="text-xl font-semibold text-red-500 line-through">
+                <span className="text-gray-600 block text-sm">Original Price</span>
+                Rs {product.original_price}/kg
+              </p>
             </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+
+            {/* Available Quantity */}
+            <div className="flex justify-between border-t pt-4">
+              <p className="text-lg font-medium text-gray-700">
+                Available Quantity
+              </p>
+              <p className="text-lg font-bold text-gray-900">{product.quantity} kg</p>
+            </div>
+
+            {/* Delivery Charge */}
+            <div className="flex justify-between border-t pt-4">
+              <p className="text-lg font-medium text-gray-700">
+                Delivery Charge
+              </p>
+              <p className="text-lg font-bold text-gray-900">
+                Rs {product.delivery_sell_charge}
+              </p>
+            </div>
+
+            {/* Description */}
+            <p className="text-md text-gray-700 italic bg-gray-50 p-3 rounded-md">
+              {product.small_description}
+            </p>
+
+            {/* Tag */}
+            <div className="flex items-center border-t pt-4">
+              <p className="text-lg font-medium text-gray-700">Tag</p>
+              <span className="ml-2 bg-blue-100 text-blue-600 px-3 py-1 text-sm font-bold rounded-full">
+                {product.tag}
+              </span>
+            </div>
+
+            {/* Owner */}
+            <div className="flex items-center border-t pt-4">
+              <UsersRound className="text-blue-500 w-6 h-6 mr-2" />
+              <p className="text-lg text-gray-700">
+                <strong>Owner:</strong> {product.product_owner}
+              </p>
+            </div>
+          </CardContent>
+
+          {/* Add to Cart Section */}
+          <div className="mt-6 flex items-center gap-4">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button onClick={handleAddToCart} 
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg shadow-md">
+                    Add to Cart
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add this item to your cart</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <Input
+              type="number"
+              value={productQty}
+              onChange={(e) => setProductQty(Number(e.target.value))}
+              min="1"
+              max={product.quantity}
+              className="w-24 text-center border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Message */}
+      <div className="mt-8 bg-gray-50 p-6 rounded-xl shadow-md">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Quick Message</h2>
+        <div className="space-y-4">
+          <p className="bg-gray-100 p-3 rounded-md shadow-sm w-fit">
+            Hello, you can send a quick message here.
+          </p>
+          <p className="bg-gray-300 p-3 rounded-md shadow-sm w-fit self-end ml-auto">
+            Thank you!
+          </p>
+          <Input
+            placeholder="Type your message..."
+            className="w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      {/* Related Products */}
+      <div className="mt-8">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Related Products</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((_, index) => (
+            <div
+              key={index}
+              className="w-full h-40 bg-gray-200 rounded-lg shadow-md hover:ring-2 hover:ring-blue-500 transition-all"
+            ></div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  )}
+</div>
+
   );
 };
 

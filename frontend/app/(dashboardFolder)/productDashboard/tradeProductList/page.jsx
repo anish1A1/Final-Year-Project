@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import { ProductContext } from "../../../../utils/prod";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 
 const TradeProductList = () => {
     const { fetchTrades, trades, loading } = useContext(ProductContext);
@@ -22,6 +24,9 @@ const TradeProductList = () => {
 
     return (
         <div className="container mx-auto mt-28 px-6">
+            <div className="max-w-6xl mx-3 mb-4">
+                    <BreadCrumbs />
+                  </div>
             <h1 className="text-4xl font-bold text-center text-gray-800 mb-10">
                 Your Trades Created
             </h1>

@@ -51,8 +51,10 @@ const EquipmentList = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 mt-28">
-      <BreadCrumbs />
+    <div className="container mx-auto px-4 py-10 mt-20">
+      <div className="max-w-6xl mx-3 mb-4">
+        <BreadCrumbs />
+      </div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Equipment List</h1>
         {user ? (

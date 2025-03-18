@@ -177,10 +177,11 @@ export const EquipProvider = ({children}) => {
             router.push('/equipmentList');
             return { status: 'success', message: 'Equipment created successfully!' };
         } catch (error) {
-            console.error(`Error creating equipment: ${error}`);
             setError(error.response.data);
+            console.error("Error creating equipment:", error.response?.data || error.message);
+            throw error.response?.data || { error: ["Unknown error occurred."] }; 
         }
-    }
+    };
 
     const updateBookingStatus = async (id, status) => {
         try {
@@ -193,6 +194,7 @@ export const EquipProvider = ({children}) => {
             return {status: 'success', message: 'Booking status updated successfully!' };
         } catch (error) {
             console.error(`Error updating booking status: ${error}`);
+            throw error.response?.data;
         }
     };
 

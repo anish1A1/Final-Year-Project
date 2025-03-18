@@ -96,7 +96,12 @@ class EquipmentBooking(models.Model):
     # def __str__(self):
     #     return f"Booking for {self.equipment.name} from {self.start_date} to {self.end_date}"
     
- 
+    def validate(self, data):
+        if data['start_date'] > data['end_date']:
+            raise ValidationError('Start date cannot be greater than end date')
+        if data['quantity'] > self.equipment.quantity:
+            raise ValidationError('Quantity cannot be greater than available quantity')
+        return data
 
 class CommonPayments(models.Model):
     class PaymentTypeChoices(models.TextChoices):

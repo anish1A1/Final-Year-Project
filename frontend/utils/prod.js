@@ -135,8 +135,8 @@ export const ProductProvider = ({children}) => {
         try {
             const response = await axios.get(`/api/product-list/${id}/`);
             console.log(response.data);
+            setLoading(false);
             return response.data;
-
         } catch (error) {
             console.error(`Error fetching product by ID: ${error}`);
             throw error;
@@ -263,6 +263,7 @@ export const ProductProvider = ({children}) => {
                     });
             setTradeById(response.data);
             console.log(response.data);
+            setLoading(false);
             
         } catch (error) {
             const errorMessage = error.response?.data || error.message;

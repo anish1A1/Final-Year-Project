@@ -5,6 +5,7 @@ import { ProductContext } from '../../../../utils/prod';
 import { FaClock, FaUser, FaBoxOpen } from "react-icons/fa";
 import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+import { Badge } from "@/components/ui/badge";
 
 const TradeViewPage = () => {
     const { getTradeById, tradeById, loading } = useContext(ProductContext);
@@ -82,73 +83,147 @@ const TradeViewPage = () => {
 
     return (
         <div className="container mx-auto mt-28 px-6">
-            <BreadCrumbs /> 
-            <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">Trade Details</h1>
-            {tradeById  &&  (
-                    <div className="bg-white shadow-lg rounded-2xl p-6 max-w-3xl mx-auto transform transition duration-300 hover:shadow-2xl hover:scale-105">
-                    {tradeById.product.product_image && (
-                        <img
-                            src={tradeById.product.product_image}
-                            alt={tradeById.product.name}
-                            className="w-full h-64 object-cover rounded-xl mb-4"
-                        />
-                    )}
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">{tradeById.product.name}</h2>
-                    
-                    <div className="grid grid-cols-2 gap-4 text-gray-700">
-                        <p><span className="font-semibold">S. Price:</span> <span className="text-blue-600 font-bold">Rs.{tradeById.product.selling_price}</span></p>
-                        <p><span className="font-semibold">Wanted Price:</span> <span className="text-red-600 font-bold">Rs.{tradeById.wanted_price}</span></p>
-                        <p><span className="font-semibold">Wanted Product:</span> <span className="font-semibold">{tradeById.wanted_product}</span></p>
-                        <p><span className="font-semibold">Quantity:</span> <span className="font-semibold">{tradeById.wanted_quantity}</span></p>
-                        <p><span className="font-semibold">Total Amount:</span> <span className="font-bold text-green-700">Rs.{tradeById.total_amount}</span></p>
-                    </div>
-    
-                    <p className="mt-4 text-gray-600 italic">{tradeById.note}</p>
-    
-                    <div className="mt-5 flex justify-between text-gray-700 text-sm">
-                        <span className="flex items-center"><FaUser className="mr-2 text-blue-500" /> {tradeById.user_name}</span>
-                        <span className="flex items-center"><FaBoxOpen className="mr-2 text-green-500" /> {tradeById.product.category.name}</span>
-                    </div>
-    
-                    {/* Countdown Timer */}
-                    <div className="mt-4 flex items-center justify-between p-3 rounded-lg bg-gray-100">
-                        <div className="flex items-center text-lg font-semibold">
-                            <FaClock className="mr-2 text-gray-700" />
-                            <span className={timeLeft?.status === "Trade Ended" ? "text-red-600" : "text-green-600"}>
-                                {timeLeft?.time || "Calculating..."}
-                            </span>
-                        </div>
-                        <p className={`text-sm font-medium ${timeLeft?.status === "Trade Ended" ? "text-red-600" : "text-gray-600"}`}>
-                            {timeLeft?.status}
-                        </p>
-                    </div>
-    
-                    {/* Buttons */}
-                    <div className="flex justify-between mt-6">
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105"
-                            onClick={() => handleProductView(tradeById.product.id)}
-                        >
-                            View Product
-                        </button>
-    
-                        {hasRequestedTrade(tradeById.id) ? (
-                            <p className="text-green-600 font-bold text-sm mt-2">Trade Requested</p>
-                        ) : (
-                            <button
-                                className="bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105"
-                                onClick={() => handleTradeRequest(tradeById.id, timeLeft?.status)}
-                            >
-                                Trade Now
-                            </button>
-                        )}
-                    </div>
+        <BreadCrumbs />
+        {/* <div className="flex flex-col items-center">
+        <h1 className="text-4xl font-bold text-center text-gray-900 mb-4">Trade Details</h1>
+        <p className="text-lg text-gray-600">View and manage all details about your ongoing trade.</p>
+    </div> */}
+      
+        {tradeById && tradeById.product ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 bg-white shadow-lg rounded-2xl p-8 transition duration-300 hover:shadow-2xl">
+            {/* Product Image & Gallery */}
+            <div className="relative lg:col-span-2">
+  {/* Product Image */}
+            <img
+                src={tradeById.product.product_image}
+                alt={tradeById.product.name}
+                loading="lazy"
+                className="w-full h-96 object-cover rounded-xl mb-4"
+            />
+
+            {/* Badge */}
+            <Badge className="absolute top-4 left-4 bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 
+            hover:text-gray-200  rounded-md shadow-md">
+                {tradeById.product.category?.name}
+            </Badge>
+
+              {/* Small Preview Thumbnails */}
+              <div className="flex gap-3 mb-6">
+            {[1,2,3].map((_, index) => (
+              <img
+              key={index}
+              src={tradeById.product.product_image}
+              alt="Thumbnail"
+              width={20}
+              height={20}
+              className="w-16 h-16 object-cover border border-gray-200 rounded-lg hover:ring-2 hover:ring-blue-500 transition-all"
+            />
+            ))}
+                
+        </div>
+      
+              {/* Quick Chat */}
+              <div className="bg-gray-100 p-4 rounded-lg mb-4">
+                <h3 className="text-lg font-semibold mb-3">Quick Message</h3>
+                <div className="space-y-2">
+                  <div className="bg-white p-3 rounded-lg shadow-sm w-max">Hello, You can quick message here.</div>
+                  <div className="bg-white p-3 rounded-lg shadow-sm w-max ml-auto">Hello, Thank You.</div>
+                </div>
+                <div className="mt-4 flex gap-3">
+                  <input type="text" placeholder="Type message..." className="flex-1 p-3 rounded-lg border" />
+                  <button className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700">Send</button>
+                </div>
+              </div>
+      
+              {/* Related Products */}
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Related Products</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="h-28 bg-gray-200 rounded-lg"></div>
+                  <div className="h-28 bg-gray-200 rounded-lg"></div>
+                  <div className="h-28 bg-gray-200 rounded-lg"></div>
+                  <div className="h-28 bg-gray-200 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+      
+            {/* Product Info / Sidebar */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-800">{tradeById.product.name}</h2>
+              <p className="text-lg">Price: <span className="font-bold">**</span> <span className="text-purple-600 text-xl">Rs {tradeById.product.selling_price}/unit</span></p>
+      
+              {/* Buy Section */}
+              <div className="border rounded-lg p-4 space-y-4 bg-gray-50">
+               
+                <div className='flex justify-between items-center'>
+                  <p>Wanted Product: <span className="font-semibold">{tradeById.wanted_product}</span></p>
+
+                  <p>Needed Quantity: <span className="font-semibold">{tradeById.wanted_quantity} kg</span></p>
                 </div>
 
-            )}
-            
-        </div>
-    );
+                <div className='flex justify-between items-center'>
+                  <p>Product Pricing: <span className="text-blue-500 text-lg">{tradeById.wanted_price || "Can be Negotialble"}/unit</span></p>
+
+                  <p>Available Quantity: <span className="font-semibold">{tradeById.product.quantity} kg</span></p>
+                </div>
+
+                <div className="flex gap-4">
+                <p className="text-lg font-medium ">Description: <span className="text-gray-600 italic"> {tradeById.note}</span></p>
+                  
+                </div>
+              </div>
+      
+              {/* Subtotal */}
+              <div>
+                <p className="text-lg font-semibold">Total Trading Cost: <span className="text-purple-600">Rs {tradeById.total_amount}</span></p>
+              </div>
+      
+              {/* Save & Trade Buttons */}
+              <div className="space-y-3">
+                <button className="w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg"
+                 onClick={() => router.push(`/viewProduct/${tradeById.product.id}`)}
+
+                >See Buying Option</button>
+                <div className="text-center font-semibold text-gray-500">OR</div>
+                {hasRequestedTrade(tradeById.id) ? (
+                  <p className="text-green-600 text-center font-bold">Trade Requested</p>
+                ) : (
+                  <button
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg"
+                    onClick={() => handleTradeRequest(tradeById.id, timeLeft?.status)}
+                  >
+                    Send Trade
+                  </button>
+                )}
+              </div>
+      
+              {/* Countdown */}
+              <div className="bg-gray-100 p-4 rounded-lg">
+                <div className="flex items-center text-lg font-semibold">
+                  <FaClock className="mr-2 text-gray-700" />
+                  <span className={timeLeft?.status === "Trade Ended" ? "text-red-600" : "text-green-600"}>
+                    {timeLeft?.time || "Calculating..."}
+                  </span>
+                </div>
+                <p className={`text-sm mt-1 ${timeLeft?.status === "Trade Ended" ? "text-red-600" : "text-gray-600"}`}>{timeLeft?.status}</p>
+              </div>
+      
+              {/* Owner */}
+              <div className="flex flex-col text-sm text-gray-600 border-t pt-4">
+                <span className="flex items-center"><FaUser className="mr-2 text-blue-500" /> {tradeById.user_name}</span>
+                <span className="flex items-center mt-2"><FaBoxOpen className="mr-2 text-green-500" /> {tradeById.product.category.name}</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center h-screen bg-gray-100">
+            <p className="text-gray-600 text-lg animate-pulse">Loading trade details...</p>
+          </div>
+        )}
+      </div>
+      
+      );
+      
 };
 
 export default TradeViewPage;
