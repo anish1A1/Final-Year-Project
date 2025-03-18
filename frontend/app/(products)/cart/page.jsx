@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CartContext } from "../../../utils/cart";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 const CartPage = () => {
   const {
@@ -108,6 +109,7 @@ const CartPage = () => {
 
   return (
     <div className="container mx-auto mt-24 p-8 bg-gray-50 rounded-lg shadow-xl">
+      <BreadCrumbs />
       <h1 className="text-4xl font-bold text-center mb-6">🛒 Your Shopping Cart</h1>
       {cartItem?.length ? (
         <div className="grid gap-4">

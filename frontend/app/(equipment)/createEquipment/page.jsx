@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 
 const CreateEquipment = () => {
   const [formData, setFormData] = useState({
@@ -52,6 +54,7 @@ const CreateEquipment = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4 mt-10">
+      <BreadCrumbs />
       <Card className="w-full max-w-2xl shadow-lg rounded-lg bg-white p-6">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Create Equipment</CardTitle>

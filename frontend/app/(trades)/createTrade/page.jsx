@@ -5,6 +5,7 @@ import { ProductContext} from '../../..//utils/prod';
 import { AuthContext } from '../../../utils/auth';
 import { toast } from 'sonner';
 import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar"
@@ -81,6 +82,7 @@ const CreateTradePage = () => {
 
     return (
         <div className="container mx-auto mt-24 p-8 bg-white rounded-lg shadow-lg">
+            <BreadCrumbs />
             <h1 className="text-3xl font-bold mb-6 text-center">Create Trade</h1>
             {formError && <p className="text-red-500 mb-4">{formError}</p>}
             {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}

@@ -10,6 +10,8 @@ import { EquipmentContext } from '../../../../utils/equip';
 import { motion } from 'framer-motion';
 import { Download, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 
 const EquipmentDetail = () => {
   const [equipment, setEquipment] = useState(null);
@@ -42,6 +44,7 @@ const EquipmentDetail = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 p-6 mt-24">
+      <BreadCrumbs />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
@@ -130,6 +131,7 @@ const AdminDeliveries = () => {
   
     return (
         <div className="mt-8 p-8 bg-gray-50 min-h-screen">
+            <BreadCrumbs />
         <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">📦 Admin Product Deliveries</h1>
   
         {loading ? (

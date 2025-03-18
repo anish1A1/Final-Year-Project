@@ -9,6 +9,8 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 import { cn } from "@/lib/utils";
 
 const UpdateProduct = () => {
@@ -87,7 +89,8 @@ const UpdateProduct = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 mt-24">
+        <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 mt-28">
+            <BreadCrumbs />
             <Card className="w-full max-w-3xl shadow-lg rounded-2xl p-6">
                 <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Update Product</h1>
                 {error && <p className="text-red-500 text-center">{error}</p>}

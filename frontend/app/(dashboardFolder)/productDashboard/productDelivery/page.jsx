@@ -85,8 +85,8 @@ const ProductDelivery = () => {
       <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">📦 Your Product To Delivery</h1>
 
       <div className="grid grid-cols-1 gap-6">
-        {deliveryProductOwner?.map((item) => (
-          <Card key={item.id}>
+        {deliveryProductOwner?.map((item, index) => (
+          <Card key={`${item.id} # ${index}`}>
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
                 <Truck className="text-green-600" /> Product Delivery Status

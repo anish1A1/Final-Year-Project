@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { ProductContext  } from "../../../utils/prod";
 import { AuthContext } from "../../../utils/auth";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 import {
   Card,
@@ -48,6 +49,7 @@ const GetConfirmedTradesByUser = () => {
 
   return (
     <div className="mt-8 p-6 bg-gray-100 min-h-screen">
+      <BreadCrumbs />
       <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
         📦 Your Confirmed Trades
       </h1>

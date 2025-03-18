@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 
 const CreateEquipmentPaymentPage = () => {
     const { createEquipmentPayment, equipmentBooks, fetchEquipmentBookings } = useContext(EquipmentContext);
@@ -65,6 +67,7 @@ const CreateEquipmentPaymentPage = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50 p-6">
+            <BreadCrumbs />
             <Card className="w-full max-w-md shadow-xl">
                 <CardHeader>
                     <CardTitle className="text-center text-2xl font-bold">Make Payment</CardTitle>

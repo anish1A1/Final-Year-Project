@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import CustomBreadCrumb from "@/Impcomponent/CustomBreadCrumb";
 
 const ViewProduct = () => {
   const { fetchProduct, products, loading } = useContext(ProductContext);
@@ -24,9 +25,17 @@ const ViewProduct = () => {
     );
   }
 
+  const breadCrumbItems = [
+  {label : 'Home', href: '/'},
+  {label : 'Product'},
+
+    ]
+
 
   return (
-    <div className="container mx-auto mt-16 px-4 md:px-8">
+    <div className="container mx-auto mt-28 px-4 md:px-8">
+        <CustomBreadCrumb items={breadCrumbItems} />
+        
       <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Our Products</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {products.map((product) => (

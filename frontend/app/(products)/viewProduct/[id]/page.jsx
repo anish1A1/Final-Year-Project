@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { CartContext } from "../../../../utils/cart";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 const ViewProductById = () => {
   const { id } = useParams();
@@ -66,6 +67,7 @@ const ViewProductById = () => {
 
   return (
     <div className="container mx-auto px-4 py-10 mt-24">
+      <BreadCrumbs />
       <Card className="max-w-5xl mx-auto p-6 shadow-lg">
         <CardHeader>
           <CardTitle className="text-3xl font-bold text-center">{product.name}</CardTitle>

@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { RotateCcw, Package, MapPin, CheckCircle, Truck, User } from "lucide-react";
 import { toast } from "sonner";
 import { AuthContext } from "../../../utils/auth";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 const GetConfirmedTradesByOwner = () => {
   const {
     fetchConfirmedTradesByOwner,
@@ -73,6 +75,7 @@ const GetConfirmedTradesByOwner = () => {
 
   return (
     <div className="mt-8 p-6 bg-gray-100 min-h-screen">
+      <BreadCrumbs />
       <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
         📦 Your Trades Delivery
       </h1>

@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ProductContext } from "../../../../utils/prod";
 import { ClipLoader } from "react-spinners";
 import { toast } from "sonner";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 const CreateTradeRequestPage = () => {
     const { id } = useParams();
@@ -60,7 +61,8 @@ const CreateTradeRequestPage = () => {
     };
 
     return (
-        <div className="max-w-3xl mx-auto mt-24 p-8 bg-white rounded-lg shadow-lg">
+        <div className="max-w-3xl mx-auto mt-28 p-8 bg-white rounded-lg shadow-lg">
+            <BreadCrumbs />
             <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
                 Create Trade Request
             </h1>

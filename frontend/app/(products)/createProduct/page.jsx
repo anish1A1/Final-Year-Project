@@ -4,6 +4,8 @@ import { ProductContext } from '../../../utils/prod'
 import { AuthContext } from '../../../utils/auth'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 const CreateProduct = () => {
     const {user} = useContext(AuthContext);
 
@@ -72,6 +74,7 @@ const CreateProduct = () => {
 
   return (
     <div className="bg-gray-100 mt-24 p-4">
+        <BreadCrumbs />
     <h1 className="text-2xl font-bold mb-4">Create Products</h1>
     <form onSubmit={handleSubmit}>
         <div className="mb-4">

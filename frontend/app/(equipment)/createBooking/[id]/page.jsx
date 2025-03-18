@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 const CreateEquipmentBooking = () => {
     const { id } = useParams();
@@ -59,6 +60,7 @@ const CreateEquipmentBooking = () => {
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+            <BreadCrumbs />
             <Card className="w-full max-w-lg shadow-lg p-6 bg-white rounded-xl">
                 <CardHeader>
                     <CardTitle className="text-xl font-semibold text-center">Create Equipment Booking</CardTitle>

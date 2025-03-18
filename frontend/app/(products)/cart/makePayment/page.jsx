@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 const MakePayment = () => {
 
   const { totalCartAmounts, fetchtotalCartAmount, createPaymentOfCart } = useContext(CartContext);
@@ -71,6 +73,7 @@ const MakePayment = () => {
 
   return (
     <div className="container mx-auto mt-28 p-8 bg-gray-50 rounded-lg shadow-xl max-w-lg">
+      <BreadCrumbs />
       <h1 className="text-3xl font-bold text-center text-gray-900">💳 Make Payment</h1>
 
       <Card className="mt-6">

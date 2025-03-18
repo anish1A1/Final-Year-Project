@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 const EquipmentList = () => {
   const { fetchEquipment, equipment, deleteEquipment, fetchEquipmentBookings, equipmentBooks } = useContext(EquipmentContext);
@@ -50,7 +51,8 @@ const EquipmentList = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-10 mt-24">
+    <div className="container mx-auto px-4 py-10 mt-28">
+      <BreadCrumbs />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Equipment List</h1>
         {user ? (
