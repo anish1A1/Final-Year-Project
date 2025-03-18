@@ -16,7 +16,7 @@ const ViewProduct = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto mt-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="container mx-auto mt-28 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[...Array(6)].map((_, index) => (
           <Skeleton key={`skeleton-${index}`} className="h-80 w-full rounded-lg" />
         ))}
@@ -47,12 +47,12 @@ const ViewProduct = () => {
                 <span>Price: ${product.selling_price}</span>
                 <span className="text-sm text-gray-500 line-through">${product.original_price}</span>
               </div>
-              <div className="grid grid-cols-2 text-sm text-gray-600 gap-2">
+              {/* <div className="grid grid-cols-2 text-sm text-gray-600 gap-2">
                 <p>Quantity: {product.quantity}</p>
                 <p>Tag: {product.tag}</p>
                 <p>Delivery: ${product.delivery_sell_charge}</p>
                 <p>Owner: {product.product_owner}</p>
-              </div>
+              </div> */}
               <Button
                 className="w-full mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded-lg"
                 onClick={() => router.push(`/viewProduct/${product.id}`)}

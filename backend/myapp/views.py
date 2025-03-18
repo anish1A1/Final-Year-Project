@@ -333,7 +333,6 @@ class CartDeliveryAdminListCreateView(generics.ListCreateAPIView):
     
 
     
-
     
 class CartDeliveryDetailView(generics.RetrieveUpdateAPIView):
     """
@@ -398,6 +397,10 @@ class TradeAllListView(generics.ListAPIView):
     serializer_class = TradeSerializer
     permission_classes = [IsAuthenticated]
     
+class TradeRetiveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Trade.objects.all()
+    serializer_class = TradeSerializer
+    permission_classes = [IsAuthenticated]
 
 class TradeRequestListCreateView(generics.ListCreateAPIView):
     queryset = TradeRequest.objects.all()

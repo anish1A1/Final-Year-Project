@@ -8,6 +8,8 @@ const ProductContext = createContext();
 export const ProductProvider = ({children}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState({});
+    const {user} = useContext(AuthContext);
+    
     const [products, setProducts] = useState([]);
     const [ownerProducts, setOwnerProducts] = useState([]);
     const [category, setCategory] = useState([]);
@@ -19,7 +21,7 @@ export const ProductProvider = ({children}) => {
 
     const [confirmedTrades, setConfirmedTrades] = useState([]);
     const [confirmedTradesOfOwner, setConfirmedTradesOfOwner] = useState([]);
-    const {user} = useContext(AuthContext);
+    const [tradeById, setTradeById] = useState([]);
 
 
     const fetchProduct = async () => {
@@ -251,6 +253,62 @@ export const ProductProvider = ({children}) => {
         }
     }
 
+    const getTradeById = async (id) =>{
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`/api/trade-Toupdate/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    },
+                    });
+            setTradeById(response.data);
+            console.log(response.data);
+            
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error getting trade by ID: ${errorMessage}`);
+            throw error.response?.data;
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
+    const UpdateTradeById = async (id, data) =>{
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.patch(`/api/trade-Toupdate/${id}`, data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    },
+                    });
+            setTradeById(prevData => prevData.filter(data => data.id === id ? response.data : data));
+            return {status: "success", message: "Trade was updated successfully!"};
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error updating the trade: ${errorMessage}`);
+            throw error.response?.data;
+        }
+    };
+
+    const deleteTradeById = async (id) => {
+        try {
+            const token = localStorage.getItem('token');
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const response = await axios.delete(`/api/trade-Toupdate/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    },
+                    });
+            setTradeById(prevData => prevData.filter(data => data.id !== id));
+            return {status: "success", message: "Trade was deleted successfully!"};
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error deleting the trade: ${errorMessage}`);
+            throw error.response?.data;
+        }
+    }
+
     const fetchTradeRequests = async () => {
         try {
             const response = await axios.get(`/api/trade-requests/`, {
@@ -444,6 +502,7 @@ export const ProductProvider = ({children}) => {
         tradeRequestsOfOwner,
         confirmedTradesOfOwner,
         confirmedTrades,
+        tradeById,
         fetchProductByOwner,
         fetchProduct,
         createProduct,
@@ -457,6 +516,9 @@ export const ProductProvider = ({children}) => {
         fetchTradeRequests,
         createTradeRequest,
         fetchAllTrades,
+        getTradeById,
+        UpdateTradeById,
+        deleteTradeById,
         getTradeRequestsFromUsers,
         updateTradeRequestStatus,
         fetchConfirmedTradesByOwner,
@@ -465,7 +527,7 @@ export const ProductProvider = ({children}) => {
         updateConfirmedTradeByUser,
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category,  trades, allTrades,  confirmedTrades, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
+    }), [products, category,  trades, allTrades,  confirmedTrades, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, tradeById, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 

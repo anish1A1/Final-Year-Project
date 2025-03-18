@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import CartPaymentListCreateView, EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView, CategoryView, ProductListCreateView, CategoryView, ProductOwnerListView,ProductListUpdateDeleteView, TradeListCreateView, TradeRequestListCreateView
-from .views import CartListCreateView, CartDetailView, TradeAllListView, TradeRequestOwnersUpdateView, TradeRequestOwnersListView
+from .views import CartListCreateView, CartDetailView, TradeAllListView, TradeRequestOwnersUpdateView, TradeRequestOwnersListView, TradeRetiveUpdateDestroyView
 from .views import ConfirmedTradeListByOwnerView, ConfirmedTradeUpdateByOwnerView, ConfirmedTradeListView, ConfirmedTradeUpdateByUser, CartTotalCostView
 from .views import CartDeliveryListCreateView,CartDeliveryDetailView, CartDeliveryAdminListCreateView, CartDeliveryOwnerViewListView
 
@@ -38,6 +38,7 @@ urlpatterns = [
     
     path('trade-request-owners/', TradeRequestOwnersListView.as_view(), name='trade-requests-for-owners-list-view'),
     path('trade-request-owners/<int:pk>/', TradeRequestOwnersUpdateView.as_view(), name='trade-request-owners-update'),
+    path('trade-Toupdate/<int:pk>/', TradeRetiveUpdateDestroyView.as_view(), name='trade-retive-update-destroy'),
     
     path('confirmed-trades/', ConfirmedTradeListView.as_view(), name='confirmed-trades-list-view'),
     path('confirmed-trades-by-owners/update/<int:pk>/', ConfirmedTradeUpdateByOwnerView.as_view(), name='confirmed-trades-update-by-owner'),
