@@ -48,8 +48,33 @@ const CreateEquipment = () => {
       await createEquipment(formData, router);
       toast.success("Equipment created successfully!");
     } catch (error) {
-      toast.error(error.message || "Failed to create equipment");
-    }
+
+        const fileValidation = error.user_manual && error.user_manual[0] 
+        if (fileValidation) {
+          toast.error(error.user_manual[0]);
+        } else {
+
+          toast.error(error.message || "Failed to create equipment");
+        }
+      //   const errorResponse = error.response;
+      // console.log(errorResponse);
+      //   if (errorResponse) {
+      //     // Check if errorResponse has specific field errors, e.g., "user_manual"
+      //     Object.keys(errorResponse).forEach((field) => {
+      //       const messages = errorResponse[field];
+      //       if (Array.isArray(messages)) {
+      //         messages.forEach((message) => {
+      //           toast.error(`${field}: ${message}`);
+      //         });
+      //       }
+      //     });
+      //   } else {
+      //     // Fallback to generic error handling
+      //     toast.error(error.message || "Failed to create equipment");
+      //   }
+      }
+      
+    
   };
 
   return (
@@ -65,6 +90,7 @@ const CreateEquipment = () => {
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Create Equipment</CardTitle>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div>

@@ -58,7 +58,7 @@ export const EquipProvider = ({children}) => {
                 response.data
             ]);
             router.push('/equipmentList');
-            return { status: 'success', message: 'Cart updated successfully!' };
+            return { status: 'success', message: 'Equipment created successfully!' };
         } catch (error) {
             
             const errorMessage = error.response?.data || error.message;

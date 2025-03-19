@@ -7,6 +7,10 @@ import { toast } from 'sonner';
 import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar"
 import {Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
@@ -64,6 +68,8 @@ const CreateTradePage = () => {
         
         if (!formData.product_id) {
             setFormError('Please select a product to trade.');
+            toast.error('Please select a product to trade.');
+
             return;
         }
         
@@ -74,23 +80,42 @@ const CreateTradePage = () => {
             toast.success(response.message);
             setFormError('');
         } catch (error) {
+            const errorMessage = Array.isArray(error.error) ? error.error[0] : "Error creating trade";
             setFormError(error.message || 'Error creating trade.');
-            toast.error(error.message || 'Error creating trade.');
+            if (errorMessage) {  
+                toast.error(errorMessage);
+            } 
+            toast.error( error.message || 'Error creating trade.');
             console.error('Error creating trade:', error);
         }
     };
 
     return (
-        <div className="container mx-auto mt-24 p-8 bg-white rounded-lg shadow-lg">
-            <BreadCrumbs />
-            <h1 className="text-3xl font-bold mb-6 text-center">Create Trade</h1>
-            {formError && <p className="text-red-500 mb-4">{formError}</p>}
-            {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
-            {loading ? (
+        <div className="mt-24   bg-gray-100">
+
+            <div className="flex justify-center items-center ">
+                <Card className="w-full max-w-2xl shadow-lg rounded-2xl mt-3"  >
+                    <div className="p-3 border-b bg-gray-100">
+                        
+                        <BreadCrumbs />
+                    </div>    
+                    
+                    
+                    <CardHeader >
+                        <CardTitle className="text-2xl font-bold text-center"    >
+
+                    Create Trade 
+                        </CardTitle>
+                        
+                        </CardHeader>
+
+                        <CardContent>
+
+                        {loading ? (
                 <p className="text-center">Loading products...</p>
             ) : (
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
+                <form onSubmit={handleSubmit} className='grid gap-4'>
+                    <div className="">
                         <label htmlFor="product" className="block text-gray-700 text-lg font-medium mb-2">Product to Trade:</label>
                         <select
                             id="product"
@@ -107,7 +132,7 @@ const CreateTradePage = () => {
                         </select>
                     </div>
 
-                    <div className="mb-4">
+                    <div className="">
                         <label>Wanted Product:</label>
                         <input
                             type="text"
@@ -119,7 +144,8 @@ const CreateTradePage = () => {
                         />
                     </div>
 
-                    <div className="mb-4">
+                    <div className="grid grid-cols-2 gap-4">
+                    <div className="">
                         <label>Wanted Quantity:</label>
                         <input
                             type="number"
@@ -132,7 +158,7 @@ const CreateTradePage = () => {
                         />
                     </div>
 
-                    <div className="mb-4">
+                    <div className="">
                         <label>Wanted Price:</label>
                         <input
                             type="number"
@@ -145,7 +171,11 @@ const CreateTradePage = () => {
                         />
                     </div>
 
-                    <div className="mb-4">
+
+                    </div>
+
+
+                    <div className="">
                         <label>Trade Ending Date</label>
                         <input
                             type="date"
@@ -158,45 +188,34 @@ const CreateTradePage = () => {
                         />
                     </div>
 
-                    {/* <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full flex items-center gap-3 text-lg px-4 py-2 border-gray-300 shadow-sm rounded-lg">
-                          <CalendarIcon /> {date ? format(date, "PPP") : "Pick a date"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          name="trade_ending_date"
-                          selected={date}
-                        //   onSelect={handleChange}
-                        value={formData.trade_ending_date}
-                          onChange={handleChange}
-                          disabled={(day) => day < new Date()}
-                        />
-                      </PopoverContent>
-                    </Popover> */}
+                    
 
                     <div className="mb-4">
                         <label>Note for the Trade:</label>
-                        <input
+                        <Textarea
                             type="text"
                             name="note"
                             value={formData.note}
                             onChange={handleChange}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  "
                             required
                         />
                     </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
-                    >
-                        Create Trade
-                    </button>
-                </form>
-            )}
+                        <Button
+                            type="submit"
+                            className="w-full  text-white  hover:bg-blue-700"
+                        >
+                            Create Trade
+                        </Button>
+                    </form>
+                )}
+        </CardContent>
+            
+                    </Card>
+            </div>
+            
+            
         </div>
     );
 };

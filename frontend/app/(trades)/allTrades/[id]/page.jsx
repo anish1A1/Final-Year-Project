@@ -162,7 +162,7 @@ const TradeViewPage = () => {
                 </div>
 
                 <div className='flex justify-between items-center'>
-                  <p>Product Pricing: <span className="text-blue-500 text-lg">{tradeById.wanted_price || "Can be Negotialble"}/unit</span></p>
+                  <p>Product Pricing: <span className="text-blue-500 text-lg">Rs. {tradeById.wanted_price || "Can be Negotialble"}/unit</span></p>
 
                   <p>Available Quantity: <span className="font-semibold">{tradeById.product.quantity} kg</span></p>
                 </div>

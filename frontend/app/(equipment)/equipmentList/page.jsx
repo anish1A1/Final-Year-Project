@@ -80,7 +80,10 @@ const EquipmentList = () => {
                     className="rounded-lg w-full h-40 object-cover mb-4 hover:scale-105 transition-transform"
                   />
                 )}
-                <p className="text-gray-600 text-center mb-2">{item.description}</p>
+                <p className="text-gray-600 text-center mb-2">
+                  {item.description.split(" ").slice(0,18).join(" ")}
+                  {item.description.split(" ").length > 18 && " ..."}
+                  </p>
                 <Badge className="mb-2">Per Day Rate: ${item.per_day_rate}</Badge>
                 <Badge variant="outline">Delivery Charge: ${item.delivery_charge}</Badge>
                 <p className="text-gray-700 mt-2"><strong>Owner:</strong> {item.user}</p>
