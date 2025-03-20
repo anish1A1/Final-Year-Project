@@ -33,16 +33,18 @@ const Navbar = () => {
                 </div>
 
 
-                <div className="flex item-center space-x-6">
+                <div className="flex item-center ssm:pace-x-1 md:space-x-6 ">
 
+                    <UserNav/>
                     
-                    <SearchBar />
                     <Link href="/cart" className="  mt-1  rounded">
                     {/* <Image src = "/cart.gif" alt = "logo" width = {30} height = {20} className='border-none hover:bg-none' /> */}
                     <CartNav />
                     </Link>
-                  <FavoriteIcon />
-                    <UserNav/>
+                    
+                    <SearchBar />
+                  {/* <FavoriteIcon /> */}
+                    
 
                 </div>
 
