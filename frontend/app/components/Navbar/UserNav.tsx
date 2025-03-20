@@ -107,6 +107,12 @@ const UserNav = () => {
                                         router.push('/productDashboard');
                                     }} />
                             </li>
+
+                            <li>
+                            <MenuLink label="Equipment Dashboard" onClick={() => {
+                                        router.push('/dashboards');
+                                    }} />
+                            </li>
                         </ul>
 
                             )}
