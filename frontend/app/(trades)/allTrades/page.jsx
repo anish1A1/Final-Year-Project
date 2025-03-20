@@ -84,7 +84,7 @@ const AllTrades = () => {
         <BreadCrumbs />
     {/* <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">All Trades</h1>1 */}
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
       {allTrades.length > 0 ? (
         allTrades.map((trade) => (
           <div
@@ -102,14 +102,15 @@ const AllTrades = () => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-2">{trade.product.name}</h2>
 
             <div className="mt-3 space-y-2">
-              <div className="flex justify-between items-center text-lg font-medium">
+              {/* <div className="flex justify-between items-center text-lg font-medium">
                 <p className="text-gray-700">S. Price: <span className="text-blue-600">Rs.{trade.product.selling_price}</span></p>
                 <p className="text-gray-700">Wanted: <span className="text-red-600">Rs.{trade.wanted_price}</span></p>
-              </div>
+              </div> */}
+
               <p className="text-gray-700">Wanted Product: <span className="font-semibold">{trade.wanted_product}</span></p>
-              {/* <p className="text-gray-700">Quantity (per Unit): <span className="font-semibold">{trade.wanted_quantity}</span></p>
-              <p className="text-gray-700">Note: <span className="italic">{trade.note}</span></p> */}
-              <p className="text-gray-700">Total Trade Amount: <span className="font-bold text-green-700">Rs.{trade.total_amount}</span></p>
+              <p className="text-gray-700">Quantity (per Unit): <span className="font-semibold">{trade.wanted_quantity}</span></p>
+              <p className="text-gray-700">Note: <span className="italic">{trade.note}</span></p>
+              {/* <p className="text-gray-700">Total Trade Amount: <span className="font-bold text-green-700">Rs.{trade.total_amount}</span></p> */}
             </div>
 
             <div className="mt-4 border-t pt-3 flex justify-between text-gray-700 text-sm">

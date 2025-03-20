@@ -45,7 +45,7 @@ const ViewProduct = () => {
     </h1>
   
     {/* Product Grid */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
       {products.map((product) => (
         <Card
           key={product.id}
@@ -59,7 +59,7 @@ const ViewProduct = () => {
                     <img
                     src={product.product_image}
                     alt={product.name}
-                    className="w-full h-64 object-cover rounded-t-lg transition-transform hover:scale-110 duration-300 cursor-pointer"
+                    className="w-full  object-cover rounded-t-lg h-40 transition-transform hover:scale-110 duration-300 cursor-pointer"
                     loading="lazy"
                     tabIndex={0} // Makes the element focusable
                     role="button" // Identifies it as an interactive element
@@ -82,7 +82,7 @@ const ViewProduct = () => {
           </Badge>
   
           {/* Card Details */}
-          <CardHeader className="ps-4">
+          <CardHeader className="p-4 ">
             <CardTitle className="text-lg font-bold text-gray-800 truncate">
               {product.name}
             </CardTitle>
