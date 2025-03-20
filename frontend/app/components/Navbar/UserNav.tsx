@@ -5,6 +5,8 @@ import { AuthContext } from '@/utils/auth';
 import { useRouter } from "next/navigation";
 import MenuLink from './MenuLink';
 
+
+  
 const UserNav = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { user, logout } = useContext(AuthContext);
@@ -29,6 +31,21 @@ const UserNav = () => {
 
     return (
         <div className='p-2 relative inline-block border rounded-full'>
+
+                {/* <NavigationMenu>
+                <NavigationMenuList>
+                    <NavigationMenuItem>
+                    <NavigationMenuTrigger>Item One</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+
+               
+
+                        <NavigationMenuLink>Link</NavigationMenuLink>
+                    </NavigationMenuContent>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+                </NavigationMenu> */}
+
             <button onClick={() => setIsOpen(!isOpen)} 
                 className='flex items-center'>
                 <svg fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">

@@ -9,6 +9,7 @@ import FavoriteIcon from './FavoriteIcon';
 import CartNav from './CartNav';
 
 
+
 const Navbar = () => {
 
     

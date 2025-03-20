@@ -46,7 +46,7 @@ export default function RootLayout({
 
               
               <Navbar />
-                  <main className="flex-grow">
+                  <main className="flex-grow ">
                   <Toaster position="top-center" />
             {children}
                 
