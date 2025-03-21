@@ -32,8 +32,8 @@ const ToReceiveItem = () => {
     };
 
     return (
-        <div className="container mx-auto p-6 mt-20">
-            <h1 className="text-3xl font-bold mb-8 text-center">To Receive</h1>
+        <div className="container mx-auto ">
+            <h1 className="text-3xl font-bold mb-8 text-center">Equipment To Receive</h1>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {deliveryReceive.length === 0 ? (
                     <p className="text-center text-gray-500">No items to receive</p>

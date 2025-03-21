@@ -1,4 +1,3 @@
-import MyOrderSidebar from "@/ImpComponent/MyOrderSidebar"
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -9,7 +8,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
         {/* Main Dashboard Content */}
             <main className="flex-1 mt-[90px] ml-2 p-2 bg-slate-100 min-h-screen">
-             <MyOrderSidebar />
               {children}
               </main>
           </div>

@@ -45,17 +45,21 @@ const UserCartDelivery = () => {
 
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6 mt-28">
+    <div className="container mx-auto px-6">
       <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
         📦 Your Ordered Product Deliveries
       </h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+
       {loading ? (
         <div className="flex justify-center items-center text-xl font-semibold">
           Loading...
         </div>
       ) : cartDeliveries.length > 0 ? (
         cartDeliveries.map((item) => (
-          <Card key={item.id}>
+          <Card key={item.id}
+          className="bg-white shadow-lg rounded-xl p-6 transition-all transform  hover:shadow-2xl border border-gray-200">
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
                 <Truck className="text-green-600" /> Delivery of Cart ID: {item.cart_payment.id}
@@ -135,6 +139,10 @@ const UserCartDelivery = () => {
           No confirmed items found.
         </p>
       )}
+    
+
+
+      </div>
     </div>
   );
 };

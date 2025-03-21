@@ -40,10 +40,14 @@ const MyOrderSidebar = () => {
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" className="mt-4">
-          Open Sidebar
+      <SheetTrigger asChild >
+      <Button
+        variant="secondary"
+        className="mt-2 !bg-slate-900 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-slate-500 hover:shadow-lg transition duration-300"
+        >
+        Open Sidebar
         </Button>
+
       </SheetTrigger>
 
       <SheetContent side="left" className="w-64 bg-gray-900 text-white">
@@ -59,18 +63,18 @@ const MyOrderSidebar = () => {
           <ul className="space-y-4">
             <li>
               <Link
-                href="/my-orders/active-orders"
+                href="/MyOrders/ProductsOrders/productOrders"
                 className="block py-2 px-4 rounded hover:bg-gray-700 transition"
               >
-                Active Orders
+                Products Order
               </Link>
             </li>
             <li>
               <Link
-                href="/my-orders/order-history"
+                href="/MyOrders/EquipmentsOrders/ToReceiveItem" 
                 className="block py-2 px-4 rounded hover:bg-gray-700 transition"
               >
-                Order History
+                Equipment Orders
               </Link>
             </li>
             <li>
@@ -85,10 +89,10 @@ const MyOrderSidebar = () => {
             {user && isFarmer ? (
                 <li>
                 <Link
-                  href="/my-orders/settings"
+                  href="/MyOrders/TradeOrders/ReceivingTrades/"
                   className="block py-2 px-4 rounded hover:bg-gray-700 transition"
                 >
-                  Trade Orders
+                  Receiving Trades
                 </Link>
               </li>
             ): null}

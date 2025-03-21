@@ -48,7 +48,7 @@ const GetConfirmedTradesByUser = () => {
   };
 
   return (
-    <div className="mt-8 p-6 bg-gray-100 min-h-screen">
+    <div className="mt-1 px-6 bg-gray-100">
       <BreadCrumbs />
       <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
         📦 Your Confirmed Trades
