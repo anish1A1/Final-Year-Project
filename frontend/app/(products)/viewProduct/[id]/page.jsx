@@ -129,11 +129,11 @@ const ViewProductById = () => {
             <div className="flex justify-between items-center bg-gray-50 p-4 rounded-md shadow-sm">
               <p className="text-xl font-bold text-green-600">
                 <span className="text-gray-600 block text-sm">Selling Price</span>
-                Rs {product.selling_price}/kg
+                Rs {product.selling_price}/unit
               </p>
               <p className="text-xl font-semibold text-red-500 line-through">
                 <span className="text-gray-600 block text-sm">Original Price</span>
-                Rs {product.original_price}/kg
+                Rs {product.original_price}/unit
               </p>
             </div>
 
@@ -142,7 +142,7 @@ const ViewProductById = () => {
               <p className="text-lg font-medium text-gray-700">
                 Available Quantity
               </p>
-              <p className="text-lg font-bold text-gray-900">{product.quantity} kg</p>
+              <p className="text-lg font-bold text-gray-900">{product.quantity} unit</p>
             </div>
 
             {/* Delivery Charge */}

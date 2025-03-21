@@ -23,7 +23,6 @@ const CreateTradePage = () => {
     const [selectedProduct, setSelectedProduct] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [formError, setFormError] = useState('');
-    const [date, setDate] = useState(null);
     
     const router = useRouter();
 
@@ -32,7 +31,7 @@ const CreateTradePage = () => {
         product_id: '',
         wanted_product: '',
         wanted_quantity: 0,
-        wanted_price: 0,
+        trading_quantity: 0,
         note: '',
         trade_ending_date: '',
     })
@@ -125,7 +124,7 @@ const CreateTradePage = () => {
                             className="block w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
                             required
                         >
-                            <option value="">Select a product</option>
+                            <option value="">Select a product to give. </option>
                             {ownerProducts.map((product_id) => (
                                 <option key={product_id.id} value={product_id.id}>{product_id.name}</option>
                             ))}
@@ -141,6 +140,8 @@ const CreateTradePage = () => {
                             onChange={handleChange}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             required
+                            placeholder='Product you want...'
+
                         />
                     </div>
 
@@ -155,19 +156,22 @@ const CreateTradePage = () => {
                             onChange={handleChange}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             required
+                            placeholder='Quantity you want..'
+
                         />
                     </div>
 
                     <div className="">
-                        <label>Wanted Price:</label>
+                        <label>Available Quantity:</label>
                         <input
                             type="number"
-                            name="wanted_price"
+                            name="trading_quantity"
                             min='1'
-                            value={formData.wanted_price}
+                            value={formData.trading_quantity}
                             onChange={handleChange}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                             required
+                            placeholder='Available Quantity you have..'
                         />
                     </div>
 
@@ -199,6 +203,7 @@ const CreateTradePage = () => {
                             onChange={handleChange}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  "
                             required
+                            placeholder='e.g. I want to a high quality product...'
                         />
                     </div>
 

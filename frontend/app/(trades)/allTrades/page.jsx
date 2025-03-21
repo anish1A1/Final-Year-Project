@@ -5,7 +5,7 @@ import { FaClock, FaUser, FaBoxOpen, FaProductHunt} from "react-icons/fa"
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
-
+import { PackageSearch, HandCoins } from 'lucide-react';
 const AllTrades = () => {
     const {fetchAllTrades, allTrades} = useContext(ProductContext);
     const [timeLeft, setTimeLeft] = useState({});
@@ -89,13 +89,15 @@ const AllTrades = () => {
         allTrades.map((trade) => (
           <div
             key={trade.id}
-            className="bg-white shadow-xl rounded-xl p-6 transition-all transform hover:scale-105 hover:shadow-2xl border border-gray-200"
+            className="bg-white shadow-xl rounded-xl p-6 transition-all transform  hover:shadow-2xl border border-gray-200"
           >
             {trade.product.product_image && (
               <img
                 src={trade.product.product_image}
                 alt={trade.product.name}
-                className="w-full h-52 object-cover rounded-lg mb-4"
+                className="cursor-pointer w-full h-52 object-cover rounded-lg mb-4 "
+                onClick={() => handleTradeView(trade.id)}
+
               />
             )}
 
@@ -107,9 +109,13 @@ const AllTrades = () => {
                 <p className="text-gray-700">Wanted: <span className="text-red-600">Rs.{trade.wanted_price}</span></p>
               </div> */}
 
-              <p className="text-gray-700">Wanted Product: <span className="font-semibold">{trade.wanted_product}</span></p>
-              <p className="text-gray-700">Quantity (per Unit): <span className="font-semibold">{trade.wanted_quantity}</span></p>
-              <p className="text-gray-700">Note: <span className="italic">{trade.note}</span></p>
+              <p className="text-gray-700 flex items-center gap-2">
+              <PackageSearch size={20}/>
+                Wanted Product: <span className="font-semibold">{trade.wanted_product}</span></p>
+              <p className="text-gray-700 flex items-center gap-2">
+              <HandCoins size={20}/>
+                Wanted Quantity: <span className="font-semibold">{trade.wanted_quantity} unit</span></p>
+              {/* <p className="text-gray-700">Note: <span className="italic">{trade.note}</span></p> */}
               {/* <p className="text-gray-700">Total Trade Amount: <span className="font-bold text-green-700">Rs.{trade.total_amount}</span></p> */}
             </div>
 
@@ -130,7 +136,7 @@ const AllTrades = () => {
             </div>
 
             {/* Buttons */}
-            <div className="flex justify-between mt-5">
+            {/* <div className="flex justify-between mt-5">
               <button
                 className="bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300"
                 onClick={() => handleTradeView(trade.id)}
@@ -148,7 +154,7 @@ const AllTrades = () => {
                   Trade Now
                 </button>
               )}
-            </div>
+            </div> */}
           </div>
         ))
       ) : (

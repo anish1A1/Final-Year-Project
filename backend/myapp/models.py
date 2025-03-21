@@ -357,8 +357,7 @@ class Trade(models.Model):
     def time_left(self):
         return (self.trade_ending_date - timezone.now()).days
     
-    def total_amount(self):
-        return self.wanted_price * self.wanted_quantity
+
 
 class TradeRequest(models.Model):
     

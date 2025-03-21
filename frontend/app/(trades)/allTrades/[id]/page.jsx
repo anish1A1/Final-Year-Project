@@ -92,7 +92,7 @@ const TradeViewPage = () => {
         {tradeById && tradeById.product ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 bg-white shadow-lg rounded-2xl p-8 transition duration-300 hover:shadow-2xl">
             {/* Product Image & Gallery */}
-            <div className="relative lg:col-span-2">
+            <div className="relative lg:col-span-2" >
   {/* Product Image */}
             <img
                 src={tradeById.product.product_image}
@@ -150,7 +150,7 @@ const TradeViewPage = () => {
             {/* Product Info / Sidebar */}
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-gray-800">{tradeById.product.name}</h2>
-              <p className="text-lg">Price: <span className="font-bold">**</span> <span className="text-purple-600 text-xl">Rs {tradeById.product.selling_price}/unit</span></p>
+              {/* <p className="text-lg">Price: <span className="font-bold">**</span> <span className="text-purple-600 text-xl">Rs {tradeById.product.selling_price}/unit</span></p> */}
       
               {/* Buy Section */}
               <div className="border rounded-lg p-4 space-y-4 bg-gray-50">
@@ -158,13 +158,13 @@ const TradeViewPage = () => {
                 <div className='flex justify-between items-center'>
                   <p>Wanted Product: <span className="font-semibold">{tradeById.wanted_product}</span></p>
 
-                  <p>Needed Quantity: <span className="font-semibold">{tradeById.wanted_quantity} kg</span></p>
+                  <p>Wanted Quantity: <span className="font-semibold">{tradeById.wanted_quantity} unit</span></p>
                 </div>
 
-                <div className='flex justify-between items-center'>
-                  <p>Product Pricing: <span className="text-blue-500 text-lg">Rs. {tradeById.wanted_price || "Can be Negotialble"}/unit</span></p>
+                <div className='flex justify-between items-center border-t pt-2'>
+                  <p>Quantity Providing: <span className="text-blue-500 text-lg"> {tradeById.trading_quantity} unit</span></p>
 
-                  <p>Available Quantity: <span className="font-semibold">{tradeById.product.quantity} kg</span></p>
+                  {/* <p>Available Quantity: <span className="font-semibold">{tradeById.product.quantity} unit</span></p>    */}
                 </div>
 
                 <div className="flex gap-4">
@@ -174,9 +174,9 @@ const TradeViewPage = () => {
               </div>
       
               {/* Subtotal */}
-              <div>
+              {/* <div>
                 <p className="text-lg font-semibold">Total Trading Cost: <span className="text-purple-600">Rs {tradeById.total_amount}</span></p>
-              </div>
+              </div> */}
       
               {/* Save & Trade Buttons */}
               <div className="space-y-3">
