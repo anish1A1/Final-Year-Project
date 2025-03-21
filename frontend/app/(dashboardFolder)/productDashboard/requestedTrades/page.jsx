@@ -1,6 +1,8 @@
 "use client";
 import React, { useEffect, useContext } from "react";
 import { ProductContext } from "../../../../utils/prod";
+import { Send, SquareArrowDown  } from 'lucide-react';
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 const RequestedTrades = () => {
   const { fetchTradeRequests, tradeRequests, loading } = useContext(ProductContext);
@@ -14,36 +16,91 @@ const RequestedTrades = () => {
   }
 
   return (
-    <div className="container mx-auto mt-28 px-6">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Your Trade Requests</h1>
+    <div className="container mx-auto mt-24 pt-2 px-4 sm:px-6 lg:px-8">
+      <BreadCrumbs />
+  <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
+    Your Requested Trades
+  </h1>
 
-      {tradeRequests.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tradeRequests.map((request) => (
-            <div key={request.id + request.product_name + request.trade.id} className="bg-white p-5 rounded-lg shadow-lg transition-transform transform hover:scale-105">
-              {request.trade.product.product_image && (
-                <img src={request.trade.product.product_image} alt={request.trade.product.name} className="w-full h-48 object-cover rounded-lg mb-4" />
-              )}
-              <h2 className="text-xl font-semibold text-gray-900">{request.trade.product.name}</h2>
-              <p className="text-gray-600">Real Price(per Unit): ${request.trade.wanted_price}</p>
-              <p className="text-gray-600">Product Quantity Requested : {request.trade.wanted_quantity}</p>
-              <p className="text-gray-600 mb-2">Delivery Location: {request.delivery_location}</p>
-              <p className="text-gray-600 font-semibold">Product To Give: {request.product_name}</p>
-              <p className="text-gray-600">Available Quantity: {request.quantity}</p>
-              <p className="text-gray-600">Your Price: ${request.price}</p>
-              <p className="text-gray-600">Total Cost: ${request.total_cost}</p>
+  {tradeRequests.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {tradeRequests.map((request) => (
+        <div
+          key={request.id + request.product_name + request.trade.id}
+          className="bg-white rounded-lg shadow-md overflow-hidden border hover:shadow-lg transition-all transform hover:-translate-y-1 hover:scale-105"
+        >
+          {/* Product Image */}
+          {request.trade.product.product_image && (
+            <img
+              src={request.trade.product.product_image}
+              alt={request.trade.product.name}
+              className="w-full h-56 object-cover"
+            />
+          )}
 
+          <div className="p-2 pl-5">
+            {/* Sending Product Section */}
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-gray-700 flex items-center mb-2">
+              <Send className="mr-2 text-green-500" />
 
-              <p className={`font-semibold mt-2 ${request.status === "accepted" ? "text-green-600" : request.status === "rejected" ? "text-red-600" : "text-gray-600"}`}>
-                Status: {request.status}
+                Sending Product
+              </h2>
+              <p className="text-gray-800 font-medium">
+                {request.product_name}
+              </p>
+              <p className="text-sm text-gray-600">
+                Receiving Quantity: {request.trade.trading_quantity}
               </p>
             </div>
-          ))}
+
+            <hr className="border-gray-200 my-4" />
+
+            {/* Receiving Product Section */}
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-gray-700 flex items-center mb-2">
+              <SquareArrowDown className="mr-2 text-blue-500" />
+
+                Receiving Product
+              </h2>
+              <p className="text-gray-800 font-medium">
+                {request.trade.product.name}
+              </p>
+              <p className="text-sm text-gray-600">
+                Sending Quantity: {request.trade.wanted_quantity}
+              </p>
+            </div>
+
+            <hr className="border-gray-200 my-4" />
+
+            {/* Delivery Details */}
+            <p className="text-sm text-gray-600 mb-4">
+              <strong>Delivery Location:</strong> {request.delivery_location}
+            </p>
+
+            {/* Status */}
+            <p
+              className={`font-semibold text-center py-2 px-4 rounded-md ${
+                request.status === "accepted"
+                  ? "bg-green-100 text-green-600"
+                  : request.status === "rejected"
+                  ? "bg-red-100 text-red-600"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              Status: {request.status}
+            </p>
+          </div>
         </div>
-      ) : (
-        <p className="text-gray-700 text-center">You have not requested any trades yet.</p>
-      )}
+      ))}
     </div>
+  ) : (
+    <p className="text-gray-700 text-center text-lg">
+      You have not requested any trades yet.
+    </p>
+  )}
+</div>
+
   );
 };
 

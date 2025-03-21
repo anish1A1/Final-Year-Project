@@ -22,7 +22,6 @@ const CreateTradeRequestPage = () => {
         trade_id: id,
         delivery_location: "",
         product_name: "",
-        quantity: 1,
         image: null,
         note: "",
     });
@@ -108,18 +107,7 @@ const CreateTradeRequestPage = () => {
                     
 
                     {/* Quantity */}
-                    <div>
-                        <Label >Quantity</Label>
-                        <Input
-                            type="number"
-                            name="quantity"
-                            value={formData.quantity}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                            min="1"
-                            required
-                        />
-                    </div>
+                    
 
                     {/* Delivery Location */}
                     
@@ -163,7 +151,7 @@ const CreateTradeRequestPage = () => {
                             onChange={handleChange}
                             rows="2"
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                        placeholder="e.g. I would like to trade with these products.."
+                        // placeholder="e.g. I would like to trade with these products.."
                         ></Textarea>
                     </div>
 

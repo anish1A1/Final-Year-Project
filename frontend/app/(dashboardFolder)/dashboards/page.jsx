@@ -3,7 +3,7 @@ import React from "react";
 import PrivateRoute from "../../middleware/PrivateRoute";
 import EquipmentToBookList from "./dashboardEquipment/equipmentBookedList/page";
 import ManageEquipment from "./dashboardEquipment/ManageEquipment/page";
-import ToReceiveItem from "./dashboardEquipment/ToReceiveItem/page";
+import ToReceiveItem from "../../(orders)/MyOrders/EquipmentsOrders/ToReceiveItem/page";
 import UserCartDelivery from "../../components/Deliveries/cartDeliveries/UserCartDelivery";
 import Link from "next/link";
 import { LayoutDashboard, Package, Truck, ShoppingCart } from "lucide-react";

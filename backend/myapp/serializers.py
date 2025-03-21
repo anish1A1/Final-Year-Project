@@ -328,7 +328,7 @@ class TradeRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = TradeRequest
         fields = ['id', 'trade', 'user', 'trade_id', 'delivery_location', 'product_name', 
-                  'status', 'note', 'image', 'quantity']
+                  'status', 'note', 'image']
         
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
