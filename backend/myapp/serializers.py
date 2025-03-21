@@ -328,15 +328,13 @@ class TradeRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = TradeRequest
         fields = ['id', 'trade', 'user', 'trade_id', 'delivery_location', 'product_name', 
-                  'status', 'note', 'image', 'price', 'quantity', 'total_cost']
+                  'status', 'note', 'image', 'quantity']
         
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
     
-    def get_total_cost(self, obj):
-        return obj.price * obj.quantity
-    
+
 
 class ConfirmedTradeSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField();

@@ -372,7 +372,6 @@ class TradeRequest(models.Model):
     delivery_location = models.CharField(max_length=255)
     product_name = models.CharField(max_length=255)
     quantity = models.PositiveIntegerField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='uploads/trade-request-img', null=True,blank=True, validators=[validate_file_size, FileExtensionValidator(['jpg', 'png'])])
     note = models.TextField(max_length=255)
     status = models.CharField(max_length=255, choices=StatusChoices.choices, default=StatusChoices.PENDING)
@@ -380,9 +379,7 @@ class TradeRequest(models.Model):
     def __str__(self):
         return f"{self.user.username} wants to trade {self.product_name} for {self.trade.product.name}"
     
-    @property
-    def total_cost(self):
-        return self.price * self.quantity
+
     
     
 
