@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
-import { EquipmentContext } from "../../../utils/equip";
+import { EquipmentContext } from "../../../../utils/equip";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -78,15 +78,15 @@ const CreateEquipment = () => {
   };
 
   return (
-    <div className="mt-24 min-h-screen bg-gray-100">
+    <div className=" bg-gray-50">
 
       
     <div className="flex justify-center items-center ">
       
-      <Card className="w-full max-w-2xl shadow-lg rounded-lg bg-white mt-2">
-      <div className=" p-2 border-b bg-gray-100 ">
+      <Card className="w-full max-w-xl shadow-lg rounded-lg bg-white mt-2">
+      {/* <div className=" p-2 border-b bg-gray-100 ">
           <BreadCrumbs />
-        </div>
+        </div> */}
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Create Equipment</CardTitle>
         </CardHeader>

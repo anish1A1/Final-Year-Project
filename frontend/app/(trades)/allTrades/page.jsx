@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 import { PackageSearch, HandCoins } from 'lucide-react';
 const AllTrades = () => {
-    const {fetchAllTrades, allTrades} = useContext(ProductContext);
+    const {fetchAllTrades, allTrades, loading} = useContext(ProductContext);
     const [timeLeft, setTimeLeft] = useState({});
     const router = useRouter();
     useEffect(() => {
@@ -77,6 +77,9 @@ const AllTrades = () => {
     const hasRequestedTrade = (tradeId) => {
         return allTrades.some(req => req.trade === tradeId);
     }
+    if(loading){
+        return <div className="flex justify-center items-center h-screen text-2xl font-semibold text-gray-700">Loading...</div>
+      }
 
 
   return (
@@ -85,7 +88,7 @@ const AllTrades = () => {
     {/* <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">All Trades</h1>1 */}
 
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
-      {allTrades.length > 0 ? (
+      {allTrades && allTrades.length > 0 ? (
         allTrades.map((trade) => (
           <div
             key={trade.id}

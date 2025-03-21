@@ -3,7 +3,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import { EquipmentContext } from '../../../../utils/equip';
 import { AuthContext } from '../../../../utils/auth';
 import { toast } from 'sonner';
-
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CalendarDays, Layers,CreditCard, DollarSign, User } from "lucide-react";
 
 const ManageEquipment = () => {
     const { fetchEquipmentBookings, equipmentBooks, loading, fetchEquipment, equipment, updateBookingStatus } = useContext(EquipmentContext);
@@ -47,47 +51,126 @@ const ManageEquipment = () => {
         setCombinedBookings(updatedBookings);
     };
 
-    if (loading) {
-        return <div className='mt-36 text-center font-semibold'>Loading.....</div>;
-    }
+    if(loading){
+        return <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">Loading...</div>
+      };
 
     if (!combinedBookings || combinedBookings.length === 0) {
-        return <div className='mt-36 text-center font-semibold'>No equipment bookings available.</div>;
-    }
+        return <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">No equipment bookings available.</div>;
+    };
 
 
     return (
-        <div className=' p-4  gap-4'>
-            <h2 className='col-span-full text-xl font-bold mb-4'>Manage Your Equipment Bookings</h2>
-            {combinedBookings.map((item) => (
-                <div className="col-span-1 md:col-span-1 lg:col-span-1" key={item.id}>
-                    <div className="card w-full bg-base-100 shadow-xl">
-                        <img src={item.equipmentDetails?.image} alt={item.equipmentDetails?.name} className="w-full h-48 object-cover" />
-                        <div className="card-body p-4">
-                            <h2 className="card-title text-lg font-bold mb-2">{item.equipmentDetails?.name}</h2>
-                            <p className="text-sm mb-1">Per Day Rate: Rs{item.equipmentDetails?.per_day_rate}</p>
-                            <p className="text-sm mb-1">Start Date: {item.start_date}</p>
-                            <p className="text-sm mb-1">End Date: {item.end_date}</p>
-                            <p className="text-sm mb-1">Total Days: {item.total_date}</p>
-                            <p className="text-sm mb-1">Quantity: {item.quantity}</p>
-                            <p className="text-sm mb-1">Total Price: Rs{item.total_cost}</p>
-                            <p className="text-sm mb-1">Applied By: {item.user}</p>
-                            <p className="text-sm mb-1">Location: {item.delivery_location}</p>
-                            <p className="text-sm mb-1">Booking Status: {item.status}</p>
-
-                            <div className="card-actions justify-end mt-4">
-                                {item.status === 'pending' && (
-                                    <>
-                                        <button className="btn btn-primary mr-2" onClick={() => handleAccept(item.id)}>Accept</button>
-                                        <button className="btn btn-danger" onClick={() => handleReject(item.id)}>Reject</button>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+        <div className="container mx-auto px-6">
+        <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
+          Manage Your Equipments
+        </h1>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+          {combinedBookings &&
+            combinedBookings.map((item) => (
+              <Card
+                key={item.id}
+                className="bg-white shadow-md rounded-lg transition-transform transform hover:shadow-lg hover:-translate-y-1 border border-gray-200"
+              >
+                {/* Card Header */}
+                <div className="relative">
+                  <img
+                    src={item.equipmentDetails?.image}
+                    alt={item.equipmentDetails?.name}
+                    className="w-full h-40 object-cover rounded-t-lg"
+                  />
                 </div>
+      
+                {/* Card Content */}
+                <CardContent className="p-4 space-y-4">
+                  {/* Equipment Name */}
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-lg font-bold text-gray-800">
+                      {item.equipmentDetails?.name}
+                    </h2>
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded ${
+                        item.status === "pending"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : item.status === "accepted"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-red-100 text-red-600"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </div>
+      
+                  {/* Booking Details */}
+                  <div className="grid grid-cols-2 gap-x-4 text-sm text-gray-600">
+                    <p className="flex items-center gap-2">
+                      <i className="text-blue-600">
+                        <CalendarDays className="w-4 h-4" />
+                      </i>
+                      <strong>Start:</strong> {item.start_date}
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <i className="text-blue-600">
+                        <CalendarDays className="w-4 h-4" />
+                      </i>
+                      <strong>End:</strong> {item.end_date}
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <i className="text-green-500">
+                        <Layers className="w-4 h-4" />
+                      </i>
+                      <strong>Quantity:</strong> {item.quantity}
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <i className="text-orange-500">
+                        <DollarSign className="w-4 h-4" />
+                      </i>
+                      <strong>Rate:</strong> Rs {item.equipmentDetails?.per_day_rate}
+                    </p>
+                    <p className="col-span-2 flex items-center gap-2">
+                      <i className="text-red-500">
+                        <CreditCard className="w-4 h-4" />
+                      </i>
+                      <strong>Total Price:</strong> Rs {item.total_cost}
+                    </p>
+                  </div>
+      
+                  {/* User and Location Details */}
+                  <div className="text-sm text-gray-600">
+                    <p>
+                      <strong>Applied By:</strong>{" "}
+                      {item.user.charAt(0).toUpperCase() + item.user.slice(1)}
+                    </p>
+                    <p>
+                      <strong>Location:</strong> {item.delivery_location}
+                    </p>
+                  </div>
+      
+                  {/* Action Buttons */}
+                  {item.status === "pending" && (
+                    <div className="flex justify-end mt-4 space-x-2">
+                      <button
+                        className="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-md hover:bg-green-600 transition"
+                        onClick={() => handleAccept(item.id)}
+                      >
+                        Accept
+                      </button>
+                      <button
+                        className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 transition"
+                        onClick={() => handleReject(item.id)}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             ))}
         </div>
+      </div>
+      
+      
+        
     );
 }
 export default ManageEquipment;

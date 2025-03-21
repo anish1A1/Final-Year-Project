@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { EquipmentContext } from '../../../../utils/equip';
 import { AuthContext } from '../../../../utils/auth';
-
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { CheckCircle, Truck, Package, RefreshCcw } from "lucide-react";
 const ToDeliverItem = () => {
-    const { fetchEquipmentDeliveries, deliveries, updateEquipmentDelivery, fetchEquipmentBookings, fetchEquipment, equipmentBooks, equipment   } = useContext(EquipmentContext);
+    const { fetchEquipmentDeliveries, deliveries, loading, updateEquipmentDelivery, fetchEquipmentBookings, fetchEquipment, equipmentBooks, equipment   } = useContext(EquipmentContext);
     const { user } = useContext(AuthContext);
   
     const [selectedStatus, setSelectedStatus] = useState({});
@@ -48,49 +49,99 @@ const ToDeliverItem = () => {
         };
     };
 
-
+    if(loading){
+        return <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">Loading...</div>
+      };
    
 
     return (
         
         
-            <div className="container mt-32 p-4">
-                <h2 className="text-xl font-bold mb-4">Items Ready for Delivery</h2>
-                {deliveries.length === 0 ? (
-                    <div>No items to deliver</div>
-                ) : (
-                    deliveries.map((delivery) => {
-                        const { bookingCaught, equipment: bookedEquipment } = getBookingDetails(delivery.equipment_payment.equipment_booking);
-                        return (
-                            <div key={delivery.id} className="card w-full bg-base-100 shadow-xl mb-4">
-                                <div className="card-body p-4">
-                                    <h3 className="card-title text-lg font-bold mb-2">Delivery ID: {delivery.id}</h3>
-                                    <p className="text-sm mb-1">Payment ID: {delivery.equipment_payment.id}</p>
-                                    <p className="text-sm mb-1">User: {delivery.equipment_payment.user}</p>
-                                    <p className="text-sm mb-1">Equipment: {bookedEquipment?.name || 'N/A'}</p>
-                                    <p className="text-sm mb-1">Quantity: {bookingCaught?.quantity || 'N/A'}</p>
-                                    <p className="text-sm mb-1">Location: {bookingCaught?.delivery_location || 'N/A'}</p>
-                                    <p className="text-sm mb-1">Rent Start Date: {bookingCaught?.start_date || 'N/A'}</p>
-                                    <p className="text-sm mb-1">Rent End Date: {bookingCaught?.end_date || 'N/A'}</p>
-                                    <p className="text-sm mb-1">Total Date: {bookingCaught?.total_date || 'N/A'}</p>
-                                    <p className="text-sm mb-1">Date Paid: {delivery.equipment_payment?.date_paid || 'N/A'}</p>
-                                    <p className="text-sm mb-1">Status: {delivery.status}</p>
-                                    <label className="block text-sm font-medium text-gray-700">Update Delivery Status:</label>
-                                    <select value={selectedStatus[delivery.id] || delivery.status} onChange={(e) => handleStatusChange(delivery.id, e.target.value)} className="mt-1 block w-full mb-4">
-                                        <option value="processing">Processing</option>
-                                        <option value="delivering">Delivering</option>
-                                        <option value="delivered">Delivered</option>
-                                    </select>
-                                    <button onClick={() => handleDeliveryStatusSubmit(delivery.id)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                        Submit
-                                    </button>
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
-            </div>
-        );
-};
+        <div className="container mx-auto p-8">
+        <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-10">
+          <Package className="inline-block w-8 h-8 text-blue-600 mr-2" /> Items Ready for Delivery
+        </h2>
+  
+        {deliveries.length === 0 ? (
+          <div className="flex flex-col justify-center items-center h-64 text-2xl font-semibold text-gray-700">
+            <Truck className="w-16 h-16 text-gray-400 mb-4" />
+            No items to deliver
+          </div>
+        ) : (
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+            {deliveries.map((delivery) => {
+              const { bookingCaught, equipment: bookedEquipment } = getBookingDetails(
+                delivery.equipment_payment.equipment_booking
+              );
+              return (
+                <Card
+                  key={delivery.id}
+                  className="bg-white shadow-lg rounded-xl transition-transform transform hover:shadow-xl hover:-translate-y-1 border border-gray-300"
+                >
+                  <CardHeader className="p-5 border-b flex flex-col gap-2">
+                    <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                      <Package className="w-6 h-6 text-blue-600" /> Delivery ID: {delivery.id}
+                    </h3>
+                    <p className="text-sm text-gray-600 font-medium">
+                      Status: 
+                      <span
+                        className={`ml-2 px-3 py-1 text-xs font-semibold rounded-full inline-flex items-center gap-1 ${
+                            delivery.status === "processing"
+                              ? "bg-yellow-100 text-yellow-600"
+                              : delivery.status === "delivering"
+                              ? "bg-blue-100 text-blue-600"
+                              : "bg-green-100 text-green-600"
+                          }`}
+                      >
+                        {delivery.status === "processing" && <RefreshCcw className="w-4 h-4" />}
+                        {delivery.status === "delivering" && <Truck className="w-4 h-4" />}
+                        {delivery.status === "delivered" && <CheckCircle className="w-4 h-4" />}
+                        {delivery.status}
+                      </span>
+                    </p>
+                  </CardHeader>
+  
+                  <CardContent className="p-5 space-y-3 text-gray-700">
+                    <p><strong>Payment ID:</strong> {delivery.equipment_payment.id}</p>
+                    <p><strong>User:</strong> {delivery.equipment_payment.user}</p>
+                    <p><strong>Equipment:</strong> {bookedEquipment?.name || "N/A"}</p>
+                    <div className="grid grid-cols-2 gap-x-4">
+                      <p><strong>Quantity:</strong> {bookingCaught?.quantity || "N/A"}</p>
+                      <p><strong>Location:</strong> {bookingCaught?.delivery_location || "N/A"}</p>
+                      <p><strong>Start Date:</strong> {bookingCaught?.start_date || "N/A"}</p>
+                      <p><strong>End Date:</strong> {bookingCaught?.end_date || "N/A"}</p>
+                    </div>
+                    <p><strong>Total Days:</strong> {bookingCaught?.total_date || "N/A"}</p>
+                    <p><strong>Date Paid:</strong> {delivery.equipment_payment?.date_paid || "N/A"}</p>
+                  </CardContent>
+  
+                  <CardFooter className="p-5 border-t bg-gray-50 rounded-b-xl space-x-5 flex items-center">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Status:
+                    </label>
+                    <select
+                      value={selectedStatus[delivery.id] || delivery.status}
+                      onChange={(e) => handleStatusChange(delivery.id, e.target.value)}
+                      className="block w-full p-3 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm "
+                    >
+                      <option value="processing">Processing</option>
+                      <option value="delivering">Delivering</option>
+                      <option value="delivered">Delivered</option>
+                    </select>
+                    <button
+                      onClick={() => handleDeliveryStatusSubmit(delivery.id)}
+                      className="w-28 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle className="w-5 h-5" /> Submit
+                    </button>
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
 
 export default ToDeliverItem;

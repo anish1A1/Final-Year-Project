@@ -94,12 +94,7 @@ const EquipmentList = () => {
                 <Link href={`/equipmentList/${item.id}`}>
                   <Button variant="outline" className="w-full">View Details</Button>
                 </Link>
-                {user && item.user === user.username && (
-                  <>
-                    <Button variant="secondary" className="w-full" onClick={() => handleUpdate(item.id)}>Update</Button>
-                    <Button variant="destructive" className="w-full" onClick={() => handleDelete(item.id)}>Delete</Button>
-                  </>
-                )}
+                
                 {user && item.user !== user.username && (
                   isAlreadyBooked(item.id) ? (
                     <Button variant="outline" className="w-full" disabled>Already Booked</Button>

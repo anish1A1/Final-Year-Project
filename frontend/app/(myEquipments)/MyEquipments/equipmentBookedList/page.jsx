@@ -69,12 +69,12 @@ const EquipmentToBookList = () => {
   };
 
   return (
-    <div className="container mx-auto ml-8">
+    <div className="container mx-auto ">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
         Equipments Requested to Rent
       </h2>
       {loading ? (
-        <Skeleton className="h-40 w-full rounded-lg" />
+       <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">Loading...</div>
       ) : combinedBookings.length === 0 ? (
         <div className="text-center text-lg font-semibold text-gray-500">
           No equipment bookings available.

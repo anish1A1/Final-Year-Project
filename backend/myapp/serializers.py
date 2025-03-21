@@ -86,16 +86,22 @@ class EquipmentBookingSerializer(serializers.ModelSerializer):
         return obj.total_date
     
     def validate(self, data):
-        # Check if the equipment is already booked by the same user
-        user =self.context['request'].user
+        user = self.context['request'].user
         equipment = data.get('equipment')
-        
-        if data['start_date'] > data['end_date']:
-            raise serializers.ValidationError({'error': 'Start date cannot be greater than end date.'})
-        
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+
+        if start_date and end_date and start_date > end_date:
+            raise serializers.ValidationError({'start_date': 'Start date should be less than end date.'})
+
         if EquipmentBooking.objects.filter(equipment=equipment, user=user).exists():
             raise serializers.ValidationError("Equipment is already booked by you")
+
+        if EquipmentBooking.objects.filter(equipment=equipment, user=user, status__in=["active", "pending"]).exists():
+            raise serializers.ValidationError("Equipment is already booked by you")
+
         return data
+
     
     def get_total_cost(self, obj):
         return obj.total_cost

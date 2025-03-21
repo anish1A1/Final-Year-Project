@@ -53,12 +53,12 @@ const OwnersEquipment = () => {
 
 
   return (
-    <div className="container mx-auto px-6 min-h-screen">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="container mx-auto px-6 ">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
         { equipmentOwner && equipmentOwner.length > 0 ? (
             equipmentOwner.map((equipment) => (
               <Card key={equipment.id} 
-          className="bg-white shadow-lg rounded-xl p-5 transition-all transform  hover:shadow-2xl border border-gray-200">
+          className="bg-white shadow-lg rounded-xl pb-5 px-5 transition-all transform  hover:shadow-2xl border border-gray-200">
               
               <CardHeader >
                 <CardTitle className="text-lg text-center font-bold">{equipment.name}</CardTitle>
