@@ -419,7 +419,7 @@ class TradeRequestListCreateView(generics.ListCreateAPIView):
 
         # Check if the user has already requested this trade
         if TradeRequest.objects.filter(user=user, trade=trade).exists():
-            raise serializers.ValidationError("You have already made a trade request for this product.")
+            raise serializers.ValidationError("You already have an existing trade request of this product.")
 
         serializer.save(user=user)
 

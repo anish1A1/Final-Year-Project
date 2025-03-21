@@ -23,7 +23,6 @@ const CreateTradeRequestPage = () => {
         delivery_location: "",
         product_name: "",
         quantity: 1,
-        price: "",
         image: null,
         note: "",
     });
@@ -51,7 +50,7 @@ const CreateTradeRequestPage = () => {
                 router.push("/allTrades"); // Redirect after success
             }, 2000);
         } catch (error) {
-            const errorNotes = error.note && error.note[0];
+            const errorNotes = error.note && error.note[0] || error[0];
             if (errorNotes) {
                 toast.error(errorNotes);
                 return;
@@ -77,9 +76,9 @@ const CreateTradeRequestPage = () => {
 
     return (
         <div className="min-h-screen mt-24 bg-gray-100">
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center pt-4">
                 <Card className="w-full max-w-2xl shadow-lg rounded-xl bg-white mt-2 ">
-                    <div className=" p-2 border-b bg-gray-100 ">
+                    <div className=" p-3 border-b bg-gray-100 ">
                         <CustomBreadCrumb items={routesLocations}/>
                     </div>
 
@@ -101,22 +100,12 @@ const CreateTradeRequestPage = () => {
                             onChange={handleChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             required
+                            placeholder="Enter product name to give.."
                         />
                     </div>
-                    {/* Delivery Location */}
-                    <div>
-                        <Label >Delivery Location</Label>
-                        <Input
-                            type="text"
-                            name="delivery_location"
-                            value={formData.delivery_location}
-                            onChange={handleChange}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                            required
-                        />
-                    </div>
+                    
 
-                    <div className="grid grid-cols-2 gap-4">
+                    
 
                     {/* Quantity */}
                     <div>
@@ -132,20 +121,25 @@ const CreateTradeRequestPage = () => {
                         />
                     </div>
 
-                    {/* Price */}
+                    {/* Delivery Location */}
+                    
+                    
+                    
+
+                    
+
                     <div>
-                        <Label >Price (per unit)</Label>
+                        <Label >Delivery Location</Label>
                         <Input
-                            type="number"
-                            name="price"
-                            value={formData.price}
-                            min="1"
+                            type="text"
+                            name="delivery_location"
+                            value={formData.delivery_location}
                             onChange={handleChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             required
-                        />
-                    </div>
+                            placeholder="e.g.  Sunsari, Dharan-1, BhanuChowk "
 
+                        />
                     </div>
 
                     {/* Upload Image */}
@@ -167,8 +161,9 @@ const CreateTradeRequestPage = () => {
                             name="note"
                             value={formData.note}
                             onChange={handleChange}
-                            rows="4"
+                            rows="2"
                             className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                        placeholder="e.g. I would like to trade with these products.."
                         ></Textarea>
                     </div>
 

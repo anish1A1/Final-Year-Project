@@ -36,7 +36,7 @@ const UserNav = () => {
     }, [user]);
 
     return (
-        <div  className='mt-1'>
+        <div >
 
 
                 <NavigationMenu  >
