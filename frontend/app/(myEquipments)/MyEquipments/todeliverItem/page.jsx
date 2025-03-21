@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useContext } from 'react';
-import { EquipmentContext } from '../../../../../utils/equip';
-import { AuthContext } from '../../../../../utils/auth';
+import { EquipmentContext } from '../../../../utils/equip';
+import { AuthContext } from '../../../../utils/auth';
 
 const ToDeliverItem = () => {
     const { fetchEquipmentDeliveries, deliveries, updateEquipmentDelivery, fetchEquipmentBookings, fetchEquipment, equipmentBooks, equipment   } = useContext(EquipmentContext);

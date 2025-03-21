@@ -62,7 +62,18 @@ class EquipmentSerializer(serializers.ModelSerializer):
         validated_data['user'] = user
         print("validated Data: ", validated_data)
         return super().create(validated_data)
-
+    
+    def update(self, instance, validated_data):
+        instance.description = validated_data.get('description', instance.description)
+        instance.availability_status = validated_data.get('availability_status', instance.availability_status)
+        instance.name = validated_data.get('name', instance.name)
+        instance.per_day_rate = validated_data.get('per_day_rate', instance.per_day_rate)
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.delivery_charge = validated_data.get('delivery_charge', instance.delivery_charge)
+        
+        instance.save()
+        return instance
+        
 class EquipmentBookingSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
     total_date = serializers.SerializerMethodField()

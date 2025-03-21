@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useContext } from 'react';
-import { EquipmentContext } from '../../../../../utils/equip';
-import { AuthContext } from '../../../../../utils/auth';
+import { EquipmentContext } from '../../../../utils/equip';
+import { AuthContext } from '../../../../utils/auth';
 import { toast } from 'sonner';
 
 
@@ -57,7 +57,7 @@ const ManageEquipment = () => {
 
 
     return (
-        <div className=' mt-28 p-4  flex-1 gap-4'>
+        <div className=' p-4  gap-4'>
             <h2 className='col-span-full text-xl font-bold mb-4'>Manage Your Equipment Bookings</h2>
             {combinedBookings.map((item) => (
                 <div className="col-span-1 md:col-span-1 lg:col-span-1" key={item.id}>

@@ -8,7 +8,6 @@ import { EquipmentContext } from '../../../../utils/equip';
 import Image from 'next/image';
 import { AuthContext } from '../../../../utils/auth';
 import UpdateEquipmentForm from '../UpdateEquipmentForm';
-import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 
 
 const UpdateEquipment = () => {
@@ -47,8 +46,6 @@ const UpdateEquipment = () => {
 
   return (
     <div className={styles.container}>
-        <BreadCrumbs />
-      <h1>Update Form</h1>
       <UpdateEquipmentForm 
       id = {id}
       initialFormData = {initialFormData}

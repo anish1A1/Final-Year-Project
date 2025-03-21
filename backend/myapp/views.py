@@ -90,6 +90,13 @@ class EquipmentListCreateView(generics.ListCreateAPIView):
         # The serializer.save(user=self.request.user) call saves the new Equipment instance, setting the user field to the currently authenticated user (self.request.user).
 
          
+class EquipmnentListByOwner(generics.ListAPIView):
+    serializer_class = EquipmentSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return Equipment.objects.filter(user=self.request.user)
+    
 # class for update, delete and retrieve the equipment
 class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Equipment.objects.all()
@@ -107,6 +114,14 @@ class EquipmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_serializer_context(self):
         return {'request': self.request}
     
+class EquipmentPartialUpdateView(generics.UpdateAPIView):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwner]
+    
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
 class EquipmentBookingListCreateView(generics.ListCreateAPIView):
     queryset = EquipmentBooking.objects.all()

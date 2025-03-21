@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Upload } from "lucide-react";
 import { motion } from "framer-motion";
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+import { toast } from "sonner";
 
 const UpdateEquipmentForm = ({ id, initialFormData }) => {
     const [formData, setFormData] = useState(initialFormData);
@@ -43,52 +45,74 @@ const UpdateEquipmentForm = ({ id, initialFormData }) => {
         try {
             await updateEquipment(id, formData, router);
         } catch (error) {
-            console.error("Error: while updating equipment", error);
+            const fileImageError = error && error.image || error.user_manual
+            if (fileImageError) {
+                toast.error(fileImageError);
+                return;
+            }
+            toast.error("Error: while updating equipment", error);
         }
     };
 
     return (
+    <div className="max-w-xl mx-auto space-y-1 ">
         <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5 }}
-            className="flex justify-center items-center min-h-screen"
+            className="flex justify-center items-center pt-2"
         >
             <Card className="w-full max-w-lg p-6 shadow-lg rounded-lg">
+                 <BreadCrumbs />
                 <CardHeader className="text-xl font-bold text-center">Update Equipment</CardHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <CardContent className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3">
+                    <CardContent className="space-y-3">
                         <div>
                             <Label>Name</Label>
                             <Input type="text" name="name" value={formData.name} onChange={handleChange} required />
                         </div>
                         <div>
                             <Label>Description</Label>
-                            <Textarea name="description" value={formData.description} onChange={handleChange} required />
+                            <Textarea name="description" value={formData.description}
+                             onChange={handleChange} required />
                         </div>
                         <div>
                             <Label>Image</Label>
                             <Input type="file" name="image" onChange={handleFileChange} className="cursor-pointer" />
                         </div>
-                        <div className="flex items-center space-x-2">
-                            <Switch id="availability" name="availability_status" checked={formData.availability_status} onChange={handleChange} />
+                        
+                        <div className="flex items-center justify-between space-x-3">
+                        <div className="flex items-center  ">
+                            
                             <Label htmlFor="availability">Availability Status</Label>
+                            <Switch id="availability" name="availability_status" 
+                            checked={formData.availability_status}
+                             onChange={handleChange} />
                         </div>
-                        <div>
-                            <Label>Quantity</Label>
-                            <Input type="number" name="quantity" value={formData.quantity} onChange={handleChange} required />
+                            <div className="flex items-center">
+
+                            <Label className="ml-2">Quantity</Label>
+                            <Input type="number" name="quantity"
+                            className="ml-2"
+                            value={formData.quantity} onChange={handleChange} required />
+                       
+                            </div>
                         </div>
+                        <div className="flex items-center justify-between">
+
                         <div>
                             <Label>Per Day Rate</Label>
                             <Input type="number" step="0.01" name="per_day_rate" value={formData.per_day_rate} onChange={handleChange} required />
                         </div>
-                        <div>
-                            <Label>User Manual</Label>
-                            <Input type="file" name="user_manual" onChange={handleFileChange} className="cursor-pointer" />
-                        </div>
+
                         <div>
                             <Label>Delivery Charge</Label>
                             <Input type="number" step="0.01" name="delivery_charge" value={formData.delivery_charge} onChange={handleChange} required />
+                        </div>
+                        </div>
+                        <div>
+                            <Label>User Manual</Label>
+                            <Input type="file" name="user_manual" onChange={handleFileChange} className="cursor-pointer" />
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-center">
@@ -99,6 +123,8 @@ const UpdateEquipmentForm = ({ id, initialFormData }) => {
                 </form>
             </Card>
         </motion.div>
+</div>
+
     );
 };
 

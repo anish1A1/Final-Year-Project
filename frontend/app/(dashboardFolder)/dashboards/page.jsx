@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import PrivateRoute from "../../middleware/PrivateRoute";
-import EquipmentToBookList from "./dashboardEquipment/equipmentBookedList/page";
-import ManageEquipment from "./dashboardEquipment/ManageEquipment/page";
+import EquipmentToBookList from "../../(myEquipments)/MyEquipments/equipmentBookedList/page";
+import ManageEquipment from "../../(myEquipments)/MyEquipments/ManageEquipment/page";
 import ToReceiveItem from "../../(orders)/MyOrders/EquipmentsOrders/ToReceiveItem/page";
 import UserCartDelivery from "../../components/Deliveries/cartDeliveries/UserCartDelivery";
 import Link from "next/link";

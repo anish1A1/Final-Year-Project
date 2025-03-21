@@ -15,6 +15,7 @@ export const EquipProvider = ({children}) => {
     const [equipmentPurchases, setEquipmentPurchases] = useState([]);
     const [deliveries, setDeliveries] = useState([]);
     const [deliveryReceive, setDeliveryReceive] = useState([]);
+    const [equipmentOwner, setEquipmentOwner] = useState([]);
     const { user } = useContext(AuthContext);   // Since we also need to pass the user as it is required in the model
 
 
@@ -32,6 +33,22 @@ export const EquipProvider = ({children}) => {
             setLoading(false);
         }
 
+    };
+    const fetchEquipmentByOwners = async () => {
+        try {
+            const response = await axios.get('/api/equipment-list-owner/');
+            
+            setEquipmentOwner(response.data);
+            console.log(response.data);
+            setLoading(false);
+
+        } catch (error) {
+            console.error(`Error fetching equipment: ${error}`);
+            setError(error.response?.data || error.message);
+        }
+        finally {
+            setLoading(false);
+        }
     };
 
     const createEquipment = async (formData, router) => {
@@ -85,6 +102,22 @@ export const EquipProvider = ({children}) => {
             }
             
         }
+    };
+    const partialUpdateOwnersEquipment = async (id, data) => {
+        try {
+            const response = await axios.patch(`/api/equipment/${id}/update/`, data, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            setEquipmentOwner((prevRequest) => prevRequest.map(item => item.id === id ? response.data : item));
+            return { status: 'success', message: 'Updated the Equipment successfully!' };
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Updating Confirmed Equipment: ${errorMessage}`);
+            throw error.response?.data;   // Throw the error to be caught in the component
+        }
     }
 
     const updateEquipment = async (id, formData, router) => {
@@ -121,7 +154,7 @@ export const EquipProvider = ({children}) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            setEquipmentBooks((prevBookedEquipment) => prevBookedEquipment.map(item => item.id === id ? response.data : item));
+            setEquipmentOwner((prevBookedEquipment) => prevBookedEquipment.map(item => item.id === id ? response.data : item));
             return { status: 'success', message: 'Equipment deleted successfully!' };
         } catch (error) {
             console.error(`Error deleting equipment: ${error}`);
@@ -319,8 +352,11 @@ export const EquipProvider = ({children}) => {
         equipmentPurchases,
         deliveries,
         deliveryReceive,
+        equipmentOwner,
         fetchEquipment,
+        fetchEquipmentByOwners,
         createEquipment,
+        partialUpdateOwnersEquipment,
         updateEquipment,
         deleteEquipment,
         getEquipmentById,
@@ -334,7 +370,7 @@ export const EquipProvider = ({children}) => {
         fetchEquipmentDeliveriesToReceive,
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [equipment, equipmentBooks, equipmentPurchases,deliveries, deliveryReceive, loading, errors, user]);
+    }), [equipment, equipmentBooks, equipmentOwner, equipmentPurchases,deliveries, deliveryReceive, loading, errors, user]);
     
     return (
         <EquipmentContext.Provider value={equipContextValue} >

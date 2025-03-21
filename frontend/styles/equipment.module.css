@@ -1,19 +1,19 @@
 .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0px 20px 20px 20px;
     margin-top: 100px;
 }
 
 .equipmentList {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 10px;
 }
 
 .equipmentItem {
     border: 1px solid #ddd;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     width: 300px;
     text-align: center;

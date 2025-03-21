@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
-import { EquipmentContext } from "../../../../../utils/equip";
-import { AuthContext } from "../../../../../utils/auth";
+import { EquipmentContext } from "../../../../utils/equip";
+import { AuthContext } from "../../../../utils/auth";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { ShoppingCart, CheckCircle, XCircle } from "lucide-react";
+import { ShoppingCart, CheckCircle, XCircle, CalendarDays, Box, User, DollarSign, CreditCard } from "lucide-react";
 
 const EquipmentToBookList = () => {
   const {
@@ -69,7 +69,7 @@ const EquipmentToBookList = () => {
   };
 
   return (
-    <div className="container mx-auto mt-28 ml-8">
+    <div className="container mx-auto ml-8">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
         Equipments Requested to Rent
       </h2>
@@ -80,23 +80,70 @@ const EquipmentToBookList = () => {
           No equipment bookings available.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {combinedBookings.map((item) => (
-            <Card key={item.id} className="shadow-lg">
+            <Card key={item.id} className="shadow-lg hover:shadow-2xl">
               <img
                 src={item.equipmentDetails?.image}
                 alt={item.equipmentDetails?.name}
                 className="w-full h-48 object-cover rounded-t-lg"
               />
               <CardHeader>
-                <CardTitle>{item.equipmentDetails?.name}</CardTitle>
+                <CardTitle className="text-xl font-bold ml-2">{item.equipmentDetails?.name}</CardTitle>
               </CardHeader>
+
               <CardContent>
-                <p className="text-gray-600">Total Days: {item.total_date}</p>
-                <p className="text-gray-600">Quantity: {item.quantity}</p>
-                <p className="text-gray-600">Equipment Owner: {item.equipmentDetails.user.charAt(0).toUpperCase() + item.equipmentDetails.user.slice(1)}</p>
-                <p className="text-gray-600 ">Per Day Rate: Rs.<span className="ml-0.5">{item.equipmentDetails.per_day_rate}</span></p>
-                <p className="text-gray-600 font-bold">Total Price: Rs. <span className="ml0.5">{item.total_cost}</span></p>
+              <div className="text-gray-600 space-y-4 bg-white p-2 rounded-lg ">
+            {/* Grouped Section 1 */}
+            <div className="flex items-center justify-between ">
+              <p className="flex items-center text-gray-600 text-md font-semibold">
+                <i className="mr-2">
+                  <CalendarDays className="w-5 h-5 text-blue-600" />
+                </i>
+                Total Days: <span className="ml-1 font-bold">{item.total_date}</span>
+              </p>
+
+              <p className="flex items-center text-gray-600  text-md font-semibold">
+                <i className="mr-2">
+                  <Box className="w-5 h-5 text-green-600" />
+                </i>
+                Quantity: <span className="ml-1 font-semibold">{item.quantity}</span>
+              </p>
+            </div>
+
+            {/* Grouped Section 2 */}
+                    <div className="flex items-center space-x-4">
+                      <p className="flex items-center text-gray-600 text-md font-semibold">
+                        <i className="mr-2">
+                          <User className="w-5 h-5 text-purple-600" />
+                        </i>
+                        Equipment Owner:{" "}
+                        <span className="ml-1 font-semibold">
+                          {item.equipmentDetails.user.charAt(0).toUpperCase() +
+                            item.equipmentDetails.user.slice(1)}
+                        </span>
+                      </p>
+                      
+                    </div>
+
+                    <div className="flex items-center  font-bold">
+                    <p className="flex items-center text-gray-600 text-md font-semibold">
+                        <i className="mr-2">
+                          <DollarSign className="w-5 h-5 text-orange-600" />
+                        </i>
+                        Per Day Rate: Rs.<span className="ml-1  font-bold">{item.equipmentDetails.per_day_rate}</span>
+                      </p>
+                    </div>
+               
+
+                    {/* Total Price */}
+                    <div className="flex text-gray-800  items-center text-md border-t pt-2 font-bold">
+                      <i className="mr-2 pl-1">
+                        <CreditCard className="w-5 h-5 text-red-600" />
+                      </i>
+                      Total Price: Rs. <span className="ml-1 text-gray-800 font-bold">{item.total_cost}</span>
+                    </div>
+                  </div>
 
 
                 <p
