@@ -1,6 +1,6 @@
 import React from 'react'
 import PrivateRoute from '../../middleware/PrivateRoute';
-import CreateProduct from '../../(products)/createProduct/page';
+import CreateProduct from '../../(myProducts)/MyProducts/createProduct/page';
 import Link from 'next/link';
 import ProductListByOwner from './ProductListByOwner';
 import GetConfirmedTradesByOwner from '../../components/Deliveries/GetConfirmedTradesByOwner';

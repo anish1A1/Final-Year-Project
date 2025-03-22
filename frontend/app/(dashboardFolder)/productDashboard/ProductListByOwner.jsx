@@ -3,6 +3,12 @@ import React, {useContext, useEffect} from 'react'
 import { ProductContext } from '../../../utils/prod'
 import {useRouter} from 'next/navigation';
 import { toast } from 'sonner';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Truck, PackageCheck, Clock, MapPin, DollarSign, User } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 const ProductListByOwner = () => {
     const {fetchProductByOwner, ownerProducts, loading,deleteProduct } = useContext(ProductContext);
     const router = useRouter();
@@ -20,47 +26,102 @@ const ProductListByOwner = () => {
   }
 
   const updateProduct = async (id) => {
-    router.push(`/updateProduct/${id}`);
+    router.push(`/MyProducts/updateProduct/${id}`);
   }
-  
-    if (loading) {
-        return <div className="container mx-auto mt-24">Loading...</div>;
-    };   
+  if(loading){
+    return <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">Loading...</div>
+  };  
 
     if (!ownerProducts) {
       return <div className="container mx-auto mt-24">No products created by you</div>;
     };
 
     return (
-        <div className="container mx-auto mt-24">
-        <h1 className="text-2xl font-bold mb-4">Product List</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ownerProducts.map((product) => (
-                <div key={product.id} className="bg-white border rounded-lg p-4 shadow-md">
-                    {product.product_image && (
-                        <img src={product.product_image} alt={product.name} className="w-full h-48 object-cover mb-4 rounded-lg" />
-                    )}
-                    <h2 className="text-xl font-semibold">{product.name}</h2>
-                    <p className="text-gray-700">{product.small_description}</p>
-                    <p className="text-gray-900 font-bold mt-2">Selling Price: ${product.selling_price}</p>
-                    <p className="text-gray-700 mt-2">Original Price: ${product.original_price}</p>
-                    <p className="text-gray-700 mt-2">Quantity: {product.quantity}</p>
-                    <p className="text-gray-700 mt-2">Tag: {product.tag}</p>
-                    <p className="text-gray-700 mt-2">Delivery Charge: ${product.delivery_sell_charge}</p>
-                    <p className="text-gray-700 mt-2">Status: {product.status ? 'Hidden' : 'Visible'}</p>
-                    <p className="text-gray-700 mt-2">Trending: {product.trending ? 'Yes' : 'No'}</p>
-                    <p className="text-gray-700 mt-2">Created At: {new Date(product.created_at).toLocaleString()}</p>
+      <div className="container mx-auto px-6">
+      <h1 className="text-3xl font-medium  text-gray-800 mb-4">
+        📦 Product List
+      </h1>
+    
+      <div className="grid gap-8 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+        {ownerProducts &&
+          ownerProducts.map((product) => (
+            <Card
+              key={product.id}
+             className="relative shadow-lg border border-gray-200 rounded-lg overflow-hidden hover:shadow-2xl transition-transform transform "
+            >
+              {/* Product Image and Badge */}
+              <CardHeader className="overflow-hidden bg-white">
+                {product.product_image && (
+                  <img
+                    src={product.product_image}
+                    alt={product.name}
+                     className="w-full  object-cover rounded-lg h-48 transition-transform hover:scale-105 duration-300 cursor-pointer"
+                    loading="lazy"
+                    tabIndex={0} // Makes the element focusable
+                    role="button"
+                    onClick={() => router.push(`/viewProduct/${product.id}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") router.push(`/viewProduct/${product.id}`);
+                    }}
+                  
+                  />
+                )}
+              </CardHeader>
+                <Badge className="absolute top-4 left-4 bg-blue-100 text-blue-600 text-xs font-bold px-3 py-1 rounded-md shadow-md">
+                    {product.tag || "No Tag"}
+                  
+                </Badge>
+    
+              {/* Product Details */}
+              <CardContent className="px-4 space-y-3">
+                <h2 className="text-xl font-bold text-gray-800">{product.name}</h2>
+                <p className="text-gray-600 text-sm">{product.small_description}</p>
+                <div className="grid grid-cols-2 gap-x-4 text-gray-700">
+                  <p>
+                    <strong>Price:</strong> Rs.{product.original_price}
+                  </p>
+                  <p>
+                    <strong>Quantity:</strong> {product.quantity}
+                  </p>
+                  
+                  <p className='flex items-center gap-2 '>
+                  <strong className=''>Created At:</strong>{" "}
+                  {new Date(product.created_at).toLocaleDateString()}
+                </p>
 
-                    <p className="text-gray-700 mt-2">Total Time(From created Day): {product.total_time}</p>
-                    <div className="flex justify-between">
-                    <button onClick={() => deletProduct(product.id)}>Delete Product</button>
-                    <button onClick={() => updateProduct(product.id)}>Update Product</button>
-
-                    </div>
                 </div>
-            ))}
-        </div>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span
+                    className={`px-2 py-1 text-xs font-semibold rounded ${
+                      product.status ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"
+                    }`}
+                  >
+                    {product.status ? "Hidden" : "Visible"}
+                  </span>
+                </p>
+              </CardContent>
+    
+              {/* Actions */}
+              <CardFooter className="px-4 flex justify-between items-end">
+                <button
+                  onClick={() => deletProduct(product.id)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                >
+                  Delete Product
+                </button>
+                <button
+                  onClick={() => updateProduct(product.id)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                >
+                  Update Product
+                </button>
+              </CardFooter>
+            </Card>
+          ))}
+      </div>
     </div>
+    
   )
 }
 

@@ -1,58 +1,52 @@
-import { Separator } from "@radix-ui/react-separator";
 import Link from "next/link";
-
-const EquipmentDashboardLayout = ({ children }: { children: React.ReactNode }) => {
+const ProductDashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex  mt-[84px] bg-gray-100">
+    <div className="flex h-screen pt-24 bg-gray-50">
       {/* Sidebar Navigation */}
-      {/* <aside className="w-64 bg-blue-900 text-white flex flex-col">
+      <aside className="w-[220px] bg-blue-900 text-white flex flex-col">
         <div className="p-6">
-          <h2 className="text-xl font-bold">Dashboard</h2>
-          <p className="text-sm text-gray-300 mt-2">
-            Manage your equipment efficiently
+          <h2 className="text-xl font-bold">Prdoduct Dashboard</h2>
+          <p className="text-sm text-gray-100 mt-2">
+            Manage your products efficiently
           </p>
         </div>
-        <nav className="flex flex-col mt-8 space-y-4">
+        
+        <nav className="flex flex-col mt-8 space-y-3">
           <Link
-            href="/MyEquipments/"
+            href="/MyProducts/"
             className="block px-6 py-3 hover:bg-blue-700 rounded transition"
           >
-            Equipments
+            Products
           </Link>
           <Link
-            href="/MyEquipments/ManageEquipment"
+            href="/MyProducts/productDelivery/"
             className="block px-6 py-3 hover:bg-blue-700 rounded transition"
           >
-            Manage Equipments
+            Deliver Products
           </Link>
           <Link
-            href="/MyEquipments/equipmentBookedList"
+            href="/MyProducts/MyTrades/tradeProductList"
+
             className="block px-6 py-3 hover:bg-blue-700 rounded transition"
           >
-            Booked Lists
+            My Trades
           </Link>
           <Link
-            href="/MyEquipments/todeliverItem"
+            href="/MyTrades/tradeProductList"
             className="block px-6 py-3 hover:bg-blue-700 rounded transition"
           >
             Manage Deliveries
           </Link>
         </nav>
-      </aside> */}
+      </aside>
 
       {/* Main Dashboard Content */}
       <main className="flex-1 p-6 bg-white overflow-auto">
-        <div className="bg-gray-100 p-4 rounded-md shadow-sm ">
+        {/* <div className="bg-gray-100 p-4 rounded-md shadow-sm mb-6">
           <div className="flex justify-between items-center">
-            
-            <Link
-            href="/MyEquipments/"
-        
-          >
-            <h1 className="text-2xl font-semibold text-gray-800 cursor-pointer">
-            📦My Equipments
+            <h1 className="text-2xl font-semibold text-gray-800">
+              My Equipments
             </h1>
-          </Link>
             <div className="flex items-center space-x-4">
               <Link
                 href="/MyEquipments/ManageEquipment"
@@ -68,15 +62,6 @@ const EquipmentDashboardLayout = ({ children }: { children: React.ReactNode }) =
                 Booked Lists
               </Link>
               <Separator orientation="vertical" className="h-5 w-px bg-gray-300" />
-
-              <Link
-                href="/MyEquipments/createEquipment"
-                className="text-sm font-medium text-blue-600 hover:underline"
-              >
-                Create Equipment
-              </Link>
-              <Separator orientation="vertical" className="h-5 w-px bg-gray-300" />
-
               <Link
                 href="/MyEquipments/todeliverItem"
                 className="text-sm font-medium text-blue-600 hover:underline"
@@ -85,11 +70,11 @@ const EquipmentDashboardLayout = ({ children }: { children: React.ReactNode }) =
               </Link>
             </div>
           </div>
-        </div>
+        </div> */}
         {children}
       </main>
     </div>
   );
 };
 
-export default EquipmentDashboardLayout;
+export default ProductDashboardLayout;

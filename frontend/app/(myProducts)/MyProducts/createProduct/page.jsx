@@ -1,7 +1,7 @@
 "use client"
 import React, {useState, useContext, useEffect} from 'react'
-import { ProductContext } from '../../../utils/prod'
-import { AuthContext } from '../../../utils/auth'
+import { ProductContext } from '../../../../utils/prod'
+import { AuthContext } from '../../../../utils/auth'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";

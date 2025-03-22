@@ -1,20 +1,20 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { CartContext } from "../../../../../utils/cart";
+import { CartContext } from "../../../../utils/cart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Truck, Clock, MapPin, User, DollarSign, ShoppingCart, CalendarIcon } from "lucide-react";
+import { Truck, Clock, MapPin, User, DollarSign, ShoppingCart, CalendarIcon,  CheckCircle, Package, RefreshCcw  } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const ProductDelivery = () => {
-  const { deliveryProductOwner, fetchDeliveryProductOwner, UpdateDeliveryProductByOwner, UpdateDeliveryDateProductByOwner } = useContext(CartContext);
+  const { deliveryProductOwner, fetchDeliveryProductOwner, UpdateDeliveryProductByOwner, UpdateDeliveryDateProductByOwner, loading } = useContext(CartContext);
 
   const [updatingDeliveryId, setUpdatingDeliveryId] = useState(null);
   const [selectedDates, setSelectedDates] = useState({});
@@ -80,12 +80,32 @@ const ProductDelivery = () => {
     delivering_to_admin: "border-gray-600 text-gray-600",
   };
 
-  return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6 mt-28">
-      <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">📦 Your Product To Delivery</h1>
 
-      <div className="grid grid-cols-1 gap-6">
-        {deliveryProductOwner?.map((item, index) => (
+
+  if(loading){
+    return <div className="flex justify-center items-center mt-44 text-2xl font-semibold text-gray-700">Loading...</div>
+  };
+
+  if (deliveryProductOwner.length == 0) {
+      return (
+       <div className="flex flex-col justify-center items-center h-64 text-2xl font-semibold text-gray-700">
+                <Truck className="w-16 h-16 text-gray-400 mb-4" />
+                No Products to deliver
+              </div>
+      );  
+  }
+  
+
+  return (
+    <div className="container mx-auto px-3">
+
+    <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-6">
+              <Package className="inline-block w-8 h-8 text-blue-600 mr-2" /> Your Product To Deliver
+            </h2>
+
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+       
+        { deliveryProductOwner.map((item, index) => (
           <Card key={`${item.id} # ${index}`}>
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
@@ -108,6 +128,12 @@ const ProductDelivery = () => {
                   <span className="text-gray-500">User:</span>
                   <span className="font-medium flex items-center gap-2">
                     <User className="w-4 h-4 text-blue-600" /> {item.cart_payment.user}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Receiving Partner:</span>
+                  <span className="font-medium flex items-center gap-2">
+                    <User className="w-4 h-4 text-green-600" /> {item?.admin_username || 'Not Selected Yet!'}
                   </span>
                 </div>
                 <Separator />
@@ -141,7 +167,7 @@ const ProductDelivery = () => {
                   </span>
                 </div>
 
-                <div className="flex justify-end gap-2 mt-4">
+                <div className="flex justify-end space-x-0.5 mt-4 ">
                   {!item.item_received_by_user && item.admin ? (
                     item.status !== "admin_received" &&
                     item.status !== "delivering_to_user" &&
@@ -162,7 +188,7 @@ const ProductDelivery = () => {
 
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className="flex items-center gap-2 bg-green-400">
+                      <Button variant="outline" className="w-1/2  flex items-center gap-1 text-gray-800 hover:text-gray-900 bg-green-500 hover:bg-green-400">
                         <CalendarIcon /> {selectedDates[item.id] ? format(selectedDates[item.id], "PPP") : "Set Handover Date"}
                       </Button>
                     </PopoverTrigger>
@@ -176,6 +202,7 @@ const ProductDelivery = () => {
           </Card>
         ))}
       </div>
+    
     </div>
   );
 };

@@ -167,10 +167,12 @@ export const ProductProvider = ({children}) => {
             });
             setOwnerProducts((prevProducts) => prevProducts.map(item => item.id === id ? response.data : item));
             setProducts((prevProducts) => prevProducts.map(item => item.id === id ? response.data : item));
-            router.push('/productDashboard');
+            router.push('/MyProducts');
+            return {status: 'success' , message: 'Product Updated Successfully!'};
         } catch (error) {
             console.error(`Error updating product: ${error}`);
             setError(error.response?.data || error.message);
+            throw error.response?.data;
         } finally {
             setLoading(false);
         }
@@ -190,6 +192,7 @@ export const ProductProvider = ({children}) => {
                 },
             });
             setTrades(response.data);
+            console.log(response.data);
             
         } catch (err) {
             setError(err.message);
@@ -413,6 +416,7 @@ export const ProductProvider = ({children}) => {
             if (response.data.length > 0) {
                 setConfirmedTradesOfOwner(response.data);
             }
+            setLoading(false);
             console.log('Fetched Confirmed Trades By Owner:', response.data);
         } catch (error) {
             const errorMessage = error.response?.data || error.message;

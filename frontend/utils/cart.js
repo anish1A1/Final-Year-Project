@@ -321,6 +321,9 @@ export const CartProvider = ({children}) => {
             console.error("Error fetching the carts product owners who made product:", error.response?.data || error.message);
             throw error.response?.data || error.message;
         }
+        finally{
+            setLoading(false);
+        }
     };
 
     const UpdateDeliveryProductByOwner= async (id, status) => {
