@@ -12,6 +12,7 @@ const TradeViewPage = () => {
     const router = useRouter();
     const { id } = useParams();
     const [timeLeft, setTimeLeft] = useState(null);
+    
 
     useEffect(() => {
         getTradeById(id);

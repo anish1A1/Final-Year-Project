@@ -21,8 +21,8 @@ export const ProductProvider = ({children}) => {
 
     const [confirmedTrades, setConfirmedTrades] = useState([]);
     const [confirmedTradesOfOwner, setConfirmedTradesOfOwner] = useState([]);
-    const [tradeById, setTradeById] = useState([]);
 
+    const [tradeById, setTradeById] = useState([]);
 
     const fetchProduct = async () => {
         try {
@@ -264,9 +264,8 @@ export const ProductProvider = ({children}) => {
                     'Authorization': `Bearer ${token}`,
                     },
                     });
-            setTradeById(response.data);
-            console.log(response.data);
-            setLoading(false);
+                    console.log(response.data);
+                    setTradeById(response.data);
             
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
@@ -281,12 +280,12 @@ export const ProductProvider = ({children}) => {
     const UpdateTradeById = async (id, data) =>{
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.patch(`/api/trade-Toupdate/${id}`, data, {
+            const response = await axios.patch(`/api/trade-Toupdate/${id}/`, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     },
                     });
-            setTradeById(prevData => prevData.filter(data => data.id === id ? response.data : data));
+                    setTrades(prevData => prevData.filter(data => data.id === id ? response.data : data));
             return {status: "success", message: "Trade was updated successfully!"};
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
@@ -304,7 +303,7 @@ export const ProductProvider = ({children}) => {
                     'Authorization': `Bearer ${token}`,
                     },
                     });
-            setTradeById(prevData => prevData.filter(data => data.id !== id));
+                    setTrades(prevData => prevData.filter(data => data.id !== id));
             return {status: "success", message: "Trade was deleted successfully!"};
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
@@ -532,7 +531,7 @@ export const ProductProvider = ({children}) => {
         updateConfirmedTradeByUser,
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category,  trades, allTrades,  confirmedTrades, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, tradeById, ownerProducts, loading, error]); 
+    }), [products, category,  trades, allTrades,  confirmedTrades, tradeById, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 

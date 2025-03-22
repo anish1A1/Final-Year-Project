@@ -417,6 +417,9 @@ class TradeRetiveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TradeSerializer
     permission_classes = [IsAuthenticated]
 
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
 class TradeRequestListCreateView(generics.ListCreateAPIView):
     queryset = TradeRequest.objects.all()
     serializer_class = TradeRequestSerializer

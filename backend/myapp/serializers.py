@@ -320,6 +320,16 @@ class TradeSerializer(serializers.ModelSerializer):
             user = self.context['request'].user
             validated_data['user'] = user
             return Trade.objects.create(**validated_data)
+        
+        def update(self, instance, validated_data):
+            instance.wanted_product = validated_data.get('wanted_product', instance.wanted_product)
+            instance.trading_quantity = validated_data.get('trading_quantity', instance.trading_quantity)
+            instance.wanted_quantity = validated_data.get('wanted_quantity', instance.wanted_quantity)
+            instance.trade_ending_date = validated_data.get('trade_ending_date', instance.trade_ending_date)
+            instance.save()
+            return instance
+            
+            
             
         
     # def validate(self, data):
