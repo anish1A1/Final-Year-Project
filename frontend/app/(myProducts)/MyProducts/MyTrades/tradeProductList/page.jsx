@@ -34,7 +34,7 @@ const TradeProductList = () => {
     } catch (error) {
         toast.error(error.message || "Error deleting Trade!");
     }    
-  }
+  };
 
   const handleUpdateTrade = async () => {
     try {
@@ -56,7 +56,10 @@ const TradeProductList = () => {
   }
 
   return (
-    <div className="container mx-auto px-1">
+    <div className="container mx-auto px-3">
+        <h1 className="text-3xl font-medium  text-gray-800 mb-4">
+        📦 Trade Lists
+      </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
         {trades && trades.length > 0 ? (
           trades.map((trade) => (
@@ -152,6 +155,20 @@ const TradeProductList = () => {
                             setSelectedTrade((prev) => ({
                               ...prev,
                               wanted_quantity: e.target.value,
+                            }))
+                          }
+                          className="w-full border-gray-300 rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">Quantity To Give </label>
+                        <Input
+                          type="number"
+                          value={selectedTrade?.trading_quantity || ""}
+                          onChange={(e) =>
+                            setSelectedTrade((prev) => ({
+                              ...prev,
+                              trading_quantity: e.target.value,
                             }))
                           }
                           className="w-full border-gray-300 rounded-lg"

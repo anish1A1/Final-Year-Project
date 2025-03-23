@@ -32,16 +32,30 @@ const ProductDashboardLayout = ({ children }: { children: React.ReactNode }) => 
             My Trades
           </Link>
           <Link
-            href="/MyTrades/tradeProductList"
+            href="/MyProducts//MyTrades/requestedTrades/"
             className="block px-6 py-3 hover:bg-blue-700 rounded transition"
           >
-            Manage Deliveries
+            Requested Trades
+          </Link>
+
+          <Link
+            href="/MyProducts//MyTrades/tradeOwnerRequests"
+            className="block px-6 py-3 hover:bg-blue-700 rounded transition"
+          >
+            Trade Requests
+          </Link>
+
+          <Link
+            href="/MyProducts//MyTrades/ToDeliverTrade"
+            className="block px-6 py-3 hover:bg-blue-700 rounded transition"
+          >
+            Trade Deliveries
           </Link>
         </nav>
       </aside>
 
       {/* Main Dashboard Content */}
-      <main className="flex-1 p-6 bg-white overflow-auto">
+      <main className="flex-1 p-6 bg-gray-100 overflow-auto">
         {/* <div className="bg-gray-100 p-4 rounded-md shadow-sm mb-6">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-semibold text-gray-800">
