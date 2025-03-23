@@ -8,7 +8,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         
 
         {/* Main Dashboard Content */}
-            <main className="flex-1 mt-[90px] ml-2 p-2 bg-slate-100 min-h-screen">
+            <main className="flex-1 mt-[90px] ml-2 p-2 min-h-screen">
              <MyOrderSidebar />
               {children}
               </main>
