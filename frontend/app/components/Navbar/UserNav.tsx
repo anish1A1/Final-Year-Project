@@ -56,9 +56,19 @@ const UserNav = () => {
                             </NavigationMenuTrigger>
                             <NavigationMenuContent>
                             {isAdmin ? (
-                                <MenuLink label="Admin Deliveries" onClick={() => {
-                                    router.push('/adminDashboard');
-                                }} />
+                                <ul>
+                                    <li>
+                                    <MenuLink label="Admin Deliveries" onClick={() => {
+                                        router.push('/adminDashboard');
+                                    }} />
+
+                                    </li>
+                                    <li>
+                                    <MenuLink label="Log Out" onClick={() => {
+                                        logout(router);
+                                        }} />
+                                    </li>
+                                </ul>
                             ) : (
                         
                         <ul>
@@ -87,12 +97,7 @@ const UserNav = () => {
                             </li>
                             ): null}
 
-                            <li>
-                            <MenuLink label="Dashboard" onClick={() => {
-                                router.push('/dashboards'); 
-                            }}
-                            />
-                            </li>
+                            
 
 
                             <li>

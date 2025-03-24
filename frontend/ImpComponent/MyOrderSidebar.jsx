@@ -14,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+import {PanelRightOpen } from "lucide-react"
+
 
   
 const MyOrderSidebar = () => {
@@ -43,8 +45,9 @@ const MyOrderSidebar = () => {
       <SheetTrigger asChild >
       <Button
         variant="secondary"
-        className="mt-2 !bg-slate-900 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-slate-500 hover:shadow-lg transition duration-300"
+        className="mt-2 bg-slate-700  text-gray-700 font-semibold pt-2 px-4 rounded-lg shadow-md hover:bg-slate-800 hover:shadow-lg transition duration-300"
         >
+            <PanelRightOpen />
         Open Sidebar
         </Button>
 

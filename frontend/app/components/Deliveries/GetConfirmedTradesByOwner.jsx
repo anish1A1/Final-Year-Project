@@ -74,10 +74,9 @@ const GetConfirmedTradesByOwner = () => {
   };
 
   return (
-    <div className="mt-8 p-6 bg-gray-100 min-h-screen">
-      <BreadCrumbs />
+    <div className=" px-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
-        📦 Your Trades Delivery
+        📦 Your Trades To Deliver
       </h1>
 
       {loading ? (

@@ -36,7 +36,7 @@ export default function PaymentSuccess() {
           </Button>
           <Button
             className="w-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
-            onClick={() => router.push("/dashboards/productOrders")}
+            onClick={() => router.push("/MyOrders/ProductsOrders/productOrders/")}
           >
             View Order Details <ArrowRight className="ml-2 w-4 h-4" />
           </Button>
