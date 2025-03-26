@@ -25,7 +25,7 @@ urlpatterns = [
     
     
     
-    path("stream-token/", get_stream_token_view.as_view(), name='get-stream-token');
+    path("stream-token/", get_stream_token, name='get-stream-token'),
     
     
     
