@@ -23,6 +23,10 @@ import stream_chat
 from rest_framework.decorators import api_view, permission_classes
 from django.http import JsonResponse
 
+# Initializing Stream Chat
+client = stream_chat.StreamChat(api_key=settings.STREAM_API_KEY, api_secret=settings.STREAM_API_SECRET)
+
+
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
@@ -77,7 +81,7 @@ class DashboardView(APIView):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_stream_token(request):
-    client = stream_chat.StreamChat(api_key=settings.STREAM_API_KEY, api_secret=settings.STREAM_API_SECRET)
+   
     
     # We need to generate a token for logged-in user
     
@@ -87,7 +91,25 @@ def get_stream_token(request):
     return JsonResponse({"token" : token, "user_id": user_id, "api_key": settings.STREAM_API_KEY})
    
    
-   
+@api_view(["POST"])
+@permission_classes([IsAuthenticated]) 
+def create_private_chat(request):
+    # Create a new private chat room for two users
+    
+    data = request.data
+    sender_id = str(request.user.id)  #Gets the current logged in user
+    receiver_id = str(data.get("receiver_id"))     # The user they want to chat with
+    
+    if not receiver_id:
+        return JsonResponse({"error" : "Receiver Id or Name is required"}, status= 400)
+    
+    channel = client.channel("messaging", f"{sender_id}_{receiver_id}", {
+        "members" : [sender_id, receiver_id]
+    })
+    channel.create(sender_id)
+    
+    return JsonResponse({"channel_id": channel.id, "message": "Chat created successfully"})
+
     
         # To list and create the Equipment
 class EquipmentListCreateView(generics.ListCreateAPIView):
