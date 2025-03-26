@@ -4,7 +4,7 @@ import { useCreateChatClient, Chat, Channel, ChannelHeader, MessageInput, Messag
 
 import 'stream-chat-react/dist/css/v2/index.css';
 
-const apiKey = 'dz5f4d5kzrue';
+const apiKey = process.env.STREAM_APP_ID;
 const userId = 'autumn-limit-5';
 const userName = 'autumn';
 const userToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYXV0dW1uLWxpbWl0LTUiLCJleHAiOjE3NDI4MTQ4NDh9.WI5ODi9kktTWnhHMgZy37qCMwbaxBR1Lc2_hA9Sxbiw';

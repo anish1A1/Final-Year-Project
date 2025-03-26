@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -160,3 +162,5 @@ SIMPLE_JWT = {
 }
 
 
+STREAM_API_KEY = config('STREAM_API_KEY')
+STREAM_API_SECRET = config('STREAM_API_SECRET')

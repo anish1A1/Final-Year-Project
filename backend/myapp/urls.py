@@ -4,6 +4,8 @@ from .views import CartListCreateView, CartDetailView, TradeAllListView, TradeRe
 from .views import ConfirmedTradeListByOwnerView, ConfirmedTradeUpdateByOwnerView, ConfirmedTradeListView, ConfirmedTradeUpdateByUser, CartTotalCostView
 from .views import CartDeliveryListCreateView,CartDeliveryDetailView, CartDeliveryAdminListCreateView, CartDeliveryOwnerViewListView
 from .views import EquipmnentListByOwner, EquipmentPartialUpdateView, EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView
+
+from .views import get_stream_token
 urlpatterns = [
     path('equipment/', EquipmentListCreateView.as_view(), name='equipment-list-create'),
     path('equipment-list-owner/', EquipmnentListByOwner.as_view(), name='equipment-list-owner'),
@@ -20,6 +22,11 @@ urlpatterns = [
     path('category/', CategoryView.as_view(), name='category-list-view'),
     path('product-user/', ProductOwnerListView.as_view(), name='product-user-list-view'),
     path('product-list/<int:pk>/', ProductListUpdateDeleteView.as_view(), name='product-list-update-delete'),
+    
+    
+    
+    path("stream-token/", get_stream_token_view.as_view(), name='get-stream-token');
+    
     
     
     path('cart/', CartListCreateView.as_view(), name='cart-list-create'),

@@ -16,8 +16,12 @@ from rest_framework import serializers
 from .models import CartDelivery
 from .serializers import CartDeliverySerializer
 
-# Create your views here.
 
+# Create your views here.
+from django.conf import settings
+import stream_chat
+from rest_framework.decorators import api_view, permission_classes
+from django.http import JsonResponse
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -68,6 +72,23 @@ class DashboardView(APIView):
             'user': user_serializer.data
         }, status=200)
 
+
+# View for chat messages from stream
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_stream_token(request):
+    client = stream_chat.StreamChat(api_key=settings.STREAM_API_KEY, api_secret=settings.STREAM_API_SECRET)
+    
+    # We need to generate a token for logged-in user
+    
+    user_id = str(request.user.id)
+    token = client.create_token(user_id)
+    
+    return JsonResponse({"token" : token, "user_id": user_id, "api_key": settings.STREAM_API_KEY})
+   
+   
+   
+    
         # To list and create the Equipment
 class EquipmentListCreateView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
