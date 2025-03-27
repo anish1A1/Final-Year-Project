@@ -6,14 +6,13 @@ import { FaClock, FaUser, FaBoxOpen } from "react-icons/fa";
 import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 import { Badge } from "@/components/ui/badge";
+import axios from '../../../../utils/axios';
 
 const TradeViewPage = () => {
     const { getTradeById, tradeById, loading } = useContext(ProductContext);
     const router = useRouter();
     const { id } = useParams();
     const [timeLeft, setTimeLeft] = useState(null);
-    
-
     useEffect(() => {
         getTradeById(id);
     }, [id]);
@@ -61,6 +60,31 @@ const TradeViewPage = () => {
         // toast.success("Trade request sent successfully!");
         // Add actual logic to send trade request here
     };
+
+    const handleUserSelect = async (user) => {
+      try {
+        console.log("User is", user);
+          const response = await axios.post('/api/create-chat/', {
+              receiver_id: user,
+          }, {headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }});
+          console.log(response.data);
+          const data = response.data;
+          
+          if (data) {
+            toast.success("Chat created successfully!");
+            router.push(`AllChats/`);
+          }
+
+
+      } catch (error) {
+          console.error("Error creating chat:", error);
+          toast.error("Error creating chat:", error);
+
+      }
+  };
 
     const hasRequestedTrade = (tradeId) => {
         return tradeById.requests && tradeById.requests.some(req => req.trade === tradeId);
@@ -132,7 +156,9 @@ const TradeViewPage = () => {
                 </div>
                 <div className="mt-4 flex gap-3">
                   <input type="text" placeholder="Type message..." className="flex-1 p-3 rounded-lg border" />
-                  <button className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700">Send</button>
+                  <button className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
+                  onClick={() =>handleUserSelect(tradeById.user)}
+                  >Send</button>
                 </div>
               </div>
       
