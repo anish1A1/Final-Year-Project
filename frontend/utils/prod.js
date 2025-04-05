@@ -488,6 +488,23 @@ export const ProductProvider = ({children}) => {
     };
 
 
+    const createProductChat = async (productId) => {
+        try {
+            const response = await axios.post(`/api/chat/create-product-chat/${productId}/`, {
+                headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            console.log(response.data);
+
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message;
+            console.error(`Error Creating Product Chat: ${errorMessage}`);
+            throw error.response?.data; 
+        }
+    }
+
+
 
     
 
@@ -530,6 +547,7 @@ export const ProductProvider = ({children}) => {
         fetchAllConfirmedTradesOfUser,
         updateConfirmedTradeByUser,
         
+        createProductChat,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }), [products, category,  trades, allTrades,  confirmedTrades, tradeById, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
 

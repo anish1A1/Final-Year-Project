@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
@@ -79,7 +79,55 @@ class LoginView(generics.GenericAPIView):
         else:
             return Response({'details' :"Invalid Credentials"}, status=401)  
         
+# Product chat
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_product_chat(request, product_id):
+    # Get the logged in user
+    sender = request.user
+    sender_id = str(sender.id)
+    
+    # Get the product and owner
+    product = get_object_or_404(Product, id=product_id)
+    receiver = product.user
+    receiver_id = str(receiver.id)
+    
+    # Preven self chat
+    if sender_id == receiver_id:
+        return Response({"error": "You cannot chat with yourself."}, status=400)
+    
+    # Upsert both users to stream
+    # 4. Upsert both users to Stream
+    try:
+        client.upsert_users([
+            {"id": sender_id, "name": sender.username},
+            {"id": receiver_id, "name": receiver.username},
+        ])
 
+    except Exception as e:
+        return Response({"error": "Failed to sync users with Stream.", "details": str(e)}, status=500)
+
+
+    
+    # Create a unique channel ID based on product and users
+    channel_id = f"product_{product.id}_{sender_id}_{receiver_id}"
+    
+    try:
+        channel = client.channel('messaging', channel_id,{
+            "members": [sender_id, receiver_id],
+            "product_id": str(product.id),
+            "created_by": sender_id,
+        })
+        channel.create(sender_id)  # Will do nothing if already exists
+    except Exception as e:
+        return Response({"error": "Failed to create channel.", "details": str(e)}, status=500)
+    
+    return Response({
+        "message": "Chat created successfully.",
+        "channel_id": channel.id,
+        "product_id": product.id,
+        "receiver_id": receiver_id
+    })
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()

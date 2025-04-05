@@ -24,7 +24,7 @@ import {
 
 const ViewProductById = () => {
   const { id } = useParams();
-  const { getProductById, loading } = useContext(ProductContext);
+  const { getProductById, loading, createProductChat } = useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
   const [product, setProduct] = useState(null);
   const [productQty, setProductQty] = useState(1);
@@ -68,6 +68,16 @@ const ViewProductById = () => {
       toast.error("Failed to add product to cart");
     }
   };
+
+  const handleCreateChat = async (productId) => {
+    try {
+      const chat = await createProductChat(productId);
+      console.log(chat);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.error);
+    }
+  }
 
   if (loading) {
     return (
@@ -219,6 +229,7 @@ const ViewProductById = () => {
             placeholder="Type your message..."
             className="w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg shadow-md" onClick={() => handleCreateChat(product.id)}>Create Chat </Button>
         </div>
       </div>
 
