@@ -40,7 +40,7 @@ const AllTrades = () => {
     };
 
     const handleTradeRequest = (id, timeStatus) => {
-        if (timeStatus === 'Trade Ended') {
+if (timeStatus === 'Trade Ended') {
             toast.error('This Trade has ended');
             return;
         }
@@ -71,7 +71,7 @@ const AllTrades = () => {
     const handleTradeView= (id) => {
         router.push(`/allTrades/${id}`);
 
-    }
+    };
 
 
     const hasRequestedTrade = (tradeId) => {

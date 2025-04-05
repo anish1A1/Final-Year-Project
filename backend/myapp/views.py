@@ -32,6 +32,21 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
     
+    def perform_create(self, serializer):
+        user = serializer.save()
+        
+        # Register user in stream chat
+        try:
+            client.upsert_user({
+                "id": str(user.id),
+                "name": user.username
+            })
+        except Exception as e:
+            print(f"Stream user creation failed during register: {e}")
+            
+            # This registers the user right after Django creates them.
+            
+            
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
@@ -45,6 +60,16 @@ class LoginView(generics.GenericAPIView):
             refresh = RefreshToken.for_user(user)    
             user_serializer = UserSerializer(user)
             
+            
+            try:
+                client.upsert_user({
+                    "id": str(user.id),
+                    "name": user.username
+                })
+            except Exception as e:
+                print(f"Stream user creation failed during login: {e}")
+                
+                # This ensures that even if the user was registered before Stream integration, they're still added to Stream during login.
             return Response(
                 {'refresh' : str(refresh),
                  'access' : str(refresh.access_token),
@@ -54,6 +79,7 @@ class LoginView(generics.GenericAPIView):
         else:
             return Response({'details' :"Invalid Credentials"}, status=401)  
         
+
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
