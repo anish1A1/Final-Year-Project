@@ -98,7 +98,12 @@ const UserNav = () => {
                             ): null}
 
                             
+                        <li>
+                            <MenuLink label="Chats" onClick={() => {
+                                 router.push('/Chats');
+                            }} />
 
+                            </li>
 
                             <li>
                             <MenuLink label="Log Out" onClick={() => {
