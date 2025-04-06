@@ -20,7 +20,8 @@ npm install react-spinners
 npm install @nextui-org/react              //found this package id deprecated so used this npm install @heroui/react
 npm install @heroui/react
 
-npm install stream-chat stream-chat-react   // for adding stream's chatting feature in react.
+// for adding stream's chatting feature in react.
+npm install stream-chat stream-chat-react
 
 
 npm install sonner                 // For showing Toast in the App. (Messages)

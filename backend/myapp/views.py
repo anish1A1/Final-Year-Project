@@ -129,6 +129,22 @@ def create_product_chat(request, product_id):
         "receiver_id": receiver_id
     })
 
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_stream_token(request):
+    user_id = str(request.user.id)
+    token = client.create_token(user_id)
+    
+    return JsonResponse({
+        "token": token,
+        "user_id": user_id,
+        "api_key": settings.STREAM_API_KEY
+    })
+
+    
+
+
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -161,6 +177,7 @@ def get_stream_token(request):
     
     user_id = str(request.user.id)
     token = client.create_token(user_id)
+    print(token,settings.STREAM_API_KEY)
     
     return JsonResponse({"token" : token, "user_id": user_id, "api_key": settings.STREAM_API_KEY})
    

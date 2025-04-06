@@ -5,7 +5,7 @@ from .views import ConfirmedTradeListByOwnerView, ConfirmedTradeUpdateByOwnerVie
 from .views import CartDeliveryListCreateView,CartDeliveryDetailView, CartDeliveryAdminListCreateView, CartDeliveryOwnerViewListView
 from .views import EquipmnentListByOwner, EquipmentPartialUpdateView, EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView
 
-from .views import get_stream_token, create_private_chat, create_product_chat
+from .views import get_stream_token, create_private_chat, create_product_chat, get_stream_token
  
 urlpatterns = [
     path('equipment/', EquipmentListCreateView.as_view(), name='equipment-list-create'),
@@ -29,6 +29,8 @@ urlpatterns = [
     path("stream-token/", get_stream_token, name='get-stream-token'),
     path('create-chat/', create_private_chat, name='create-private-chat'),
     path("chat/create-product-chat/<int:product_id>/", create_product_chat, name="create_product_chat"),
+    path('chat/product-chat/', get_stream_token, name='get_product_chat'),
+    
     
     
     
