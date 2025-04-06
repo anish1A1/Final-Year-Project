@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useContext } from "react";
 import { ProductContext } from "../../../../utils/prod";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { AuthContext } from "../../../../utils/auth";
 import { CartContext } from "../../../../utils/cart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 import { motion } from "framer-motion";
 import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
 import { Skeleton } from '@/components/ui/skeleton';
+import axios from "../../../../utils/axios";
 
 import {
   Tooltip,
@@ -24,6 +25,7 @@ import {
 
 const ViewProductById = () => {
   const { id } = useParams();
+  const router = useRouter();
   const { getProductById, loading, createProductChat } = useContext(ProductContext);
   const { addToCart } = useContext(CartContext);
   const [product, setProduct] = useState(null);
@@ -69,15 +71,52 @@ const ViewProductById = () => {
     }
   };
 
-  const handleCreateChat = async (productId) => {
+  const handleUserSelect = async ( product_id) => {
     try {
-      const chat = await createProductChat(productId);
-      console.log(chat);
+      console.log("Product ID:", product_id);
+
+        const response = await axios.post(`/api/chat/create-product-chat/${product_id}/`,{}, {headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }});
+        console.log(response.data);
+        const data = response.data;
+        
+        if (data) {
+
+          if (data.message === "Chat already exists.") {
+            toast.info("Chat already exists!");
+          } else {
+            toast.success("Chat created successfully!");
+          }
+      
+          const product = data.product;
+          console.log("Product Details:", product);
+console.log("Product Image:", product.image);
+
+      router.push({
+        pathname: '/Chats',
+        query: {
+          channelId: data.channel_id,
+          productId: product.id,
+          productName: product.name,
+          productImage: product.image,
+        },
+      });
+
+         
+
+
+
+        }
+
+
     } catch (error) {
-      console.error(error);
-      toast.error(error.error);
-    }
-  }
+        console.error("Error creating chat:", error);
+        toast.error("Error creating chat:", error);
+
+     }
+    };
 
   if (loading) {
     return (
@@ -229,7 +268,7 @@ const ViewProductById = () => {
             placeholder="Type your message..."
             className="w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg shadow-md" onClick={() => handleCreateChat(product.id)}>Create Chat </Button>
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg shadow-md" onClick={() => handleUserSelect(product.id)}>Create Chat </Button>
         </div>
       </div>
 

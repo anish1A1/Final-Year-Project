@@ -15,6 +15,7 @@ from .models import Cart, CartPayment, Category, ConfirmedTrade, Equipment, Equi
 from rest_framework import serializers
 from .models import CartDelivery
 from .serializers import CartDeliverySerializer
+from django.utils.encoding import force_str
 
 
 # Create your views here.
@@ -83,7 +84,7 @@ class LoginView(generics.GenericAPIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_product_chat(request, product_id):
-    # Get the logged in user
+    # Get the logged-in user
     sender = request.user
     sender_id = str(sender.id)
     
@@ -92,41 +93,93 @@ def create_product_chat(request, product_id):
     receiver = product.user
     receiver_id = str(receiver.id)
     
-    # Preven self chat
+    # Prevent self-chat
     if sender_id == receiver_id:
         return Response({"error": "You cannot chat with yourself."}, status=400)
     
-    # Upsert both users to stream
-    # 4. Upsert both users to Stream
+    # Upsert both users to Stream
     try:
         client.upsert_users([
             {"id": sender_id, "name": sender.username},
             {"id": receiver_id, "name": receiver.username},
         ])
-
     except Exception as e:
         return Response({"error": "Failed to sync users with Stream.", "details": str(e)}, status=500)
-
-
     
     # Create a unique channel ID based on product and users
     channel_id = f"product_{product.id}_{sender_id}_{receiver_id}"
     
     try:
-        channel = client.channel('messaging', channel_id,{
+        # Check if the channel already exists
+        channel = client.channel('messaging', channel_id)
+        existing_channel = channel.query()  # Attempt to query the channel
+        if existing_channel:
+            product_data = {
+                "id": product.id,
+                "name": product.name,
+                "image": product.product_image.url if product.product_image else None
+            }
+            return Response({
+                "message": "Chat already exists.",
+                "channel_id": channel_id,
+                "product_id": product.id,
+                "receiver_id": receiver_id,
+                "product": product_data
+            })
+    except Exception as e:
+        # If channel doesn't exist, proceed to create it
+        pass
+    
+    try:
+        # Create the channel
+        channel = client.channel('messaging', channel_id, {
             "members": [sender_id, receiver_id],
             "product_id": str(product.id),
             "created_by": sender_id,
         })
-        channel.create(sender_id)  # Will do nothing if already exists
+        channel.create(sender_id)
     except Exception as e:
         return Response({"error": "Failed to create channel.", "details": str(e)}, status=500)
+    
+    try:
+        channel.send_message(
+            user_id=sender_id,  # Add the user_id parameter
+            message={
+                "text": "I want to buy this product!",
+                "attachments": [
+                    {
+                    "type": "image",
+                    "asset_url": product.product_image.url if product.product_image else None,
+                    "thumb_url": product.product_image.url if product.product_image else None,
+                    "myCustomField": 123,
+                    }
+                ],
+                
+                "user": {"id": sender_id, "name": sender.username},
+                "product": {
+                    "id": product.id,
+                    "name": product.name,
+                    "image": product.product_image.url if product.product_image else None,
+                },
+            }
+        )
+        print("Message sent successfully.")
+    except Exception as e:
+        print(f"Error sending message: {str(e)}")
+        return Response({"error": "Failed to send message.", "details": str(e)}, status=500)
+    
+    product_data = {
+        "id": product.id,
+        "name": product.name,
+        "image": product.product_image.url if product.product_image else None
+    }
     
     return Response({
         "message": "Chat created successfully.",
         "channel_id": channel.id,
         "product_id": product.id,
-        "receiver_id": receiver_id
+        "receiver_id": receiver_id,
+        "product": product_data
     })
 
 

@@ -115,25 +115,28 @@ const CartPage = () => {
         <div className="grid gap-4">
           {Object.entries(groupedCart || {}).map(([owner, items]) => (
             <div key={owner} className="bg-white p-4 rounded-lg shadow-lg border">
-              <h2 className="text-2xl font-semibold border-b pb-2 mb-4">👤 Sold by: {owner}</h2>
+              <h2 className="text-xl font-semibold border-b pb-1 mb-4">👤 Sold by: {owner}</h2>
               {items.map((item) => (
-                <Card key={item.id} className="flex flex-col lg:flex-row gap-4 p-2 shadow-md border mb-3">
+                <Card key={item.id} className="flex flex-col lg:flex-row gap-2 px-2 shadow-md border mb-1">
                   <div className="w-full lg:w-1/4">
                     <img src={item.product.product_image} alt={item.product.name} className="w-full h-32 object-cover rounded-lg" />
                   </div>
                   <div className="flex-1">
-                    <CardHeader>
+                    <CardHeader >
+                      <div className="flex items-center gap-20 ">
+                      <div className="">
+
                       <CardTitle className="text-xl font-semibold">{item.product.name}</CardTitle>
                       <p className="text-gray-600 text-lg">Price: Rs. {item.product.selling_price}</p>
                       <p className="text-gray-500 text-sm">Delivery Charge: Rs. {item.product.delivery_sell_charge}</p>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-1">
+                      </div>
                       <div className="flex items-center gap-2">
                         <span className="text-gray-700 font-medium">Quantity:</span>
                         <Input
                           type="number"
                           value={quantity[item.id] || 1}
                           onChange={(e) => handleQuantityChange(item.id, Number(e.target.value))}
+                          // onEnter={() => handleUpdateCart(item.id, item.product.id)}
                           className="w-20"
                           min="1"
                           max={item.product.quantity}
@@ -142,14 +145,20 @@ const CartPage = () => {
                           Update
                         </Button>
                       </div>
-                      <div className="flex items-center gap-3">
+
+
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-1">
+                      <div className="flex items-center gap-3 ">
                         <Checkbox id={`select-${item.id}`} checked={selectedItems[item.id]} onCheckedChange={() => toggleSelection(item.id, item.product.id)} />
                         <label htmlFor={`select-${item.id}`} className="cursor-pointer">{selectedItems[item.id] ? "Deselect" : "Select"}</label>
                       </div>
+                      <p className="text-lg pl-5 font-semibold">Total Cost: Rs. {item.total_cost}</p>
+
                       <Button onClick={() => handleRemoveFromCart(item.id)} variant="destructive" className="w-full lg:w-auto">
                         Remove
                       </Button>
-                      <p className="text-lg font-semibold">Total Cost: Rs. {item.total_cost}</p>
                     </CardContent>
                   </div>
                 </Card>

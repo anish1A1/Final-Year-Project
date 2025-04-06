@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import CustomBreadCrumb from "@/Impcomponent/CustomBreadCrumb";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "lucide-react";
 
@@ -37,7 +36,7 @@ const ViewProduct = () => {
   return (
     <div className="container mx-auto mt-28 px-6 md:px-10">
     {/* Breadcrumb Navigation */}
-    <CustomBreadCrumb items={breadCrumbItems} />
+    {/* <CustomBreadCrumb items={breadCrumbItems} /> */}
   
     {/* Section Title */}
     <h1 className="text-4xl font-bold mb-12 text-center text-gray-800">

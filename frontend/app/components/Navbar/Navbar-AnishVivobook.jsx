@@ -21,7 +21,13 @@ const Navbar = () => {
                 <div className="flex justify-between items-center">
 
             <Link href="/">
-                    <Image src = "/logo.png" alt = "logo" width = {100} height = {25} />   
+            <div className="flex flex-col">
+
+                    <h1 className="text-2xl font-bold text-gray-800">Farm </h1>
+                    <h1 className="text-2xl ml-2 font-bold text-gray-800">Sajilo </h1>
+            </div>
+                    {/* <Image src = "/logo.png" alt = "logo" width = {100} height = {25} />    */}
+
                 </Link>
 
 
