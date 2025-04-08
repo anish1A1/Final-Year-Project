@@ -94,19 +94,7 @@ const ViewProductById = () => {
           console.log("Product Details:", product);
 console.log("Product Image:", product.image);
 
-      router.push({
-        pathname: '/Chats',
-        query: {
-          channelId: data.channel_id,
-          productId: product.id,
-          productName: product.name,
-          productImage: product.image,
-        },
-      });
-
-         
-
-
+      router.push('/Chats')
 
         }
 
@@ -121,7 +109,7 @@ console.log("Product Image:", product.image);
   if (loading) {
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">
-            <p className="text-gray-600 text-lg animate-pulse">Loading trade details...</p>
+            <p className="text-gray-600 text-lg animate-pulse">Loading product details...</p>
         </div>
     );
 }

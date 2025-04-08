@@ -61,30 +61,40 @@ const TradeViewPage = () => {
         // Add actual logic to send trade request here
     };
 
-    const handleUserSelect = async (user) => {
-      try {
-        console.log("User is", user);
-          const response = await axios.post('/api/create-chat/', {
-              receiver_id: user,
-          }, {headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + localStorage.getItem('token')
-          }});
-          console.log(response.data);
-          const data = response.data;
-          
-          if (data) {
+    
+
+  const handleUserSelectForTrade = async ( trade_id) => {
+    try {
+      console.log("Trade ID:", trade_id);
+
+        const response = await axios.post(`/api/chat/create-trade-chat/${trade_id}/`,{}, {headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }});
+        console.log(response.data);
+        const data = response.data;
+        
+        if (data) {
+
+          if (data.message === "Chat already exists.") {
+            toast.info("Chat already exists!");
+          } else {
             toast.success("Chat created successfully!");
-            router.push(`AllChats/`);
           }
+      
+          
+
+      router.push('/Chats')
+
+        }
 
 
-      } catch (error) {
-          console.error("Error creating chat:", error);
-          toast.error("Error creating chat:", error);
+    } catch (error) {
+        console.error("Error creating chat:", error);
+        toast.error("Error creating chat:", error);
 
-      }
-  };
+     }
+    };
 
     const hasRequestedTrade = (tradeId) => {
         return tradeById.requests && tradeById.requests.some(req => req.trade === tradeId);
@@ -152,13 +162,11 @@ const TradeViewPage = () => {
                 <h3 className="text-lg font-semibold mb-3">Quick Message</h3>
                 <div className="space-y-2">
                   <div className="bg-white p-3 rounded-lg shadow-sm w-max">Hello, You can quick message here.</div>
-                  <div className="bg-white p-3 rounded-lg shadow-sm w-max ml-auto">Hello, Thank You.</div>
                 </div>
-                <div className="mt-4 flex gap-3">
-                  <input type="text" placeholder="Type message..." className="flex-1 p-3 rounded-lg border" />
-                  <button className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
-                  onClick={() =>handleUserSelect(tradeById.user)}
-                  >Send</button>
+                <div className="mt-4 flex gap-3 items-center justify-center px-5">
+                  <button className="bg-blue-600 items-center w-full text-white p-3 rounded-lg hover:bg-blue-700"
+                  onClick={() =>handleUserSelectForTrade(tradeById.id)}
+                  >Message</button>
                 </div>
               </div>
       

@@ -7,7 +7,6 @@ import { Channel, ChannelList, Chat, Message, MessageList, MessageInput, Window,
 import 'stream-chat-react/dist/css/v2/index.css';
 import { AuthContext } from '../../utils/auth';
 import { useRouter } from 'next/navigation';
-import CustomMesssage from './CustomMesssage';
 const ChatComponent = () => {
     const {user} = useContext(AuthContext);
     const router = useRouter();
@@ -26,7 +25,7 @@ const ChatComponent = () => {
                     },
                 });
                 const data = await response.data;
-                console.log(data);
+                // console.log(data);
                 if(!data.token) return;
 
                 
@@ -80,7 +79,7 @@ const ChatComponent = () => {
   <Window className="flex-1 flex flex-col bg-gray-50 border border-gray-300 rounded-lg shadow-md">
     {/* Message List */}
     <div className="max-h-[400px] overflow-y-auto pb-4 px-4">
-      <MessageList Message={CustomMesssage} className="bg-white rounded-md shadow-sm" />
+      <MessageList  className="bg-white rounded-md shadow-sm" />
     </div>
 
     {/* Input Section */}

@@ -182,6 +182,107 @@ def create_product_chat(request, product_id):
     })
 
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_trade_chat(request, trade_id):
+    # Get the logged-in user
+    sender = request.user
+    sender_id = str(sender.id)
+    
+    # Get the product and owner
+    trade = get_object_or_404(Trade, id=trade_id)
+    receiver = trade.user
+    receiver_id = str(receiver.id)
+    
+    # Prevent self-chat
+    if sender_id == receiver_id:
+        return Response({"error": "You cannot chat with yourself."}, status=400)
+    
+    # Upsert both users to Stream
+    try:
+        client.upsert_users([
+            {"id": sender_id, "name": sender.username},
+            {"id": receiver_id, "name": receiver.username},
+        ])
+    except Exception as e:
+        return Response({"error": "Failed to sync users with Stream.", "details": str(e)}, status=500)
+    
+    # Create a unique channel ID based on product and users
+    channel_id = f"trade_{trade.id}_{sender_id}_{receiver_id}"
+    
+    try:
+        # Check if the channel already exists
+        channel = client.channel('messaging', channel_id)
+        existing_channel = channel.query()  # Attempt to query the channel
+        if existing_channel:
+            trade_data = {
+                "id": trade.id,
+                "name": trade.product.name,
+                "image": trade.product.product_image.url if trade.product.product_image else None
+            }
+            return Response({
+                "message": "Chat already exists.",
+                "channel_id": channel_id,
+                "trade_id": trade.id,
+                "receiver_id": receiver_id,
+                "trade": trade_data
+            })
+    except Exception as e:
+        # If channel doesn't exist, proceed to create it
+        pass
+    
+    try:
+        # Create the channel
+        channel = client.channel('messaging', channel_id, {
+            "members": [sender_id, receiver_id],
+            "product_id": str(trade.id),
+            "created_by": sender_id,
+        })
+        channel.create(sender_id)
+    except Exception as e:
+        return Response({"error": "Failed to create channel.", "details": str(e)}, status=500)
+    
+    try:
+        channel.send_message(
+            user_id=sender_id,  # Add the user_id parameter
+            message={
+                "text": f"I want to trade this product {trade.product.name}!",
+                "attachments": [
+                    {
+                    "type": "image",
+                    "image_url": request.build_absolute_uri(trade.product.product_image.url),
+                    "fallback": trade.product.name,
+                    }
+                ],
+                
+                "user": {"id": sender_id, "name": sender.username},
+                "trade": {
+                    "id": trade.id,
+                    "name": trade.product.name,
+                    "image": trade.product.product_image.url if trade.product.product_image else None,
+                },
+            }
+        )
+        print("Message sent successfully.")
+    except Exception as e:
+        print(f"Error sending message: {str(e)}")
+        return Response({"error": "Failed to send message.", "details": str(e)}, status=500)
+    
+    trade_data = {
+        "id": trade.id,
+        "name": trade.product.name,
+        "image": trade.product.product_image.url if trade.product.product_image else None
+    }
+    
+    return Response({
+        "message": "Chat created successfully.",
+        "channel_id": channel.id,
+        "trade_id": trade.id,
+        "receiver_id": receiver_id,
+        "trade": trade_data
+    })
+
     
 
 class UserDetailView(generics.RetrieveAPIView):
