@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import CustomBreadCrumb from "@/Impcomponent/CustomBreadCrumb";
+import CustomBreadCrumb from "@/ImpComponent/CustomBreadCrumb";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "lucide-react";
 

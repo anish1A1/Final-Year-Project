@@ -145,13 +145,12 @@ def create_product_chat(request, product_id):
         channel.send_message(
             user_id=sender_id,  # Add the user_id parameter
             message={
-                "text": "I want to buy this product!",
+                "text": f"I want to buy this product {product.name}!",
                 "attachments": [
                     {
                     "type": "image",
-                    "asset_url": product.product_image.url if product.product_image else None,
-                    "thumb_url": product.product_image.url if product.product_image else None,
-                    "myCustomField": 123,
+                    "image_url": request.build_absolute_uri(product.product_image.url),
+                    "fallback": product.name,
                     }
                 ],
                 
