@@ -49,6 +49,11 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True)
     
 
+class DashboardSliderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'product_image', 'selling_price']
+        
 
 class EquipmentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')

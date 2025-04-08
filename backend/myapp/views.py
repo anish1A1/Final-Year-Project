@@ -14,7 +14,7 @@ from rest_framework import generics
 from .models import Cart, CartPayment, Category, ConfirmedTrade, Equipment, EquipmentBooking, EquipmentDelivery, EquipmentPayment, Product, Trade, TradeRequest, get_total_cart_cost
 from rest_framework import serializers
 from .models import CartDelivery
-from .serializers import CartDeliverySerializer
+from .serializers import CartDeliverySerializer, DashboardSliderSerializer
 from django.utils.encoding import force_str
 
 
@@ -324,30 +324,12 @@ def get_stream_token(request):
                          "username": username, "stream_api_key": settings.STREAM_API_KEY})
    
    
-@api_view(["POST"])
-@permission_classes([IsAuthenticated]) 
-def create_private_chat(request):
-    # Create a new private chat room for two users
+class GetDashboardSliderData(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        return Product.objects.order_by('-created_at')[:3]
     
-    data = request.data
-    sender_id = str(request.user.id)  #Gets the current logged in user
-    receiver_id = str(data.get("receiver_id"))     # The user they want to chat with
-    print("Datas are: data")
-    if not receiver_id:
-        return JsonResponse({"error" : "Receiver Id or Name is required"}, status= 400)
-    
-    # def validate(data):
-    #     if data.get("receiver_id") == sender_id:
-    #         raise serializers.ValidationError("You can't chat with yourself")
-    #     return data
-    
-    channel = client.channel("messaging", f"{sender_id}_{receiver_id}", {
-        "members" : [sender_id, receiver_id]
-    })
-    channel.create(sender_id)
-    
-    
-    return JsonResponse({"channel_id": channel.id, "message": "Chat created successfully"})
 
     
         # To list and create the Equipment

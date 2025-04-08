@@ -21,6 +21,7 @@ export const ProductProvider = ({children}) => {
 
     const [confirmedTrades, setConfirmedTrades] = useState([]);
     const [confirmedTradesOfOwner, setConfirmedTradesOfOwner] = useState([]);
+    const [sliderData, setSliderData] = useState([]);
 
     const [tradeById, setTradeById] = useState([]);
 
@@ -37,6 +38,21 @@ export const ProductProvider = ({children}) => {
             setLoading(false);
         }
     };
+
+    const fetchSliderDatas = async () => {
+        try {
+            const response = await axios.get(`/api/slider-data/`);
+            setSliderData(response.data);
+            console.log(response.data);
+            setLoading(false);
+
+        } catch (error) {
+             console.log(`Erro Fetching products: ${error}`);
+            setError(error.response?.data || error.message);
+        } finally{
+            setLoading(false);
+        }
+    }
 
     const createProduct = async (formData, category, router) => {
         const data = new FormData();
@@ -524,6 +540,7 @@ export const ProductProvider = ({children}) => {
         confirmedTradesOfOwner,
         confirmedTrades,
         tradeById,
+        sliderData,
         fetchProductByOwner,
         fetchProduct,
         createProduct,
@@ -531,7 +548,7 @@ export const ProductProvider = ({children}) => {
         deleteProduct,
         updateProduct,
         getProductById,
-        
+        fetchSliderDatas,
         fetchTrades,
         createTrade,
         fetchTradeRequests,
@@ -549,7 +566,7 @@ export const ProductProvider = ({children}) => {
         
         createProductChat,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }), [products, category,  trades, allTrades,  confirmedTrades, tradeById, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
+    }), [products, category,  trades, allTrades, sliderData, confirmedTrades, tradeById, confirmedTradesOfOwner, tradeRequestsOfOwner, tradeRequests, ownerProducts, loading, error]); 
 
     return (
         <ProductContext.Provider value={prodContextValue} > 

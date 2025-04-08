@@ -1,9 +1,9 @@
+import HomePage from "@/ImpComponent/HomePage";
 
-import MainHome from "@/ImpComponent/homePages/MainHome";
 export default function Home() {
   return (
-   <div className="">
-         <MainHome />
+   <div className="mt-24">
+   <HomePage />
    </div>
   );
 }
