@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+import EquipmentCard from "../../components/AllComponents/EquipmentCard";
 
 const EquipmentList = () => {
   const { fetchEquipment, equipment, deleteEquipment, fetchEquipmentBookings, equipmentBooks } = useContext(EquipmentContext);
@@ -67,44 +68,52 @@ const EquipmentList = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {equipment.map((item) => (
-          <Card key={item.id} className="shadow-md hover:shadow-lg transition-all">
-            <CardHeader>
-              <CardTitle className="text-xl font-bold text-center">{item.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col items-center">
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="rounded-lg w-full h-40 object-cover mb-4 hover:scale-105 transition-transform"
-                  />
-                )}
-                <p className="text-gray-600 text-center mb-2">
-                  {item.description.split(" ").slice(0,18).join(" ")}
-                  {item.description.split(" ").length > 18 && " ..."}
-                  </p>
-                <Badge className="mb-2">Per Day Rate: ${item.per_day_rate}</Badge>
-                <Badge variant="outline">Delivery Charge: ${item.delivery_charge}</Badge>
-                <p className="text-gray-700 mt-2"><strong>Owner:</strong> {item.user}</p>
-                <p className="text-gray-700"><strong>Status:</strong> {item.availability_status ? "Available" : "Not Available"}</p>
-              </div>
-              <Separator className="my-4" />
-              <div className="flex flex-col gap-2">
-                <Link href={`/equipmentList/${item.id}`}>
-                  <Button variant="outline" className="w-full">View Details</Button>
-                </Link>
+          // <Card key={item.id} className="shadow-md hover:shadow-lg transition-all">
+          //   <CardHeader>
+          //     <CardTitle className="text-xl font-bold text-center">{item.name}</CardTitle>
+          //   </CardHeader>
+          //   <CardContent>
+          //     <div className="flex flex-col items-center">
+          //       {item.image && (
+          //         <img
+          //           src={item.image}
+          //           alt={item.name}
+          //           className="rounded-lg w-full h-40 object-cover mb-4 hover:scale-105 transition-transform"
+          //         />
+          //       )}
+          //       <p className="text-gray-600 text-center mb-2">
+          //         {item.description.split(" ").slice(0,18).join(" ")}
+          //         {item.description.split(" ").length > 18 && " ..."}
+          //         </p>
+          //       <Badge className="mb-2">Per Day Rate: ${item.per_day_rate}</Badge>
+          //       <Badge variant="outline">Delivery Charge: ${item.delivery_charge}</Badge>
+          //       <p className="text-gray-700 mt-2"><strong>Owner:</strong> {item.user}</p>
+          //       <p className="text-gray-700"><strong>Status:</strong> {item.availability_status ? "Available" : "Not Available"}</p>
+          //     </div>
+          //     <Separator className="my-4" />
+          //     <div className="flex flex-col gap-2">
+          //       <Link href={`/equipmentList/${item.id}`}>
+          //         <Button variant="outline" className="w-full">View Details</Button>
+          //       </Link>
                 
-                {user && item.user !== user.username && (
-                  isAlreadyBooked(item.id) ? (
-                    <Button variant="outline" className="w-full" disabled>Already Booked</Button>
-                  ) : (
-                    <Button className="w-full" onClick={() => handleCreateBooking(item.id)}>Create Booking</Button>
-                  )
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          //       {user && item.user !== user.username && (
+          //         isAlreadyBooked(item.id) ? (
+          //           <Button variant="outline" className="w-full" disabled>Already Booked</Button>
+          //         ) : (
+          //           <Button className="w-full" onClick={() => handleCreateBooking(item.id)}>Create Booking</Button>
+          //         )
+          //       )}
+          //     </div>
+          //   </CardContent>
+          // </Card>
+          <EquipmentCard
+          key={item.id}
+          equipment={item}
+          user={user}
+          isBooked={user && isAlreadyBooked(item.id)}
+          onCreateBooking={handleCreateBooking}
+        />
+
         ))}
       </div>
     </div>
