@@ -5,56 +5,18 @@ import { Tractor, ShoppingBag, ArrowRightLeft, Phone } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import FarmHeroSlider from "./homePages/farm-hero-slider"
 import ProductCard from "./homePages/product-card"
 import EquipmentCard from "./homePages/equipment-card"
+import ProductSlider from "./homePages/farm-hero-slider"
 
 const HomePage = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="sticky top-0 z-40 w-full border-b bg-background">
-        <div className="container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Image
-              src="/placeholder.svg?height=32&width=32"
-              alt="Farm Logo"
-              width={32}
-              height={32}
-              className="rounded-md"
-            />
-            <span className="text-xl font-bold">FarmHub</span>
-          </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-sm font-medium">
-              Home
-            </Link>
-            <Link href="#products" className="text-sm font-medium">
-              Products
-            </Link>
-            <Link href="#trading" className="text-sm font-medium">
-              Trading
-            </Link>
-            <Link href="#equipment" className="text-sm font-medium">
-              Equipment
-            </Link>
-            <Link href="#about" className="text-sm font-medium">
-              About
-            </Link>
-            <Link href="#contact" className="text-sm font-medium">
-              Contact
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" className="hidden md:flex">
-              Sign In
-            </Button>
-            <Button size="sm">Get Started</Button>
-          </div>
-        </div>
-      </header>
+
       <main className="flex-1">
-        <section className="relative mt-2">
-          <FarmHeroSlider />
+        <section className=" mt-2">
+          <ProductSlider />
+          
         </section>
 
         <section id="products" className=" mt-2 py-16 bg-white">

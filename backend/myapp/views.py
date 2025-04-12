@@ -326,9 +326,9 @@ def get_stream_token(request):
    
 class GetDashboardSliderData(generics.ListAPIView):
     serializer_class = ProductSerializer
-
+    permission_classes = [AllowAny]
     def get_queryset(self):
-        return Product.objects.order_by('-created_at')[:3]
+        return Product.objects.order_by('-created_at')[:5]
     
 
     

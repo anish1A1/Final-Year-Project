@@ -27,4 +27,4 @@ npm install stream-chat stream-chat-react
 npm install sonner                 // For showing Toast in the App. (Messages)
 npm install react-hot-toast --legacy-peer-deps
 
-
+npm install keen-slider            // added for slider in the project

@@ -52,7 +52,7 @@ export const ProductProvider = ({children}) => {
         } finally{
             setLoading(false);
         }
-    }
+    };
 
     const createProduct = async (formData, category, router) => {
         const data = new FormData();
