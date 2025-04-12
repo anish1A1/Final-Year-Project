@@ -1,12 +1,8 @@
-/* eslint-disable react/no-unescaped-entities */
 import Link from "next/link"
-import Image from "next/image"
-import { Tractor, ShoppingBag, ArrowRightLeft, Phone, Star, TrendingUp, Users, ArrowRight  } from "lucide-react"
+import {  ArrowRight  } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import EquipmentCard from "./homePages/equipment-card"
 import ImageSlider from "@/app/components/homes/image-slider"
-
+import HomePageEquipmentList from "@/ImpComponent/homePageComponent/HomeEquipment"
 const HomePage = () => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -54,7 +50,6 @@ const HomePage = () => {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            Hello
           </div>
         </div>
       </section>
@@ -76,11 +71,14 @@ const HomePage = () => {
             </Button>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-           Hello Equipment
+          <div className="">
+           <HomePageEquipmentList />
           </div>
         </div>
       </section>
+
+
+
 
       {/* Testimonials Section */}
       <section className="py-16 bg-white">
