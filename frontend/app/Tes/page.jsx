@@ -1,9 +1,10 @@
-import FarmHeroSlider from "../../ImpComponent/homePages/farm-hero-slider"
+import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+
 const page = () => {
   return (
     <div className="mt-36">
         <h1>hello</h1>
-        <FarmHeroSlider/>
+        <BreadCrumbs />
     </div>
   )
 }

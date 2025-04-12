@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import ProductCard from "./homePages/product-card"
 import EquipmentCard from "./homePages/equipment-card"
-import ProductSlider from "./homePages/farm-hero-slider"
+import ImageSlider from "@/app/components/homes/image-slider"
 
 const HomePage = () => {
   return (
@@ -15,8 +15,7 @@ const HomePage = () => {
 
       <main className="flex-1">
         <section className=" mt-2">
-          <ProductSlider />
-          
+          <ImageSlider />
         </section>
 
         <section id="products" className=" mt-2 py-16 bg-white">
