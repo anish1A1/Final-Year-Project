@@ -674,7 +674,9 @@ class TradeListCreateView(generics.ListCreateAPIView):
 class TradeAllListView(generics.ListAPIView):
     queryset = Trade.objects.all()
     serializer_class = TradeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny,]
+    
+
     
 class TradeRetiveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Trade.objects.all()

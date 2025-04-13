@@ -258,14 +258,13 @@ export const ProductProvider = ({children}) => {
 
     const fetchAllTrades = async () => {
         try {
-            const response = await axios.get('/api/trades-all/', {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
+            const response = await axios.get('/api/trades-all/', {});
             setAllTrades(response.data);
             
         } catch (err) {
+            if(err.response?.status === 401){
+                console.error('Unauthenticated, Please login');
+            }
             setError(err.message);
         } finally {
             setLoading(false);

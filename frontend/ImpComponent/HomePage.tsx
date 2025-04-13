@@ -2,13 +2,14 @@ import Link from "next/link"
 import {  ArrowRight  } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ImageSlider from "@/app/components/homes/image-slider"
+import HomeTrade from "@/ImpComponent/homePageComponent/HomeTrade"
 import HomePageEquipmentList from "@/ImpComponent/homePageComponent/HomeEquipment"
 const HomePage = () => {
   return (
     <div className="flex flex-col min-h-screen">
 
       <main className="flex-1">
-        <section className=" mt-2">
+        <section className=" ">
           <ImageSlider />
         </section>
 {/* Featured Trades Section */}
@@ -28,7 +29,9 @@ const HomePage = () => {
             </Button>
           </div>
 
-          
+          <div className="">
+                <HomeTrade />
+          </div>
         </div>
       </section>
 
@@ -50,6 +53,7 @@ const HomePage = () => {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
           </div>
         </div>
       </section>
@@ -65,7 +69,7 @@ const HomePage = () => {
               </p>
             </div>
             <Button variant="outline" className="mt-4 md:mt-0" asChild>
-              <Link href="/equipment">
+              <Link href="/equipmentList">
                 View All Equipment <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
