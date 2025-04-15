@@ -28,7 +28,7 @@ const HomePage = () => {
               </p>
             </div>
             <Button variant="outline" className="mt-4 md:mt-0" asChild>
-              <Link href="/trades">
+              <Link href="/allTrades">
                 View All Trades <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>

@@ -9,10 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
-import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
+import CustomBreadCrumb from "@/Impcomponent/CustomBreadCrumb";
+
 
 
 const CreateEquipmentPaymentPage = () => {
+    
     const { createEquipmentPayment, equipmentBooks, fetchEquipmentBookings } = useContext(EquipmentContext);
     const [formData, setFormData] = useState({
         payment_method: "",
@@ -54,7 +56,7 @@ const CreateEquipmentPaymentPage = () => {
             const response = await createEquipmentPayment(formData, router, setError);
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            router.push("/dashboards");
+            router.push("/MyEquipments/ReceivingEquipments");
             // toast.success("Equipment Payment successful!")
             toast.success(response.message);
         } catch (error) {
@@ -67,8 +69,12 @@ const CreateEquipmentPaymentPage = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50 p-6">
-            <BreadCrumbs />
             <Card className="w-full max-w-md shadow-xl">
+            <div className="max-w-md w-full p-3 bg-white rounded-md shadow-sm">
+                <Button onClick={() => router.back()} className=" bg-gray-500 hover:bg-slate-200    hover:text-black hover:border-slate-900">
+                    Go back
+                </Button>
+            </div>
                 <CardHeader>
                     <CardTitle className="text-center text-2xl font-bold">Make Payment</CardTitle>
                 </CardHeader>
@@ -99,7 +105,7 @@ const CreateEquipmentPaymentPage = () => {
                         </div>
                         <Button
                             type="submit"
-                            className="w-full mt-3"
+                            className="w-full mt-3  bg-blue-500 hover:bg-slate-700    hover:text-white hover:border-slate-900"
                             disabled={loading}
                         >
                             {loading ? <Loader2 className="animate-spin" /> : "Pay Now"}

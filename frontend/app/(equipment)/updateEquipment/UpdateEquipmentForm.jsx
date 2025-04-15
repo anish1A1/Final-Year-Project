@@ -62,8 +62,10 @@ const UpdateEquipmentForm = ({ id, initialFormData }) => {
             transition={{ duration: 0.5 }}
             className="flex justify-center items-center pt-2"
         >
-            <Card className="w-full max-w-lg p-6 shadow-lg rounded-lg">
-                 <BreadCrumbs />
+            <Card className="w-full max-w-lg p-1 shadow-lg rounded-lg">
+                 <Button onClick={() => router.back()} className=" bg-gray-500 hover:bg-slate-700    hover:text-gray-100 hover:border-slate-900">
+                                     Go back
+                                 </Button>
                 <CardHeader className="text-xl font-bold text-center">Update Equipment</CardHeader>
                 <form onSubmit={handleSubmit} className="space-y-3">
                     <CardContent className="space-y-3">
