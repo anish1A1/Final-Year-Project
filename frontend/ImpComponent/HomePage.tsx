@@ -7,6 +7,7 @@ import HomeTrade from "@/ImpComponent/homePageComponent/HomeTrade"
 import HomePageEquipmentList from "@/ImpComponent/homePageComponent/HomeEquipment"
 import HomeProduct from "@/ImpComponent/homePageComponent/HomeProduct"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import JoiningSection from "@/ImpComponent/homePageComponent/JoiningSection";
 
 const HomePage = () => {
   return (
@@ -89,7 +90,7 @@ const HomePage = () => {
 
 
       {/* Testimonials Section */}
-      <section className="mt-16 bg-white">
+      <section className="mt-16 mb-6 bg-white">
         <div className="container px-4 md:px-6">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold tracking-tight mb-2">What Our Clients Say</h2>
@@ -138,24 +139,7 @@ const HomePage = () => {
       
 
       {/* CTA Section */}
-      <section className="py-16 bg-slate-900 text-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl font-bold tracking-tight mb-4">Ready to Get Started?</h2>
-            <p className="text-slate-300 max-w-2xl mb-8">
-              Join thousands of satisfied customers who trust our platform for trading, shopping, and equipment rental.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-white text-slate-900 hover:bg-slate-100">
-                Create Account
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-slate-800">
-                Learn More
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <JoiningSection />
       
 
       

@@ -8,6 +8,8 @@ import {CartProvider} from "../utils/cart";
 import { Toaster } from "sonner";
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
+import Footer from "@/ImpComponent/homePages/Footer";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,13 +48,16 @@ export default function RootLayout({
 
               
               <Navbar />
-                  <main className="flex-grow ">
+                  <main className="flex-grow mb-2">
                   <Toaster position="top-center" />
             {children}
                 
                   </main>
+                  <footer className="bg-gray-800 py-3 rounded-sm">
+                  <Footer />
 
-                  
+                  </footer>
+
                   </CartProvider>
                 </ProductProvider>
               </EquipProvider>
