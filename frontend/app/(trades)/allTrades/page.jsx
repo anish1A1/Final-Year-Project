@@ -4,14 +4,21 @@ import { ProductContext } from '../../../utils/prod'
 
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 import TradeCard from '../../components/AllComponents/TradeCard';
+import { AuthContext } from '../../../utils/auth';
 const AllTrades = () => {
     const {fetchAllTrades, allTrades, loading} = useContext(ProductContext);
+    const {user} = useContext(AuthContext);
     useEffect(() => {
         const formData = async () => {
             await fetchAllTrades();
         }
         formData();
     },[]);
+
+    if (!user) {
+      toast.info("Please login to access more pages!");
+      router.push('/login');
+    }
 
 
     if(loading){

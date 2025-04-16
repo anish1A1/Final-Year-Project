@@ -223,3 +223,4 @@ const GetConfirmedTradesByOwner = () => {
 };
 
 export default GetConfirmedTradesByOwner;
+                        

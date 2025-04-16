@@ -22,6 +22,11 @@ const EquipmentDetail = () => {
     const [userBookings, setUserBookings] = useState([]);
   
 
+    if (!user) {
+      router.push('/login');
+      toast.info("Please login to access Equipment Pages!");
+    }
+    
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
@@ -37,6 +42,10 @@ const EquipmentDetail = () => {
       fetchData();
     }
   }, [id]);
+
+  
+
+  
 
    useEffect(() => {
       if (Array.isArray(equipmentBooks) && equipmentBooks.length > 0 && user) {
