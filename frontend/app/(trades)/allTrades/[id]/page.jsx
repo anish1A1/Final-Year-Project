@@ -7,6 +7,8 @@ import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 import { Badge } from "@/components/ui/badge";
 import axios from '../../../../utils/axios';
+import TradeSummary from '../../../../ImpComponent/aiComponent/TradeSummary';
+
 
 const TradeViewPage = () => {
     const { getTradeById, tradeById, loading } = useContext(ProductContext);
@@ -212,6 +214,10 @@ const TradeViewPage = () => {
               {/* <div>
                 <p className="text-lg font-semibold">Total Trading Cost: <span className="text-purple-600">Rs {tradeById.total_amount}</span></p>
               </div> */}
+
+              <div className="space-y-3">
+                <TradeSummary tradeDescription={`I want ${tradeById.trading_quantity}kg / units of ${tradeById.product.name} in exchange for ${tradeById.wanted_quantity} kg /   units of ${tradeById.wanted_product}.`} />
+              </div>
       
               {/* Save & Trade Buttons */}
               <div className="space-y-3">

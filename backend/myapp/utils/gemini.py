@@ -8,7 +8,7 @@ genai.configure(api_key=os.getenv('GEMINI_API_KEY'))
 
 def get_trade_insight(trade_text):
     # Use the Gemini API to get trade insights
-    model = genai.GenerativeModel("gemini-pro")
+    model = genai.GenerativeModel("gemini-1.5-pro")
     
     prompt = f"""
     Summarize and analyze the following agriculture product trade:

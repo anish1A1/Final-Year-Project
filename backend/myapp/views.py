@@ -2,6 +2,9 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
+
+from myapp.utils.gemini import get_trade_insight
+
 from .serializers import CartPaymentSerializer, CartSerializer, CategorySerializer, ConfirmedTradeSerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, RegisterSerializer, LoginSerializer, TradeSerializer, UserSerializer, EquipmentSerializer, EquipmentDeliverySerializer, ProductSerializer, TradeRequestSerializer
 from rest_framework.permissions import AllowAny, BasePermission
 from django.contrib.auth import authenticate
@@ -27,7 +30,6 @@ from django.http import JsonResponse
 # Initializing Stream Chat
 client = stream_chat.StreamChat(api_key=settings.STREAM_API_KEY, api_secret=settings.STREAM_API_SECRET)
 
-from utils.gemini import get_trade_insight
 
 
 
