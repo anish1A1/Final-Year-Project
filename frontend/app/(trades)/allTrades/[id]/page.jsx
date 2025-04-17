@@ -215,9 +215,11 @@ const TradeViewPage = () => {
                 <p className="text-lg font-semibold">Total Trading Cost: <span className="text-purple-600">Rs {tradeById.total_amount}</span></p>
               </div> */}
 
-              <div className="space-y-3">
+              <div className="space-y-3 flex items-center justify-center">
                 <TradeSummary tradeDescription={`I want ${tradeById.trading_quantity}kg / units of ${tradeById.product.name} in exchange for ${tradeById.wanted_quantity} kg /   units of ${tradeById.wanted_product}.`} />
               </div>
+
+
       
               {/* Save & Trade Buttons */}
               <div className="space-y-3">
