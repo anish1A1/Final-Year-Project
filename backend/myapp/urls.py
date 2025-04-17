@@ -6,11 +6,13 @@ from .views import CartDeliveryListCreateView,CartDeliveryDetailView, CartDelive
 from .views import EquipmnentListByOwner, EquipmentPartialUpdateView, EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView
 
 from .views import get_stream_token, create_product_chat, get_stream_token, create_trade_chat
-from .views import GetDashboardSliderData
+from .views import GetDashboardSliderData, generate_trade_summary
  
 urlpatterns = [
     
     path('slider-data/', GetDashboardSliderData.as_view(), name='slider-data'),
+    
+    path('ai/trade-summary/', generate_trade_summary, name='trade-summary'),
     
     path('equipment/', EquipmentListCreateView.as_view(), name='equipment-list-create'),
     path('equipment-list-owner/', EquipmnentListByOwner.as_view(), name='equipment-list-owner'),

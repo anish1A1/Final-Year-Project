@@ -27,6 +27,22 @@ from django.http import JsonResponse
 # Initializing Stream Chat
 client = stream_chat.StreamChat(api_key=settings.STREAM_API_KEY, api_secret=settings.STREAM_API_SECRET)
 
+from utils.gemini import get_trade_insight
+
+
+
+
+# This is for trade insights from the gemini API
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_trade_summary(request):
+    trade_text = request.data.get('trade_text')
+    
+    if not trade_text:
+        return Response({'error': 'Trade text is required.'}, status=400)
+    
+    summary = get_trade_insight(trade_text)
+    return Response({'summary': summary})
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()

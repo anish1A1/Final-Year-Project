@@ -8,6 +8,9 @@ pip install stream-chat   // installing Stream sdk in Django
 
 pip install python-decouple // Using it to to load environment variables in the Django project.    using config('secret_key') to access the secret key
 
+#Added for gemini integration
+pip install google-generativeai python-dotenv
+
 
 
 In Frontend:
