@@ -2,7 +2,7 @@ In Django:
 django,
 django_rest_framework,
 django_rest_framework_simplejwt,
-pip install -U django-jazzmin,
+=
 django_corshearders
 pip install stream-chat   // installing Stream sdk in Django
 
@@ -20,7 +20,7 @@ shadcn,
 axios,
 npm install react-icons
 npm install react-spinners
-npm install @nextui-org/react              //found this package id deprecated so used this npm install @heroui/react
+
 npm install @heroui/react
 
 // for adding stream's chatting feature in react.
@@ -28,6 +28,4 @@ npm install stream-chat stream-chat-react
 
 
 npm install sonner                 // For showing Toast in the App. (Messages)
-npm install react-hot-toast --legacy-peer-deps
 
-npm install keen-slider            // added for slider in the project
