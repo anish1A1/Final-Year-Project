@@ -71,6 +71,7 @@ const ViewProductById = () => {
     }
   };
 
+  // Creating Chat
   const handleUserSelect = async ( product_id) => {
     try {
       console.log("Product ID:", product_id);
@@ -100,6 +101,11 @@ console.log("Product Image:", product.image);
 
 
     } catch (error) {
+
+       if (error.response?.data.error){
+              toast.error(error.response?.data.error);
+              return;
+            }
         console.error("Error creating chat:", error);
         toast.error("Error creating chat:", error);
 

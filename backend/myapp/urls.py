@@ -10,8 +10,7 @@ from .views import GetDashboardSliderData, generate_trade_summary
  
 urlpatterns = [
     
-    path('slider-data/', GetDashboardSliderData.as_view(), name='slider-data'),
-    
+    path('slider-data/', GetDashboardSliderData.as_view(), name='slider-data'), 
     path('ai/trade-summary/', generate_trade_summary, name='trade-summary'),
     
     path('equipment/', EquipmentListCreateView.as_view(), name='equipment-list-create'),
@@ -24,6 +23,8 @@ urlpatterns = [
     path('equipment-payments/', EquipmentPaymentView.as_view(), name='equipment-payments-list-create'),
     path('equipment-delivery/<uuid:pk>/', EquipmentDeliveryUpdateView.as_view(), name='equipment-delivery-update'),
     path('equipment-delivery-receive/', EquipmentDeliveryReceiveListView.as_view(), name='equipment-delivery-receive'),
+    
+    
     path('category/', CategoryView.as_view(), name='category-list-view'),
     path('product/', ProductListCreateView.as_view(), name='product-list-create'),
     path('category/', CategoryView.as_view(), name='category-list-view'),
@@ -35,7 +36,6 @@ urlpatterns = [
     path("stream-token/", get_stream_token, name='get-stream-token'),
     path("chat/create-product-chat/<int:product_id>/", create_product_chat, name="create_product_chat"),
     path('chat/product-chat/', get_stream_token, name='get_product_chat'),
-    
     path("chat/create-trade-chat/<int:trade_id>/", create_trade_chat, name="create_trade_chat"),
     
     
@@ -46,9 +46,7 @@ urlpatterns = [
     path('cart/<int:pk>/', CartDetailView.as_view(), name='cart-detail'),
     path('cart/total-cost/', CartTotalCostView.as_view(), name='cart-total-cost'),
     path('cart/payment/', CartPaymentListCreateView.as_view(), name='cart-payment-list-create'),
-    
     path('cart-deliveries/', CartDeliveryListCreateView.as_view(), name='cart-delivery-list'),
-    
     path('cart-deliveries-admin/', CartDeliveryAdminListCreateView.as_view(), name='cart-deliveries-admin-list'),
     path('cart-deliveries/<int:pk>/', CartDeliveryDetailView.as_view(), name='cart-delivery-detail'),
     path('cart-deliveries/product-owner/', CartDeliveryOwnerViewListView.as_view(), name='cart-delivery-product-owner'),

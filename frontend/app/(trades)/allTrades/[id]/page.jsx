@@ -92,8 +92,13 @@ const TradeViewPage = () => {
 
 
     } catch (error) {
-        console.error("Error creating chat:", error);
-        toast.error("Error creating chat:", error);
+      if (error.response?.data.error){
+        toast.error(error.response?.data.error);
+        return;
+      }
+      
+      console.error("Error creating chat:", error);
+      toast.error("Error creating chat:", error);
 
      }
     };

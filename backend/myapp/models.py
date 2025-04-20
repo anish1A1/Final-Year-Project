@@ -325,8 +325,6 @@ class CartDelivery(models.Model):
     def __str__(self):        
         return f"Delivery for Cart Payment ID: {self.cart_payment.id}, Status: {self.status}"
 
-
-            
     @property
     def admin_username(self):
         return self.admin.username
