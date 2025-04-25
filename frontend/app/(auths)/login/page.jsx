@@ -2,7 +2,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from "../../../utils/auth";
 import { useRouter } from "next/navigation";
-
+import Link from 'next/link';
 const LoginPage = () => {
     const [credentials, setCredentials]  = useState({username: '', password: ''});
     const router = useRouter();
@@ -64,6 +64,12 @@ const LoginPage = () => {
                         </button>
                     </div>
                 </form>
+                <div className="mt-4 text-center text-sm">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/register" className="underline underline-offset-4">
+                        Sign up
+                    </Link>
+                    </div>
             </div>
         </div>
     );
