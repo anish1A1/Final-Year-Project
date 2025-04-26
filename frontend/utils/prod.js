@@ -220,8 +220,7 @@ export const ProductProvider = ({children}) => {
     const createTrade = async (formData, router) => {
         try {
             const data = new FormData();
-            const token = localStorage.getItem('token');
-            
+            const token = localStorage.getItem('token');    
             Object.keys(formData).forEach((key) => {
                 data.append(key, formData[key]);
             });
@@ -229,19 +228,12 @@ export const ProductProvider = ({children}) => {
             if (user) {
                 data.append('user', user.id);
             } 
-
-            console.log(`Data is ${data}`);
-          
-            // for (const da of data) {
-            //     console.log(`${da}`)
-            // }
             const response = await axios.post('/api/trades/', data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
             setTrades((prevTrades) => [...prevTrades, response.data]);
             router.push('/allTrades'); // Redirect to the trades page after creating the trade
             return { status: 'success', message: 'Trade created successfully!' };
@@ -252,9 +244,6 @@ export const ProductProvider = ({children}) => {
             throw error.response?.data;
         }; 
     };
-
-
-
 
     const fetchAllTrades = async () => {
         try {
@@ -353,10 +342,6 @@ export const ProductProvider = ({children}) => {
 
             if(user){
                 data.append('user', user.id);
-            }
-
-            for (const da of data) {
-                console.log(`${da}`)
             }
 
             const response = await axios.post('/api/trade-requests/', data, {
