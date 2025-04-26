@@ -87,3 +87,122 @@ import uuid
 #         print("[Success ✅] Equipment __str__ output:", str(self.equipment))
 
 
+# class EquipmentBookingModelTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="anish", password="password123")
+#         self.equipment = Equipment.objects.create(
+#             name="Tractor",
+#             description="Heavy duty tractor",
+#             per_day_rate=Decimal('1500.00'),
+#             user=self.user,
+#             delivery_charge=Decimal('500.00'),
+#             quantity=5
+#         )
+#         self.booking = EquipmentBooking.objects.create(
+#             start_date=date.today(),
+#             end_date=date.today() + timedelta(days=2),
+#             delivery_location="Kathmandu",
+#             quantity=2,
+#             user=self.user,
+#             equipment=self.equipment
+#         )
+#         print("\n[Setup] EquipmentBooking Created for:", self.user.username)
+
+#     def test_total_date(self):
+#         print("[Test] Testing total_date property...")
+#         self.assertEqual(self.booking.total_date, 2)
+#         print("[Success ✅] total_date is:", self.booking.total_date)
+
+#     def test_total_cost(self):
+#         print("[Test] Testing total_cost property...")
+#         expected_cost = 2 * Decimal('1500.00') * 2  # quantity * per_day_rate * total_date
+#         self.assertEqual(self.booking.total_cost, expected_cost)
+#         print("[Success ✅] total_cost is:", self.booking.total_cost)
+
+#     def test_booking_str(self):
+#         print("[Test] Testing EquipmentBooking __str__...")
+#         self.assertEqual(str(self.booking), str(self.booking.id))
+#         print("[Success ✅] EquipmentBooking __str__ output:", str(self.booking))
+
+
+# class EquipmentPaymentModelTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="anish", password="password123")
+#         self.equipment = Equipment.objects.create(
+#             name="Tractor",
+#             description="Heavy duty tractor",
+#             per_day_rate=Decimal('1500.00'),
+#             user=self.user,
+#             delivery_charge=Decimal('500.00'),
+#             quantity=5
+#         )
+#         self.booking = EquipmentBooking.objects.create(
+#             start_date=date.today(),
+#             end_date=date.today() + timedelta(days=2),
+#             delivery_location="Kathmandu",
+#             quantity=2,
+#             user=self.user,
+#             equipment=self.equipment
+#         )
+#         self.payment = EquipmentPayment.objects.create(
+#             user=self.user,
+#             equipment_booking=self.booking,
+#             payment_method='esewa',
+#             amount=Decimal('6000.00')
+#         )
+#         print("\n[Setup] EquipmentPayment Created with ID:", self.payment.id)
+
+#     def test_payment_status_and_type(self):
+#         print("[Test] Testing EquipmentPayment auto status and type...")
+#         self.assertEqual(self.payment.status, EquipmentPayment.PaymentStatusChoices.CLEARED)
+#         self.assertEqual(self.payment.payment_type, EquipmentPayment.PaymentTypeChoices.ONLINE)
+#         print("[Success ✅] Payment status:", self.payment.status, "Payment type:", self.payment.payment_type)
+
+#     def test_payment_str(self):
+#         print("[Test] Testing EquipmentPayment __str__...")
+#         expected_output = f"Payment of {self.payment.amount} for {self.payment.equipment_booking} ({self.payment.payment_type} by {self.payment.user}) id {self.payment.id}"
+#         self.assertEqual(str(self.payment), expected_output)
+#         print("[Success ✅] EquipmentPayment __str__ output:", str(self.payment))
+
+
+
+# class EquipmentDeliveryModelTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="anish", password="password123")
+#         self.equipment = Equipment.objects.create(
+#             name="Tractor",
+#             description="Heavy duty tractor",
+#             per_day_rate=Decimal('1500.00'),
+#             user=self.user,
+#             delivery_charge=Decimal('500.00'),
+#             quantity=5
+#         )
+#         self.booking = EquipmentBooking.objects.create(
+#             start_date=date.today(),
+#             end_date=date.today() + timedelta(days=2),
+#             delivery_location="Kathmandu",
+#             quantity=2,
+#             user=self.user,
+#             equipment=self.equipment
+#         )
+#         self.payment = EquipmentPayment.objects.create(
+#             user=self.user,
+#             equipment_booking=self.booking,
+#             payment_method='esewa',
+#             amount=Decimal('6000.00')
+#         )
+#         self.delivery = EquipmentDelivery.objects.create(
+#             equipment_payment=self.payment
+#         )
+#         print("\n[Setup] EquipmentDelivery Created for Payment ID:", self.payment.id)
+
+#     def test_delivery_status_default(self):
+#         print("[Test] Testing Delivery Default Status...")
+#         self.assertEqual(self.delivery.status, EquipmentDelivery.DeliveryStatusChoices.PROCESSING)
+#         print("[Success ✅] Delivery status:", self.delivery.status)
+
+#     def test_delivery_str(self):
+#         print("[Test] Testing EquipmentDelivery __str__...")
+#         expected_output = f"Delivery for Payment ID: {self.payment.id}, Status: {self.delivery.status}"
+#         self.assertEqual(str(self.delivery), expected_output)
+#         print("[Success ✅] EquipmentDelivery __str__ output:", str(self.delivery))
