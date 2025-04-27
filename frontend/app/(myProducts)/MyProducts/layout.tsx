@@ -19,6 +19,12 @@ const ProductDashboardLayout = ({ children }: { children: React.ReactNode }) => 
             Products
           </Link>
           <Link
+            href="/MyProducts/createProduct/"
+            className="block px-6 py-3 hover:bg-blue-700 rounded transition"
+          >
+            Create Products
+          </Link>
+          <Link
             href="/MyProducts/productDelivery/"
             className="block px-6 py-3 hover:bg-blue-700 rounded transition"
           >

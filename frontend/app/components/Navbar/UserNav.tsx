@@ -56,9 +56,22 @@ const UserNav = () => {
                             </NavigationMenuTrigger>
                             <NavigationMenuContent>
                             {isAdmin ? (
-                                <MenuLink label="Admin Deliveries" onClick={() => {
+                                <ul>
+                                    <li>
+                                    <MenuLink label="Admin Deliveries" onClick={() => {
                                     router.push('/adminDashboard');
                                 }} />
+                                    </li>
+                                    <li>
+                            <MenuLink label="Log Out" onClick={() => {
+                                logout(router);
+                            }} />
+
+                            </li>
+                                </ul>
+                                
+                                
+
                             ) : (
                         
                         <ul>
@@ -110,7 +123,7 @@ const UserNav = () => {
 
                             </li>
                             {/* Needs to be Removed this section */}
-                            <li>
+                            {/* <li>
                             <MenuLink label="Product Dashboard" onClick={() => {
                                         router.push('/productDashboard');
                                     }} />
@@ -120,7 +133,7 @@ const UserNav = () => {
                             <MenuLink label="Equipment Dashboard" onClick={() => {
                                         router.push('/dashboards');
                                     }} />
-                            </li>
+                            </li> */}
                         </ul>
 
                             )}

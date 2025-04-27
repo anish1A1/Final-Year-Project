@@ -32,8 +32,8 @@ const ProductListByOwner = () => {
     return <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">Loading...</div>
   };  
 
-    if (!ownerProducts) {
-      return <div className="container mx-auto mt-24">No products created by you</div>;
+    if (!ownerProducts || ownerProducts.length === 0) {
+      return <div className="container mx-auto mt-36 px-64 text-2xl font-semibold text-gray-700">No products created by you</div>;
     };
 
     return (

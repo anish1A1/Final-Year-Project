@@ -49,7 +49,9 @@ const OwnersEquipment = () => {
     return <div className="flex justify-center items-center mt-24 text-2xl font-semibold text-gray-700">Loading...</div>
   }
 
-
+  if (!equipmentOwner || equipmentOwner.length === 0) {
+    return <div className="container mx-full mt-36 mb-48 text-2xl font-semibold text-gray-700">No products created by you</div>;
+  };
 
 
   return (
@@ -106,8 +108,8 @@ const OwnersEquipment = () => {
              </Card>
         ))
       ) : (
-        <p className="text-lg font-semibold text-gray-800 text-center">
-          No confirmed items found.
+        <p className="text-lg font-bold text-center m-32  ml-44 text-gray-800 ">
+          No equipment found.
         </p>
       )}
 
