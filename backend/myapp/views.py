@@ -763,7 +763,6 @@ class TradeRequestOwnersUpdateView(generics.UpdateAPIView):
     
 
 class ConfirmedTradeListByOwnerView(generics.ListAPIView):
-    queryset = ConfirmedTrade.objects.all()
     serializer_class = ConfirmedTradeSerializer
     permission_classes = [IsAuthenticated]
     
@@ -788,6 +787,7 @@ class ConfirmedTradeListView(generics.ListAPIView):
     serializer_class = ConfirmedTradeSerializer
     permission_classes = [IsAuthenticated]
     
+    queryset = ConfirmedTrade.objects.all()
     def get_queryset(self):
         return ConfirmedTrade.objects.filter(trade_request__user=self.request.user)
     

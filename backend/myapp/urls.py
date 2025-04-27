@@ -57,7 +57,7 @@ urlpatterns = [
     path('trade-requests/', TradeRequestListCreateView.as_view(), name='trade-request-list-create'),
     
     path('trade-request-owners/', TradeRequestOwnersListView.as_view(), name='trade-requests-for-owners-list-view'),
-    path('trade-request-owners/<int:pk>/', TradeRequestOwnersUpdateView.as_view(), name='trade-request-owners-update'),
+    path('trade-request-owners/<int:pk>/', TradeRequestOwnersUpdateView.as_view(), name='trade-request-owners-update'), 
     path('trade-Toupdate/<int:pk>/', TradeRetiveUpdateDestroyView.as_view(), name='trade-retive-update-destroy'),
     
     path('confirmed-trades/', ConfirmedTradeListView.as_view(), name='confirmed-trades-list-view'),

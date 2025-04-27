@@ -304,3 +304,332 @@ User = get_user_model()
 #         self.assertEqual(response.status_code, status.HTTP_200_OK)
 #         print("[Success ✅] Equipment deliveries list fetched successfully!\n")
 
+
+
+# class ProductListCreateTests(APITestCase):
+#     def setUp(self):
+#         print("[Setup] Initializing Product List & Create Tests...")
+#         self.client = APIClient()
+#         role = Role.objects.create(name="farmer")
+#         self.category = Category.objects.create(name="Fertilizers")
+#         self.user = User.objects.create_user(username="farmer", password="testpass123")  
+#         print(self.user)
+#         UserRole.objects.create(user=self.user, role=role)
+#         self.client.force_authenticate(user=self.user)
+#         self.url = reverse('product-list-create')
+
+#     def test_create_product_as_farmer(self):
+#         print("[Test] Creating a new product as a farmer...")
+#         data = {
+#             'name': 'Tomato',
+#             'description': 'Fresh organic tomatoes',
+#             'price': 100,
+#             'user': self.user.id, 'slug':"organic-fertilizer",
+#             'quantity':50,
+#             'small_description':"Small Desc",
+#             'description':"Full Desc",
+#             'original_price':1000,
+#             'selling_price':800,
+#             'tag':"Organic",
+#             'delivery_sell_charge':20,
+#             'category_id':self.category.id
+#         }
+#         response = self.client.post(self.url, data)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         print("[Success ✅] Product 'Tomato' created successfully!\n")
+
+
+# class CartListCreateTests(APITestCase):
+#     def setUp(self):
+#         print("[Setup] Initializing Cart Tests...")
+#         self.client = APIClient()
+#         self.category = Category.objects.create(name="Fertilizers")
+#         self.user = User.objects.create_user(username="owner", password="testpass123")
+#         self.customer =User.objects.create_user(username="customer", password="testpass123")
+#         self.client.force_authenticate(user=self.user)
+#         self.client.force_authenticate(user=self.customer)
+#         self.product = Product.objects.create(name="Cabbage", description="Green cabbage",  user=self.user, slug="cabbage", product_image="cabbage.jpg", quantity=50, small_description="Small Desc",  original_price=1000, selling_price=800, tag="Organic", delivery_sell_charge=20, category=self.category)
+#         self.url = reverse('cart-list-create')
+
+#     def test_add_product_to_cart(self):
+#         print("[Test] Adding a product to the cart...")
+#         data = {
+#             'product_id': self.product.id,
+#             'product_qty': 2,
+#             'user': self.customer.id
+#         }
+#         response = self.client.post(self.url, data)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         print("[Success ✅] Product added to cart successfully!\n")
+
+#     def test_add_same_product_twice(self):
+#         print("[Test] Attempting to add the same product to the cart twice...")
+#         Cart.objects.create(user=self.customer, product=self.product, product_qty=2)
+#         data = {
+#             'product_id': self.product.id,
+#             'product_qty': 2,
+#             'user': self.customer.id
+#         }
+#         response = self.client.post(self.url, data)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+#         print("[Success ✅] Duplicate product addition correctly rejected.\n")
+        
+
+from datetime import datetime, timedelta   
+
+
+
+# class TradeListCreateViewTests(APITestCase):
+#     def setUp(self):
+#         print("[Setup] Initializing Trade List & Create Tests...")
+#         self.client = APIClient()
+#         self.user = User.objects.create_user(username='testuser', password='testpass')
+#         category = Category.objects.create(name="Vegetables")
+#         self.product = Product.objects.create(
+#             user=self.user,
+#             name='Tomato',
+#             description='Fresh tomatoes',
+#             slug="Tomato",
+#             product_image="fertilizer.jpg",
+#             quantity=50,
+#             small_description="Small Desc",
+#             original_price=100,
+#             selling_price=800,
+#             tag="Organic",
+#             delivery_sell_charge=20,
+#             category=category
+#         )
+#         self.client.login(username='testuser', password='testpass')
+
+#     def test_create_trade(self):
+#         print("[Test] Creating a trade...")
+#         url = reverse('trade-list-create')  # Ensure correct URL name
+#         data = {
+#             'product_id': self.product.id,
+#             'wanted_product': 'Rice',
+#             'trading_quantity': 20,
+#             'wanted_quantity': 15,
+#             'note': 'Looking for Rice',
+#             'trade_ending_date': datetime.now() + timedelta(days=5),
+#             'user': self.user.id
+#         }
+#         response = self.client.post(url, data)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         print("[Success ✅] Trade created successfully!\n")
+
+#     def test_list_trades(self):
+#         print("[Test] Listing trades...")
+#         Trade.objects.create(
+#             user=self.user,
+#             product=self.product,
+#             wanted_product='Rice',
+#             trading_quantity=20,
+#             wanted_quantity=15,
+#             note='Looking for Rice',
+#             trade_ending_date=datetime.now() + timedelta(days=5)
+#         )
+#         url = reverse('trade-list-create')
+#         response = self.client.get(url)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(len(response.data), 1)
+#         print("[Success ✅] Trade listing fetched successfully!\n")
+        
+from django.utils import timezone
+# class TradeListCreateViewTests(APITestCase):
+#     def setUp(self):
+#         print("\n[Setup] Initializing Trade List & Create Tests...")
+#         self.client = APIClient()
+#         self.user = User.objects.create_user(username='testuser', password='testpass')
+#         category = Category.objects.create(name="Vegetables")
+#         self.product = Product.objects.create(
+#             user=self.user,
+#             name='Tomato',
+#             description='Fresh tomatoes',
+#             slug="Tomato",
+#             product_image="fertilizer.jpg",
+#             quantity=50,
+#             small_description="Small Desc",
+#             original_price=100,
+#             selling_price=800,
+#             tag="Organic",
+#             delivery_sell_charge=20,
+#             category=category
+#         )
+#         self.client.force_authenticate(user=self.user)
+
+#     def test_create_trade(self):
+#         print("[Test] Creating a trade...")
+#         url = reverse('trade-list-create')  
+#         data = {
+#             "product_id": self.product.id,
+#             "trade_ending_date": (timezone.now() + timedelta(days=5)).isoformat(),
+#             "wanted_product": "Rice",
+#             "trading_quantity": 20,
+#             "wanted_quantity": 15,
+#             "note": "Looking for Rice",
+#             "user": self.user.id  # Ensure correct ID format
+#         }
+#         response = self.client.post(url, data)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         print("[Success ✅] Trade created successfully!\n")
+
+#     def test_list_trades(self):
+#         print("[Test] Listing available trades...")
+#         Trade.objects.create(
+#             user=self.user,
+#             product=self.product,
+#             trading_quantity=5,
+#             wanted_product="Rice",
+#             wanted_quantity=10,
+#             note="Looking for Rice",
+#             trade_ending_date=timezone.now() + timedelta(days=5)
+#         )
+#         url = reverse('trade-list-create')
+#         response = self.client.get(url)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         self.assertEqual(len(response.data), 1)
+#         print("[Success ✅] Trades listed successfully!\n")
+        
+# class TradeRequestListCreateViewTests(APITestCase):
+#     def setUp(self):
+#         print("\n[Setup] Initializing Trade Request List & Create Tests...")
+#         self.client = APIClient()
+#         self.user = User.objects.create_user(username='requestuser', password='testpass')
+#         self.trade_owner = User.objects.create_user(username='tradeowner', password='testpass')
+#         category = Category.objects.create(name="Vegetables")
+#         self.product = Product.objects.create(
+#             user=self.trade_owner,
+#             name='Ginger',
+#             description='Fresh ginger',
+#             slug="Tomato",
+#             product_image="fertilizer.jpg",
+#             quantity=50,
+#             small_description="Small Desc",
+#             original_price=100,
+#             selling_price=800,
+#             tag="Organic",
+#             delivery_sell_charge=20,
+#             category=category
+#         )
+#         self.trade = Trade.objects.create(
+#             user=self.trade_owner,
+#             product=self.product,
+#             wanted_product='Rice',
+#             trading_quantity=15,
+#             wanted_quantity=20,
+#             note="Looking for Rice",
+#             trade_ending_date=timezone.now() + timedelta(days=5)
+#         )
+#         self.client.force_authenticate(user=self.user)
+
+#     def test_create_trade_request(self):
+#         print("[Test] Creating trade request...")
+#         url = reverse('trade-request-list-create')
+#         data = {
+#             "trade_id": self.trade.id,
+#             "delivery_location": "Delhi",
+#             "product_name": "Rice",
+#             "status": "pending",
+#             "note": "Looking for Rice"
+#         }
+#         response = self.client.post(url, data)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         print("[Success ✅] Trade request created successfully!\n")
+
+#     def test_duplicate_trade_request(self):
+#         print("[Test] Creating duplicate trade request...")
+#         TradeRequest.objects.create(user=self.user, trade=self.trade)
+#         url = reverse('trade-request-list-create')
+#         data = {
+#             "trade_id": self.trade.id,
+#             "delivery_location": "Delhi",
+#             "product_name": "Rice",
+#             "status": "pending",
+#             "note": "Looking for Rice"
+#         }
+#         response = self.client.post(url, data)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+#         print("[Success ✅] Duplicate trade request correctly rejected!\n")
+
+#     def test_list_trade_requests(self):
+#         print("[Test] Listing trade requests...")
+#         TradeRequest.objects.create(
+#             user=self.user,
+#             trade=self.trade,
+#             delivery_location="Delhi",
+#             product_name="Rice",
+#             status="pending",
+#             note="Looking for Rice"
+#         )
+#         url = reverse('trade-request-list-create')
+#         response = self.client.get(url)
+
+#         print("[Response] Status Code:", response.status_code)
+#         print("[Response] Data:", response.data)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+#         print("[Success ✅] Trade requests listed successfully!\n")
+
+
+class ConfirmedTradeListViewTests(APITestCase):
+    def setUp(self):
+        print("\n[Setup] Initializing ConfirmedTrade List Tests...")
+        self.client = APIClient()
+        self.user = User.objects.create_user(username='user1', password='testpass')
+        self.client.force_authenticate(user=self.user)
+        category = Category.objects.create(name="Vegetables")
+        self.product = Product.objects.create(user=self.user, name='Cauliflower', description='Fresh ginger',
+            slug="Tomato",
+            product_image="fertilizer.jpg",
+            quantity=50,
+            small_description="Small Desc",
+            original_price=100,
+            selling_price=800,
+            tag="Organic",
+            delivery_sell_charge=20,
+            category=category
+        )
+        self.trade = Trade.objects.create(user=self.user, product=self.product, 
+            wanted_product='Rice',
+            trading_quantity=15,
+            wanted_quantity=20,
+            note="Looking for Rice", trade_ending_date=timezone.now() + timedelta(days=5))
+        self.trade_request = TradeRequest.objects.create(user=self.user, trade=self.trade, status='accepted', 
+            delivery_location= "Delhi",
+            product_name= "Rice",
+            note= "Looking for Rice")
+        self.confirmed_trade = ConfirmedTrade.objects.create(trade_request_id=self.trade_request.id, status='delivering', item_received=False, item_location='Delhi')
+
+    def test_list_confirmed_trades(self):
+        print("[Test] Listing ConfirmedTrades...")
+        url = reverse('confirmed-trades-list-view')
+        response = self.client.get(url)
+        print("[Response] Status Code:", response.status_code)
+        print("[Response] Data:", response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
