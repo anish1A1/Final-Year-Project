@@ -57,7 +57,7 @@ export const AuthProvider = ({children}) => {
             await fetchUserData(access);
             
             router.push('/');
-
+            return {status : "success", message: "You have been logged in successfully!"}
             // Redirect to the home page
         // window.location.href = redirect_url;
 
@@ -86,7 +86,7 @@ export const AuthProvider = ({children}) => {
             
             console.log(response.data);
             router.push('/login');
-
+            return {status : "success", message: "You have been registered successfully!"}
         } catch (error) {
 
             if (error.response && error.response.status) {

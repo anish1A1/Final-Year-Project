@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from "../../../utils/auth";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
+import { toast } from 'sonner';
 const RegisterPage = () => {
     const [credentials, setCredentials] = useState({
         username: '',
@@ -20,14 +21,15 @@ const RegisterPage = () => {
         e.preventDefault();
 
         if (isFarmer && (!credentials.farm_location || !credentials.occupation_name)) {
-            alert('Farm Location and Occupation Name are required for farmers.');
+            toast.error('Farm Location and Occupation Name are required for farmers.');
             return;
         }
 
         try {
-            await register(credentials, router);
+            const response = await register(credentials, router);
+            toast.success(response.message);
         } catch (error) {
-            console.error('Error:', error);
+            toast.error('Error:', error);
             alert('Error registering user:');
         }      
     };

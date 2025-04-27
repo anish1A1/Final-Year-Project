@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from "../../../utils/auth";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
+import { toast } from 'sonner';
 const LoginPage = () => {
     const [credentials, setCredentials]  = useState({username: '', password: ''});
     const router = useRouter();
@@ -11,10 +12,11 @@ const LoginPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(credentials, router);
+            const response = await login(credentials, router);
+            toast.success(response.message);
         } catch (error) {
             console.error('Error:', error);
-            alert('Error registering user:');
+            toast.error('Error registering user:', error.message);
         }      
     };
 
