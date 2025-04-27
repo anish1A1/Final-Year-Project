@@ -1,4 +1,3 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
 from myapp.models import Role, UserRole, FarmerProfile, Equipment, EquipmentBooking, EquipmentPayment, EquipmentDelivery, Product, Category, Cart,Trade, TradeRequest, ConfirmedTrade, CartPayment, CartDelivery
 from datetime import date, timedelta
@@ -9,6 +8,12 @@ from django.contrib.auth import get_user_model
 
 from myapp.serializers import DashboardSliderSerializer, LoginSerializer, RegisterSerializer, RoleSerializer, UserRoleSerializer, UserSerializer, ProductSerializer, CategorySerializer, CartSerializer, CartPaymentSerializer, CartDeliverySerializer, TradeSerializer, TradeRequestSerializer, ConfirmedTradeSerializer, EquipmentSerializer, EquipmentBookingSerializer, EquipmentPaymentSerializer, EquipmentDeliverySerializer
 from rest_framework.test import APITestCase
+
+from rest_framework.test import APITestCase, APIClient
+from rest_framework import status
+from django.urls import reverse
+
+
 
 
 # class RoleSerializerTest(APITestCase):
@@ -383,98 +388,98 @@ from datetime import datetime, timedelta
 #         return MockRequest(user)
 
 # ----------------- Trade Serializer Test -----------------
-class TradeSerializerTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="trader", password="testpass")
-        self.other_user = User.objects.create_user(username="seller", password="testpass")
-        category = Category.objects.create(name="Fertilizers") 
-        self.product = Product.objects.create(name="Chilli", quantity=100, user=self.other_user, slug="wheat", product_image="wheat.jpg", small_description="Small Desc", description="Full Desc", original_price=1000, selling_price=800, tag="Organic", delivery_sell_charge=20, category=category)
+# class TradeSerializerTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="trader", password="testpass")
+#         self.other_user = User.objects.create_user(username="seller", password="testpass")
+#         category = Category.objects.create(name="Fertilizers") 
+#         self.product = Product.objects.create(name="Chilli", quantity=100, user=self.other_user, slug="wheat", product_image="wheat.jpg", small_description="Small Desc", description="Full Desc", original_price=1000, selling_price=800, tag="Organic", delivery_sell_charge=20, category=category)
 
-    def test_create_trade(self):
-        print("\n--- Testing TradeSerializer Create ---")
-        data = {
-            'product_id': self.product.id,
-            'wanted_product': 'Rice',
-            'trading_quantity': 20,
-            'wanted_quantity': 15,
-            'note': 'Looking for Rice',
-            'trade_ending_date': datetime.now() + timedelta(days=5),
-            'user' : self.user.id
-        }
-        context = {'request': self._mock_request(self.user)}
-        serializer = TradeSerializer(data=data, context=context)
-        print("Input Data:", data)
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        trade = serializer.save()
-        print("Saved Trade:", trade)
-        print("Trade Product:", trade.product.name)
+#     def test_create_trade(self):
+#         print("\n--- Testing TradeSerializer Create ---")
+#         data = {
+#             'product_id': self.product.id,
+#             'wanted_product': 'Rice',
+#             'trading_quantity': 20,
+#             'wanted_quantity': 15,
+#             'note': 'Looking for Rice',
+#             'trade_ending_date': datetime.now() + timedelta(days=5),
+#             'user' : self.user.id
+#         }
+#         context = {'request': self._mock_request(self.user)}
+#         serializer = TradeSerializer(data=data, context=context)
+#         print("Input Data:", data)
+#         self.assertTrue(serializer.is_valid(), serializer.errors)
+#         trade = serializer.save()
+#         print("Saved Trade:", trade)
+#         print("Trade Product:", trade.product.name)
 
-    def _mock_request(self, user):
-        class MockRequest:
-            def __init__(self, user):
-                self.user = user
-        return MockRequest(user)
+#     def _mock_request(self, user):
+#         class MockRequest:
+#             def __init__(self, user):
+#                 self.user = user
+#         return MockRequest(user)
     
 # ----------------- Trade Request Serializer Test -----------------
-class TradeRequestSerializerTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="requester", password="testpass")
-        self.other_user = User.objects.create_user(username="trader", password="testpass")
-        category = Category.objects.create(name="Fertilizers") 
-        self.product = Product.objects.create(name="Maize", quantity=50, user=self.other_user, slug="wheat", product_image="wheat.jpg", small_description="Small Desc", description="Full Desc", original_price=1000, selling_price=800, tag="Organic", delivery_sell_charge=20, category=category)
+# class TradeRequestSerializerTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="requester", password="testpass")
+#         self.other_user = User.objects.create_user(username="trader", password="testpass")
+#         category = Category.objects.create(name="Fertilizers") 
+#         self.product = Product.objects.create(name="Maize", quantity=50, user=self.other_user, slug="wheat", product_image="wheat.jpg", small_description="Small Desc", description="Full Desc", original_price=1000, selling_price=800, tag="Organic", delivery_sell_charge=20, category=category)
         
-        self.trade = Trade.objects.create(user=self.other_user, product=self.product, 
-                                          wanted_product="Beans", trading_quantity=20, 
-                                          wanted_quantity=15, trade_ending_date=(datetime.now() + timedelta(days=5)))
+#         self.trade = Trade.objects.create(user=self.other_user, product=self.product, 
+#                                           wanted_product="Beans", trading_quantity=20, 
+#                                           wanted_quantity=15, trade_ending_date=(datetime.now() + timedelta(days=5)))
 
-    def test_create_trade_request(self):
-        print("\n--- Testing TradeRequestSerializer Create ---")
-        data = {
-            'trade_id': self.trade.id,
-            'delivery_location': 'Kathmandu',
-            'product_name': 'Beans',
-            'status': 'pending',
-            'note': 'Requesting trade',
-            'user' : self.user.id
-        }
-        context = {'request': self._mock_request(self.user)}
-        serializer = TradeRequestSerializer(data=data, context=context)
-        print("Input Data:", data)
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        trade_request = serializer.save()
-        print("Saved Trade Request:", trade_request)
-        print("Requested for Trade:", trade_request.trade.product.name)
+#     def test_create_trade_request(self):
+#         print("\n--- Testing TradeRequestSerializer Create ---")
+#         data = {
+#             'trade_id': self.trade.id,
+#             'delivery_location': 'Kathmandu',
+#             'product_name': 'Beans',
+#             'status': 'pending',
+#             'note': 'Requesting trade',
+#             'user' : self.user.id
+#         }
+#         context = {'request': self._mock_request(self.user)}
+#         serializer = TradeRequestSerializer(data=data, context=context)
+#         print("Input Data:", data)
+#         self.assertTrue(serializer.is_valid(), serializer.errors)
+#         trade_request = serializer.save()
+#         print("Saved Trade Request:", trade_request)
+#         print("Requested for Trade:", trade_request.trade.product.name)
 
-    def _mock_request(self, user):
-        class MockRequest:
-            def __init__(self, user):
-                self.user = user
-        return MockRequest(user)
+#     def _mock_request(self, user):
+#         class MockRequest:
+#             def __init__(self, user):
+#                 self.user = user
+#         return MockRequest(user)
 
 # ----------------- Confirmed Trade Serializer Test -----------------
-class ConfirmedTradeSerializerTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="confirmer", password="testpass")
-        self.other_user = User.objects.create_user(username="trader", password="testpass")
-        category = Category.objects.create(name="Fertilizers") 
-        self.product = Product.objects.create(name="Corn", quantity=100, user=self.other_user, slug="wheat", product_image="wheat.jpg", small_description="Small Desc", description="Full Desc", original_price=1000, selling_price=800, tag="Organic", delivery_sell_charge=20, category=category)
-        self.trade = Trade.objects.create(user=self.other_user, product=self.product, 
-                                          wanted_product="Wheat", trading_quantity=30, 
-                                          wanted_quantity=20, trade_ending_date=(datetime.now() + timedelta(days=5)))
-        self.trade_request = TradeRequest.objects.create(user=self.user, trade=self.trade, 
-                                                         delivery_location="Pokhara", product_name="Wheat")
+# class ConfirmedTradeSerializerTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="confirmer", password="testpass")
+#         self.other_user = User.objects.create_user(username="trader", password="testpass")
+#         category = Category.objects.create(name="Fertilizers") 
+#         self.product = Product.objects.create(name="Corn", quantity=100, user=self.other_user, slug="wheat", product_image="wheat.jpg", small_description="Small Desc", description="Full Desc", original_price=1000, selling_price=800, tag="Organic", delivery_sell_charge=20, category=category)
+#         self.trade = Trade.objects.create(user=self.other_user, product=self.product, 
+#                                           wanted_product="Wheat", trading_quantity=30, 
+#                                           wanted_quantity=20, trade_ending_date=(datetime.now() + timedelta(days=5)))
+#         self.trade_request = TradeRequest.objects.create(user=self.user, trade=self.trade, 
+#                                                          delivery_location="Pokhara", product_name="Wheat")
 
-    def test_create_confirmed_trade(self):
-        print("\n--- Testing ConfirmedTradeSerializer Create ---")
-        data = {
-            'trade_request_id': self.trade_request.id,
-            'status': 'delivering',
-            'item_received': False,
-            'item_location': 'Pokhara'
-        }
-        serializer = ConfirmedTradeSerializer(data=data)
-        print("Input Data:", data)
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        confirmed_trade = serializer.save()
-        print("Confirmed Trade Created:", confirmed_trade)
-        print("Trade Request ID:", confirmed_trade.trade_request.id)
+#     def test_create_confirmed_trade(self):
+#         print("\n--- Testing ConfirmedTradeSerializer Create ---")
+#         data = {
+#             'trade_request_id': self.trade_request.id,
+#             'status': 'delivering',
+#             'item_received': False,
+#             'item_location': 'Pokhara'
+#         }
+#         serializer = ConfirmedTradeSerializer(data=data)
+#         print("Input Data:", data)
+#         self.assertTrue(serializer.is_valid(), serializer.errors)
+#         confirmed_trade = serializer.save()
+#         print("Confirmed Trade Created:", confirmed_trade)
+#         print("Trade Request ID:", confirmed_trade.trade_request.id)

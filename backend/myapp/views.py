@@ -557,6 +557,7 @@ class CartDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Cart.objects.filter(user=self.request.user)
     
     def partial_update(self, request, *args, **kwargs):
+
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)    
 
