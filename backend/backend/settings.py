@@ -166,3 +166,4 @@ STREAM_API_KEY = config('STREAM_API_KEY')
 STREAM_API_SECRET = config('STREAM_API_SECRET')
 GEMINI_API_KEY = config('GEMINI_API_KEY')
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'

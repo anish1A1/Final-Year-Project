@@ -204,11 +204,7 @@ class CartSerializer(serializers.ModelSerializer):
         model = Cart
         fields = ['id', 'product_id', 'user', 'product', 
                   'product_qty', 'created_at', 'is_selected', 'total_cost']
-        
-        # extra_kwargs = {
-        #     'product_qty: {required: False}'
-        # }
-       
+     
     def get_total_cost(self, obj):
         return obj.total_cost
     
@@ -224,19 +220,13 @@ class CartSerializer(serializers.ModelSerializer):
         
         if value > product.quantity:
             raise serializers.ValidationError(f'Only {product.quantity} is available')
-    
         return value
-
-   
+    
     def validate(self, data):
         user = self.context['request'].user
         product = data.get('product')
         
-        # product_id = self.initial_data.get('product')
-        # print("user: ", user)
-        # print("product_id: ", product_id)
-        
-        # Check if the user created the product
+        # Check if the user is the owner of the product
         if product.user == user:
             raise serializers.ValidationError('You cannot add a product you created to your cart.')
 

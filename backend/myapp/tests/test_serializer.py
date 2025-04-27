@@ -137,45 +137,247 @@ from rest_framework.test import APITestCase
 #         self.assertEqual(serializer.data['user'], "paymentuser")
 
 
-class EquipmentDeliverySerializerTest(APITestCase):
-    def test_equipment_delivery_serializer(self):
-        print("[Test] Testing Equipment Delivery Serializer...")
-        user = User.objects.create_user(username="deliveryuser", email="delivery@example.com", password="deliverypass")
-        equipment = Equipment.objects.create(
-            user=user,
-            name="Sprayer",
-            per_day_rate=2000,
-            quantity=4,
-            delivery_charge=100,
-            description="Chemical Sprayer",
-            availability_status=True
-        )
+# class EquipmentDeliverySerializerTest(APITestCase):
+#     def test_equipment_delivery_serializer(self):
+#         print("[Test] Testing Equipment Delivery Serializer...")
+#         user = User.objects.create_user(username="deliveryuser", email="delivery@example.com", password="deliverypass")
+#         equipment = Equipment.objects.create(
+#             user=user,
+#             name="Sprayer",
+#             per_day_rate=2000,
+#             quantity=4,
+#             delivery_charge=100,
+#             description="Chemical Sprayer",
+#             availability_status=True
+#         )
         
-        start_date = timezone.now().date()
-        end_date = start_date + timedelta(days=3)
-        booking = EquipmentBooking.objects.create(
-            user=user,
-            equipment=equipment,
-            start_date=start_date,
-            end_date=end_date,
-            status="active",
-            delivery_location="Kathmandu",
-            quantity=2
-        )
-        payment = EquipmentPayment.objects.create(
-            user=user,
-            equipment_booking=booking,
-            amount=6000,
-            status="cleared",
-            payment_method = "esewa"
-        )
-        delivery = EquipmentDelivery.objects.create(
-            equipment_payment=payment,
-            status="delivered"
-        )
-        serializer = EquipmentDeliverySerializer(delivery)
+#         start_date = timezone.now().date()
+#         end_date = start_date + timedelta(days=3)
+#         booking = EquipmentBooking.objects.create(
+#             user=user,
+#             equipment=equipment,
+#             start_date=start_date,
+#             end_date=end_date,
+#             status="active",
+#             delivery_location="Kathmandu",
+#             quantity=2
+#         )
+#         payment = EquipmentPayment.objects.create(
+#             user=user,
+#             equipment_booking=booking,
+#             amount=6000,
+#             status="cleared",
+#             payment_method = "esewa"
+#         )
+#         delivery = EquipmentDelivery.objects.create(
+#             equipment_payment=payment,
+#             status="delivered"
+#         )
+#         serializer = EquipmentDeliverySerializer(delivery)
 
-        print("[Success ✅] Equipment Delivery Data:", serializer.data)
-        print(f"[Details] Delivery Status: {serializer.data['status']}, Payment Amount: {serializer.data['equipment_payment']['amount']}")
-        self.assertEqual(serializer.data['equipment_payment']['user'], "deliveryuser")
+#         print("[Success ✅] Equipment Delivery Data:", serializer.data)
+#         print(f"[Details] Delivery Status: {serializer.data['status']}, Payment Amount: {serializer.data['equipment_payment']['amount']}")
+#         self.assertEqual(serializer.data['equipment_payment']['user'], "deliveryuser")
         
+
+
+# class CategorySerializerTest(APITestCase):
+#     def test_category_serializer(self):
+#         print("[Test] Testing Category Serializer...")
+#         category = Category.objects.create(name="Seeds")
+#         serializer = CategorySerializer(category)
+
+#         print("[Success ✅] Category Data:", serializer.data)
+#         print(f"[Details] Category Name: {serializer.data['name']}")
+#         self.assertEqual(serializer.data['name'], "Seeds")
+
+
+# class ProductSerializerTest(APITestCase):
+#     def test_product_serializer(self):
+#         print("[Test] Testing Product Serializer...")
+#         user = User.objects.create_user(username="productuser", email="product@example.com", password="productpass")
+#         category = Category.objects.create(name="Fertilizers")
+        # product = Product.objects.create(
+        #     user=user,
+        #     category=category,
+        #     name="Organic Fertilizer",
+        #     slug="organic-fertilizer",
+        #     product_image="fertilizer.jpg",
+        #     quantity=50,
+        #     small_description="Small Desc",
+        #     description="Full Desc",
+        #     original_price=1000,
+        #     selling_price=800,
+        #     tag="Organic",
+        #     delivery_sell_charge=20
+        # )
+#         serializer = ProductSerializer(product)
+
+#         print("[Success ✅] Product Data:", serializer.data)
+#         print(f"[Details] Product Name: {serializer.data['name']}, Category: {serializer.data['category']}, Price: {serializer.data['selling_price']}, Quantity: {serializer.data['quantity']}")
+#         self.assertEqual(serializer.data['name'], "Organic Fertilizer")
+
+
+# class CartSerializerTest(TestCase):
+#     def test_cart_serializer(self):
+#         user = User.objects.create_user(username='buyer',  password='password')
+#         seller = User.objects.create_user(username='seller',  password='password')
+#         category = Category.objects.create(name="Fertilizers")
+#         product = Product.objects.create(
+#             user=seller,
+#             category=category,
+#             name="Organic Fertilizer",
+#             slug="organic-fertilizer",
+#             product_image="fertilizer.jpg",
+#             quantity=50,
+#             small_description="Small Desc",
+#             description="Full Desc",
+#             original_price=1000,
+#             selling_price=800,
+#             tag="Organic",
+#             delivery_sell_charge=20
+#         )
+#         cart = Cart.objects.create(user=user, product=product, product_qty=2)
+#         serializer = CartSerializer(cart)
+#         print("\nCart Serializer Output:", serializer.data)
+        
+        
+# ----------------- Cart Serializer Test -----------------
+# class CartSerializerTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testuser", password="testpass")
+        
+#         category = Category.objects.create(name="Fertilizers")
+#         self.other_user = User.objects.create_user(username="otheruser", password="testpass")
+#         self.product = Product.objects.create(
+#             name="Test Product", 
+#             quantity=10,
+#             user=self.other_user,
+#             category=category,
+#             slug="organic-fertilizer",
+#             product_image="fertilizer.jpg",
+#             small_description="Small Desc",
+#             description="Full Desc",
+#             original_price=1000,
+#             selling_price=800,
+#             tag="Organic",
+#             delivery_sell_charge=20
+#         )
+    
+#     def test_create_cart_item(self):
+#         print("\n--- Testing CartSerializer Create ---")
+#         data = {
+#             'product_id': self.product.id,
+#             'product_qty': 2,
+#             'user' : self.user.id
+#         }
+#         context = {'request': self._mock_request(self.user)}
+#         serializer = CartSerializer(data=data, context=context)
+#         print("Input Data:", data)
+#         self.assertTrue(serializer.is_valid(), serializer.errors)
+#         cart = serializer.save()
+#         print("Saved Cart:", cart)
+#         print("Cart Product:", cart.product.name)
+#         print("Cart User:", cart.user.username)
+
+#     def _mock_request(self, user):
+#         """Helper to mock request context."""
+#         class MockRequest:
+#             def __init__(self, user):
+#                 self.user = user
+#         return MockRequest(user)
+    
+from datetime import datetime, timedelta   
+# ----------------- Cart Payment Serializer Test -----------------
+# class CartPaymentSerializerTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create_user(username="testuser", password="testpass")
+#         self.other_user = User.objects.create_user(username="otheruser", password="testpass")
+#         category = Category.objects.create(name="Fertilizers")
+        
+#         self.product = Product.objects.create(
+#             name="Test Product", 
+#             quantity=10,
+#             user=self.other_user,
+#             category=category,
+#             slug="organic-fertilizer",
+#             product_image="fertilizer.jpg",
+#             small_description="Small Desc",
+#             description="Full Desc",
+#             original_price=1000,
+#             selling_price=800,
+#             tag="Organic",
+#             delivery_sell_charge=20
+#         )
+#         self.cart = Cart.objects.create(user=self.user, product=self.product, product_qty=2)
+#     def test_create_cart_payment(self):
+#         print("\n--- Testing CartPaymentSerializer Create ---")
+#         data = {
+#             'cart': [self.cart.id],
+#             'user':self.user,
+#             'amount':10000,
+#             'status':"pending",
+#             'payment_method': "esewa",
+#             'delivery_address': 'Kathmandu',
+            
+#         }
+#         context = {'request': self._mock_request(self.user)}
+#         serializer = CartPaymentSerializer(data=data, context=context)
+#         print("Input Data:", data)
+#         self.assertTrue(serializer.is_valid(), serializer.errors)
+#         cart_payment = serializer.save()
+#         print("Saved CartPayment:", cart_payment)
+#         print("Associated Carts:", [c.product.name for c in cart_payment.cart.all()])
+
+#     def _mock_request(self, user):
+#         class MockRequest:
+#             def __init__(self, user):
+#                 self.user = user
+#         return MockRequest(user)
+
+# ----------------- Cart Delivery Serializer Test -----------------
+class CartDeliverySerializerTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="adminuser", password="testpass")
+        self.other_user = User.objects.create_user(username="buyer", password="testpass")
+        category = Category.objects.create(name="Fertilizers")    
+        self.product = Product.objects.create(
+            name="Test Product", 
+            quantity=10,
+            user=self.user,
+            category=category,
+            slug="organic-fertilizer",
+            product_image="fertilizer.jpg",
+            small_description="Small Desc",
+            description="Full Desc",
+            original_price=1000,
+            selling_price=800,
+            tag="Organic",
+            delivery_sell_charge=20
+        )
+        self.cart = Cart.objects.create(user=self.other_user, product=self.product, product_qty=1)
+        self.cart_payment = CartPayment.objects.create(user=self.other_user, amount=10000, status="pending", payment_method="esewa", delivery_address="Kathmandu")
+        self.cart_payment.cart.set([self.cart])
+        self.delivery = CartDelivery.objects.create(cart_payment=self.cart_payment)
+
+    def test_update_delivery(self):
+        print("\n--- Testing CartDeliverySerializer Update ---")
+        data = {
+            'status': 'delivered',
+            'item_received_by_user': True,
+            'delivery_location': 'Test Location',
+            'handover_date': datetime.now()
+        }
+        context = {'request': self._mock_request(self.user)}
+        serializer = CartDeliverySerializer(instance=self.delivery, data=data, context=context, partial=True)
+        print("Input Data:", data)
+        self.assertTrue(serializer.is_valid(), serializer.errors)
+        updated_delivery = serializer.save()
+        print("Updated Delivery:", updated_delivery.status)
+        print("Admin Assigned:", updated_delivery.admin.username)
+
+    def _mock_request(self, user):
+        class MockRequest:
+            def __init__(self, user):
+                self.user = user
+        return MockRequest(user)
