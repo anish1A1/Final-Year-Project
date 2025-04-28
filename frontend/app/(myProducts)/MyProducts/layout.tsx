@@ -57,6 +57,13 @@ const ProductDashboardLayout = ({ children }: { children: React.ReactNode }) => 
           >
             Trade Deliveries
           </Link>
+
+          <Link
+            href="/MyProducts//MyTrades/ReceiveTradeDelivery"
+            className="block px-6 py-3 hover:bg-blue-700 rounded transition"
+          >
+            Trade To Receive
+          </Link>
         </nav>
       </aside>
 

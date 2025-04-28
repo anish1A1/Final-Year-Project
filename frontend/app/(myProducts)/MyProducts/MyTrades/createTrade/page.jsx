@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProductContext} from '../../..//utils/prod';
-import { AuthContext } from '../../../utils/auth';
+import { ProductContext} from '../../../../../utils/prod';
+import { AuthContext } from '../../../../../utils/auth';
 import { toast } from 'sonner';
 import { RotateCcw, MapPin, CheckCircle, User, Truck, CalendarIcon, UsersRound , Clock } from "lucide-react";
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
@@ -90,7 +90,7 @@ const CreateTradePage = () => {
     };
 
     return (
-        <div className="mt-24   bg-gray-100">
+        <div className="  bg-gray-100">
 
             <div className="flex justify-center items-center ">
                 <Card className="w-full max-w-2xl shadow-lg rounded-2xl mt-3"  >

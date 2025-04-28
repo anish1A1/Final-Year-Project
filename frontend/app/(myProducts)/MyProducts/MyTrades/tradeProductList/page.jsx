@@ -10,6 +10,8 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 
 const TradeProductList = () => {
   const { fetchTrades, trades, loading, UpdateTradeById, deleteTradeById } = useContext(ProductContext);
@@ -57,9 +59,15 @@ const TradeProductList = () => {
 
   return (
     <div className="container mx-auto px-3">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl font-medium  text-gray-800 mb-4">
         📦 Trade Lists
       </h1>
+      <Link href='createTrade' 
+      className="p-2 bg-blue-400 rounded text-stone-900">
+      Create Trade
+      </Link>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
         {trades && trades.length > 0 ? (
           trades.map((trade) => (
