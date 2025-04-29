@@ -208,7 +208,7 @@ export const EquipProvider = ({children}) => {
                 response.data
             ]);
             router.push('/equipmentList');
-            return { status: 'success', message: 'Equipment created successfully!' };
+            return { status: 'success', message: 'Equipment booked successfully!' };
         } catch (error) {
             setError(error.response.data);
             console.error("Error creating equipment:", error.response?.data || error.message);
