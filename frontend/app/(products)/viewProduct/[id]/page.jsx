@@ -73,6 +73,10 @@ const ViewProductById = () => {
 
   // Creating Chat
   const handleUserSelect = async ( product_id) => {
+     if (!user) {
+          toast.error("You must be logged in to create a chat.");
+          return;
+        }
     try {
       console.log("Product ID:", product_id);
 

@@ -56,7 +56,7 @@ const ManageEquipment = () => {
       };
 
     if (!combinedBookings || combinedBookings.length === 0) {
-        return <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">No equipment bookings available.</div>;
+        return <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700 pb-48">No equipment bookings available.</div>;
     };
 
 

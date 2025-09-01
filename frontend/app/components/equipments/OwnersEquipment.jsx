@@ -50,7 +50,7 @@ const OwnersEquipment = () => {
   }
 
   if (!equipmentOwner || equipmentOwner.length === 0) {
-    return <div className="container mx-full mt-36 mb-48 text-2xl font-semibold text-gray-700">No products created by you</div>;
+    return <div className="container mx-full mt-36 mb-48 text-2xl font-semibold text-gray-700  text-center">No Equipments created by you</div>;
   };
 
 

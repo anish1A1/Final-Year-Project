@@ -1,16 +1,39 @@
 "use client";
 import axios from '../../utils/axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { X, Bot, Loader2 } from 'lucide-react'; // For a clean close icon
 import { Button } from "@/components/ui/button"
-
+import { AuthContext } from '../../utils/auth';
+import { toast } from 'sonner';
 const TradeSummary = ({ tradeDescription }) => {
   const [summary, setSummary] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+const {user} = useContext(AuthContext);
   const generateSummary = async () => {
     setLoading(true);
+    if (!user) {
+      toast.error("You need to be logged in to create a chat.");
+    setLoading(false);
+      
+    }
+     if (user && user.user_roles) {
+      const adminRole = user.user_roles.some((role) => role.role.name === 'admin');
+      if (adminRole) {
+        toast.error("Admins cannot create chats.");
+    setLoading(false);
+
+        return;
+      }
+      const normalUser = user.user_roles.some((role) => role.role.name === 'user');
+      if (normalUser) {
+        toast.error("Sorry! This feature is only for farmers.");
+    setLoading(false);
+
+        return;
+      }
+      
+    }
     try {
       const response = await axios.post('/api/ai/trade-summary/', {
         trade_text: tradeDescription,

@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import Link from "next/link";
 
 const slides = [
   {
@@ -17,6 +18,7 @@ const slides = [
     image: "/tradingImage.png?height=600&width=1200",
     cta: "Start Trading",
     color: "from-emerald-800 to-emerald-950",
+    links: '/allTrades',
   },
   {
     id: 2,
@@ -25,6 +27,7 @@ const slides = [
     image: "/FarmSajiloSlider.jpeg?height=600&width=1200",
     cta: "Shop Now",
     color: "from-amber-700 to-amber-950",
+    links: '/viewProduct',
   },
   {
     id: 3,
@@ -33,6 +36,7 @@ const slides = [
     image: "/equipmentRental.jpeg?height=600&width=1200",
     cta: "Rent Equipment",
     color: "from-indigo-800 to-indigo-950",
+    links: 'equipmentList',
   },
 ]
 
@@ -118,9 +122,12 @@ export default function ImageSlider() {
                     >
                       <h2 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">{slide.title}</h2>
                       <p className="mb-6 text-lg md:text-xl opacity-90">{slide.description}</p>
+                        <Link href={slide.links}>
                       <Button size="lg" className="font-medium">
                         {slide.cta}
+                        
                       </Button>
+                        </Link>
                     </motion.div>
                   </div>
                 </div>

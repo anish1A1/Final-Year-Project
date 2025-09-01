@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductListByOwner from '../../(dashboardFolder)/productDashboard/ProductListByOwner'
+import ProductListByOwner from '../../components/AllComponents/ProductListByOwner'
 
 const MyProductsPage = () => {
   return (

@@ -4,6 +4,9 @@ import { EquipmentContext } from '../../../../utils/equip';
 import { AuthContext } from '../../../../utils/auth';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { CheckCircle, Truck, Package, RefreshCcw } from "lucide-react";
+import { toast } from 'sonner';
+import axios from '@/utils/axios';
+
 const ToDeliverItem = () => {
     const { fetchEquipmentDeliveries, deliveries, loading, updateEquipmentDelivery, fetchEquipmentBookings, fetchEquipment, equipmentBooks, equipment   } = useContext(EquipmentContext);
     const { user } = useContext(AuthContext);
@@ -30,14 +33,39 @@ const ToDeliverItem = () => {
     
     const handleDeliveryStatusSubmit = async (id) => {
         if (selectedStatus[id]) {
+          try {
             const updatedDelivery = await updateEquipmentDelivery(id, selectedStatus[id]);
             if (updatedDelivery) {
                 setUserDeliveries(userDeliveries.map(delivery => 
                     delivery.id === id ? { ...delivery, status: updatedDelivery.status } : delivery
                 ));
             }
+            await fetchEquipmentDeliveries();
+            toast.success(updatedDelivery.message);
+            
+          } catch (error) {
+            toast.error(error.message);
+          }
         }
     };
+
+      const handleEquipmentReceivedback = async (id) => {
+          try {
+            const response = await axios.patch(`/api/equipment-delivery/${id}/`, {
+                equipment_received_by_owner: true
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            if (response) {
+              toast.success("Yay! You got your equipment back");
+            }
+            await fetchEquipmentDeliveries();
+          } catch (error) {
+            toast.error(error?.message || 'Failed to Update the Delivery Status');
+          }
+      }
     
     const getBookingDetails = (bookingId) => {
         const bookingCaught = equipmentBooks.find(booking => booking.id === bookingId) || {};
@@ -113,9 +141,39 @@ const ToDeliverItem = () => {
                     </div>
                     <p><strong>Total Days:</strong> {bookingCaught?.total_date || "N/A"}</p>
                     <p><strong>Date Paid:</strong> {delivery.equipment_payment?.date_paid || "N/A"}</p>
+                          {delivery.status !== "delivered" ? (
+                            
+                            <p className='text-sm font-medium text-center text-gray-700'>Please Deliver the equipment before start Date</p>
+                          ):null}
                   </CardContent>
   
                   <CardFooter className="p-5 border-t bg-gray-50 rounded-b-xl space-x-5 flex items-center">
+                    {delivery.equipment_received === true ? (
+                      <div>
+                      <p className="px-3 py-1.5 mx-20 text-sm font-semibold rounded-full flex items-center  gap-2 bg-green-100 text-green-600">
+                        <CheckCircle className="w-4 h-4" />
+                        The user has Received this item
+                      </p>
+
+                      {new Date(bookingCaught?.end_date) > new Date() ? (
+                        <div className='pt-4 flex justify-center gap-4 items-center'>
+                        <p className='text-sm font-medium text-center text-gray-700'>Item Returned to You: {delivery?.equipment_received_by_owner ? "Yes" : "No"}</p>
+                        {delivery?.equipment_received_by_owner === false ? (
+                        <button
+                          onClick={() => handleEquipmentReceivedback(delivery.id)}
+                          className="w-28 bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded-lg transition flex items-center justify-center gap-2"
+                        >
+                          <CheckCircle className="w-5 h-5" /> Yes
+                        </button>
+                          
+                        ) : null}
+                        </div>
+                      ) : null}
+
+                      </div>
+                    ): (
+                      <>
+                      
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Status:
                     </label>
@@ -134,6 +192,9 @@ const ToDeliverItem = () => {
                     >
                       <CheckCircle className="w-5 h-5" /> Submit
                     </button>
+                      
+                      </>
+                    )}
                   </CardFooter>
                 </Card>
               );

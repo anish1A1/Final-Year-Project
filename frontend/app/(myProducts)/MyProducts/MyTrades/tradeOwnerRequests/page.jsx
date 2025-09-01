@@ -2,10 +2,12 @@
 import React, { useEffect, useContext } from "react";
 import { ProductContext } from "../../../../../utils/prod";
 import { Send, SquareArrowDown  } from 'lucide-react';
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const TradeOwnerRequests = () => {
   const { getTradeRequestsFromUsers, updateTradeRequestStatus, tradeRequestsOfOwner ,loading } = useContext(ProductContext);
-
+  const router = useRouter();
   useEffect(() => {
     const formData = async () => {
       await getTradeRequestsFromUsers();
@@ -15,7 +17,16 @@ const TradeOwnerRequests = () => {
   }, []);
 
   const handleStatusUpdate = async (id, newStatus) => {
-    await updateTradeRequestStatus(id, newStatus);
+    try {
+      const response = await updateTradeRequestStatus(id, newStatus);
+      toast.success(response?.message || "Trade request status updated successfully!");
+      if (newStatus === 'accepted') {
+        router.push('/MyProducts/MyTrades/ToDeliverTrade')
+      }
+      
+    } catch (error) {
+      toast.error(error.message || "Error updating trade request status.");
+    }
   };
 
   if (loading) {

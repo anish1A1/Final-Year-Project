@@ -42,6 +42,7 @@ const TradeProductList = () => {
     try {
         console.log(selectedTrade);
        const response = await UpdateTradeById(selectedTrade.id, selectedTrade);
+       await fetchTrades();
       toast.success(response.message || "Trade updated successfully!");
       setSelectedTrade(null); // Close the modal
     } catch (error) {
@@ -58,7 +59,7 @@ const TradeProductList = () => {
   }
 
   return (
-    <div className="container mx-auto px-3">
+    <div className="container mx-auto px-3 ">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-medium  text-gray-800 mb-4">
         📦 Trade Lists

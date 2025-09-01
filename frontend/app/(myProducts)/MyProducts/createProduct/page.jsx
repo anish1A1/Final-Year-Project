@@ -66,9 +66,24 @@ const CreateProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(formData);
+            if (formData.product_image === null) {
+                toast.error('Please select an image');
+            }
+            if (formData.category === '') {
+                toast.error('Please select a category');
+            }
+            if (formData.original_price === 0 || formData.selling_price === 0) {
+                toast.error('Please enter a valid price');
+            }
+            if (formData.original_price < formData.selling_price) {
+                toast.error('Selling price must be greater than original price');
+            }
     try {
       const response = await createProduct(formData, category, router);
-      toast.success(response.message || "Product created successfully!");
+      if (response.status === 200) {
+        toast.success(response?.message);
+      }
     } catch (error) {
       console.error(error);
       toast.error(error.message || "Something went wrong");

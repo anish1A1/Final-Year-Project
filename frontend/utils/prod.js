@@ -67,7 +67,7 @@ export const ProductProvider = ({children}) => {
         }
     
         console.log(`Creating category: ${formData.category}`);
-
+        console.log(`Creating product: ${formData}`);
 
         if (formData.category) { 
             data.append('category_id', formData.category)
@@ -90,6 +90,7 @@ export const ProductProvider = ({children}) => {
         } catch (error) {
             console.log(`Error creating product: ${error}`);
             setError(error.response?.data || error.message);
+            return error.response?.data;
         }
     };
     

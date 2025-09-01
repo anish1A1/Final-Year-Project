@@ -5,7 +5,7 @@ from .views import ConfirmedTradeListByOwnerView, ConfirmedTradeUpdateByOwnerVie
 from .views import CartDeliveryListCreateView,CartDeliveryDetailView, CartDeliveryAdminListCreateView, CartDeliveryOwnerViewListView
 from .views import EquipmnentListByOwner, EquipmentPartialUpdateView, EquipmentListCreateView, EquipmentDetailView, EquipmentBookingListCreateView, EquipmentBookingUpdateStatusView, EquipmentPaymentView, EquipmentDeliveryUpdateView, EquipmentDeliveryListCreateView, EquipmentDeliveryReceiveListView
 
-from .views import get_stream_token, create_product_chat, get_stream_token, create_trade_chat
+from .views import get_stream_token, create_product_chat, get_stream_token, create_trade_chat, create_equipment_chat
 from .views import GetDashboardSliderData, generate_trade_summary
  
 urlpatterns = [
@@ -37,7 +37,7 @@ urlpatterns = [
     path("chat/create-product-chat/<int:product_id>/", create_product_chat, name="create_product_chat"),
     path('chat/product-chat/', get_stream_token, name='get_product_chat'),
     path("chat/create-trade-chat/<int:trade_id>/", create_trade_chat, name="create_trade_chat"),
-    
+    path("chat/create-equipment-chat/<int:equipment_id>/", create_equipment_chat, name="create_equipment_chat"),
     
     
     

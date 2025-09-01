@@ -83,14 +83,14 @@ const EquipmentDashboardLayout = ({ children }: { children: React.ReactNode }) =
               >
                 Manage Deliveries
               </Link>
-              <Separator orientation="vertical" className="h-5 w-px bg-gray-300" />
+              {/* <Separator orientation="vertical" className="h-5 w-px bg-gray-300" />
 
               <Link
                 href="/MyEquipments/ReceivingEquipments"
                 className="text-sm font-medium text-blue-600 hover:underline"
               >
                 Receiving Equipments
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

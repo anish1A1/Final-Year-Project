@@ -80,14 +80,14 @@ const MyOrderSidebar = () => {
                 Equipment Orders
               </Link>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="/my-orders/track-orders"
                 className="block py-2 px-4 rounded hover:bg-gray-700 transition"
               >
                 Track Orders
               </a>
-            </li>
+            </li> */}
 
             {user && isFarmer ? (
                 <li>

@@ -130,135 +130,181 @@ const AdminDeliveries = () => {
     
   
     return (
-        <div className="mt-8 p-8 bg-gray-50 min-h-screen">
-            <BreadCrumbs />
+        <div className="mt-16  bg-gray-50 container mx-auto py-6">
+            {/* <BreadCrumbs /> */}
         <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">📦 Admin Product Deliveries</h1>
   
         {loading ? (
-          <div className="flex justify-center items-center h-screen text-2xl font-semibold text-gray-700">Loading...</div>
+          <div className="flex justify-center items-center h-[60vh] text-xl font-medium text-gray-600">Loading...</div>
         ) : cartDeliveriesForAdmin.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {cartDeliveriesForAdmin.map((delivery) => (
-              <Card key={delivery.id} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-transform transform hover:scale-105">
-                <CardHeader>
-                  <CardTitle className="text-2xl font-semibold text-gray-800 flex items-center gap-3">
-                    <Truck className="w-7 h-7 text-blue-600" />
-                    Delivery ID: {delivery.id}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 flex items-center gap-3 text-lg">
-                    <User className="w-5 h-5 text-green-600" />
-                    <strong>Customer:</strong> {delivery.cart_payment.user.charAt(0).toUpperCase() + delivery.cart_payment.user.slice(1)}
-                  </p>
-                  <p className="text-gray-600 flex items-center gap-3 text-lg">
-                    <MapPin className="w-5 h-5 text-blue-600" />
-                    <strong>Delivery Location:</strong> {delivery.cart_payment.delivery_address}
-                  </p>
-  
-                  <div className="mt-3">
-                    <p className="text-gray-600 flex items-center gap-3 text-lg">
-                      <Truck className="w-5 h-5 text-blue-600" />
-                      <strong>Product Item Location:</strong> {delivery.delivery_location || "Not available"}
-                    </p>
-                    {delivery.item_received_by_user === false && (
-                      <div className="flex items-center gap-3 mt-3">
-                        <Input
-                          type="text"
-                          placeholder="Enter new location"
-                          value={locationInputs[delivery.id] || ""}
-                          onChange={(e) => handleLocationChange(delivery.id, e.target.value)}
-                          className="w-full border-gray-300 shadow-sm rounded-lg"
-                        />
-                        <Button
-                          onClick={() => saveLocation(delivery.id, delivery?.admin)}
-                          disabled={savingLocationId === delivery.id}
-                          className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition"
-                        >
-                          {savingLocationId === delivery.id ? "Saving..." : "Save"}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-  
-                  <div className="mt-4">
-                    <Badge className={`text-white py-2 px-4 rounded-lg text-lg font-semibold ${statusColors[delivery.status]}`}> 
-                      {delivery.status.replace(/_/g, " ").toUpperCase()}
-                    </Badge>
-                  </div>
-  
-                  {delivery.item_received_by_user === false && (
-                    <div className="mt-4">
-                      <Select
-                        defaultValue={delivery.status}
-                        onValueChange={(newStatus) => handleStatusChange(delivery.id, newStatus, delivery.admin)}
-                      >
-                        <SelectTrigger className="w-full border-gray-300 shadow-sm rounded-lg text-lg">
-                          <SelectValue placeholder="Change Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="owner_to_admin">Owner to Admin</SelectItem>
-                          <SelectItem value="admin_received">Admin Received</SelectItem>
-                          <SelectItem value="delivering_to_user">Delivering to User</SelectItem>
-                          <SelectItem value="delivered">Delivered</SelectItem>
-                          <SelectItem value="canceled">Canceled</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
-                  {updatingDeliveryId === delivery.id && <p className="text-blue-500 mt-2">Updating...</p>}
-  
-                  <div className="mt-4 flex flex-col gap-3">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full flex items-center gap-3 text-lg px-4 py-2 border-gray-300 shadow-sm rounded-lg">
-                          <CalendarIcon /> {date ? format(date, "PPP") : "Pick a date"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={date}
-                          onSelect={setDate}
-                          disabled={(day) => day < new Date()}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <Button className="bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700 transition text-lg" onClick={() => handleDateChange(delivery.id, delivery?.admin)}>
-                      Update Date
+           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {cartDeliveriesForAdmin.map((delivery) => (
+            <Card
+              key={delivery.id}
+              className="rounded-xl border border-gray-200 shadow-md transition hover:shadow-lg"
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center gap-2 text-gray-800">
+                  <Truck className="w-5 h-5 text-blue-600" />
+                  Delivery #{delivery.id}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm text-gray-700">
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-green-600" />
+                  <span>
+                    <strong>Customer:</strong>{" "}
+                    {delivery.cart_payment.user.charAt(0).toUpperCase() +
+                      delivery.cart_payment.user.slice(1)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-blue-600" />
+                  <span>
+                    <strong>Address:</strong>{" "}
+                    {delivery.cart_payment.delivery_address}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-yellow-500" />
+                  <span>
+                    <strong>Item Location:</strong>{" "}
+                    {delivery.delivery_location || "Not Available"}
+                  </span>
+                </div>
+
+                {delivery.item_received_by_user === false && (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      placeholder="New location"
+                      value={locationInputs[delivery.id] || ""}
+                      onChange={(e) =>
+                        handleLocationChange(delivery.id, e.target.value)
+                      }
+                      className="flex-1"
+                    />
+                    <Button
+                      onClick={() => saveLocation(delivery.id, delivery?.admin)}
+                      disabled={savingLocationId === delivery.id}
+                      className="bg-blue-600 text-white"
+                    >
+                      {savingLocationId === delivery.id ? "Saving..." : "Save"}
                     </Button>
                   </div>
-  
-                  {delivery.delivery_date && (
-                    <p className="text-gray-600 text-lg mt-3">
-                      <strong>Delivery Date:</strong> {format(new Date(delivery.delivery_date), "PPP")}
-                    </p>
-                  )}
-  
-                  {delivery.admin === null ? (
-                    <div className="mt-4">
-                      <p className="text-gray-700 font-semibold text-lg">Apply for Delivery</p>
-                      <Button className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition text-lg" onClick={() => handleAddAdmin(delivery.id)}>
-                        Apply
+                )}
+
+                <Badge
+                  className={`w-fit text-xs px-3 py-1 font-medium rounded-full ${statusColors[delivery.status]}`}
+                >
+                  {delivery.status.replace(/_/g, " ").toUpperCase()}
+                </Badge>
+
+                {delivery.item_received_by_user === false && (
+                  <Select
+                    defaultValue={delivery.status}
+                    onValueChange={(newStatus) =>
+                      handleStatusChange(delivery.id, newStatus, delivery.admin)
+                    }
+                  >
+                    <SelectTrigger className="w-full mt-2">
+                      <SelectValue placeholder="Change Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="owner_to_admin">
+                        Owner to Admin
+                      </SelectItem>
+                      <SelectItem value="admin_received">
+                        Admin Received
+                      </SelectItem>
+                      <SelectItem value="delivering_to_user">
+                        Delivering to User
+                      </SelectItem>
+                      <SelectItem value="delivered">Delivered</SelectItem>
+                      <SelectItem value="canceled">Canceled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+                {updatingDeliveryId === delivery.id && (
+                  <p className="text-blue-500 text-sm">Updating...</p>
+                )}
+
+                <div className="pt-3 space-y-2">
+                  {delivery.item_received_by_user === false ? (
+                    <>
+                    
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date ? format(date, "PPP") : "Pick a date"}
                       </Button>
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 text-lg mt-3 flex items-center gap-3">
-                      <User className="w-5 h-5 text-green-600" /> 
-                      <strong>Admin:</strong> {delivery.admin_username.charAt(0).toUpperCase() + delivery.admin_username.slice(1)}
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        disabled={(day) => day < new Date()}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() =>
+                      handleDateChange(delivery.id, delivery?.admin)
+                    }
+                  >
+                    Update Date
+                  </Button>
+                    </>
+                  ): (
+                    <p className="text-gray-600 text-md font-bold py-16  text-center">
+                     The item has been received by the user
                     </p>
                   )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xl font-semibold text-gray-800 text-center">No pending deliveries found.</p>
-        )}
-      </div>
-    );
-  };
-  
-  
-  export default AdminDeliveries;
-  
+                </div>
+
+                {delivery.delivery_date && (
+                  <p className="text-gray-600 text-sm">
+                    <strong>Delivery Date:</strong>{" "}
+                    {format(new Date(delivery.delivery_date), "PPP")}
+                  </p>
+                )}
+
+                {delivery.admin === null ? (
+                  <div className="pt-3">
+                    <p className="text-sm font-medium text-gray-800 mb-1">
+                      Apply for Delivery
+                    </p>
+                    <Button
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => handleAddAdmin(delivery.id)}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 pt-2 text-sm">
+                    <User className="w-4 h-4 text-green-600" />
+                    <strong>Admin:</strong>{" "}
+                    {delivery.admin_username.charAt(0).toUpperCase() +
+                      delivery.admin_username.slice(1)}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-700 text-lg font-medium">
+          No pending deliveries found.
+        </p>
+      )}
+    </div>
+  );
+};
+
+export default AdminDeliveries;

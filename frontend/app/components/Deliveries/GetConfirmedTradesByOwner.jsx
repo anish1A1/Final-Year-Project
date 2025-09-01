@@ -48,6 +48,16 @@ const GetConfirmedTradesByOwner = () => {
     }
   };
 
+  const handleUpdateReceived = async (id) => {
+    try {
+      const response =await updateConfirmedTrade(id, { item_received_by_owner: true });
+      await fetchConfirmedTradesByOwner();
+      toast.success(response.message || "yay! You also received your goods!");
+
+    } catch (error) {
+      toast.error(error.message || "Failed to update trade status.");
+    }
+  }
   const handleLocationChange = (id, value) => {
     setLocationInputs((prev) => ({
       ...prev,
@@ -87,7 +97,7 @@ const GetConfirmedTradesByOwner = () => {
           {confirmedTradesOfOwner.map((trade) => (
             <Card
               key={trade.id}
-              className="bg-white p-5 rounded-xl shadow-lg transition-transform transform hover:scale-105"
+              className="bg-white p-2 rounded-xl shadow-lg transition-transform transform hover:scale-105"
             >
               <CardHeader>
                 <CardTitle className="text-xl font-semibold text-gray-800 flex items-center gap-2">
@@ -106,6 +116,11 @@ const GetConfirmedTradesByOwner = () => {
                 <p className="text-gray-600 flex items-center gap-2">
                     <User className="w-4 h-4 text-green-600" />
                     <strong>Customer Name:</strong> {trade.trade_request.user.charAt(0).toUpperCase() + trade.trade_request.user.slice(1)}
+                </p>
+                 {/* Item Received Status */}
+                <p className="text-gray-600 flex items-center gap-2 mt-2">
+                  <CheckCircle className="w-4 h-4 text-yellow-500" />
+                  <strong>Item Received by Customer:</strong> {trade.item_received ? "Yes ✅" : "No ❌"}
                 </p>
 
                 {/* Trade Item Location (Editable) */}
@@ -133,18 +148,25 @@ const GetConfirmedTradesByOwner = () => {
                           </Button>
                           </>
                     ) : (
-                        null
+                        <>
+                            <p className="text-gray-600 flex items-center gap-2 mt-2">
+                            <CheckCircle className="w-4 h-4 text-yellow-500" />
+                            <strong>Item Received by Owner:</strong> {trade.item_received_by_owner ? "Yes ✅" : "No❌"}
+
+                            {trade.item_received_by_owner === false &&(
+                            <Button onClick={() => handleUpdateReceived(trade.id) } className="bg-blue-500 text-white">
+                              <CheckCircle className="w-4 h-4" />Yes</Button>
+
+                            )}
+                     </p>
+                        </>
                     ) }
                     
                   </div>
 
                 </div>
 
-                {/* Item Received Status */}
-                <p className="text-gray-600 flex items-center gap-2 mt-2">
-                  <CheckCircle className="w-4 h-4 text-yellow-500" />
-                  <strong>Item Received:</strong> {trade.item_received ? "Yes ✅" : "No ❌"}
-                </p>
+               
 
                 {/* Last Updated Time */}
                 <p className="text-gray-600 flex items-center gap-2 mt-2">
@@ -196,9 +218,7 @@ const GetConfirmedTradesByOwner = () => {
 
                 {/* Extra Actions */}
                 <div className="mt-4 flex justify-between items-center">
-                  <Button variant="outline" className="text-blue-600">
-                    View Details
-                  </Button>
+                  
                   {trade.item_received === false ? (
                   <Button
                     variant="destructive"
@@ -210,6 +230,13 @@ const GetConfirmedTradesByOwner = () => {
 
                   ) : null}
                 </div>
+
+                {trade.item_received_by_owner === true && (
+                  <p  className="text-blue-600 text-center font-semibold ">
+                    Trade has been Completed!
+                  </p>
+                    
+                  )}
               </CardContent>
             </Card>
           ))}

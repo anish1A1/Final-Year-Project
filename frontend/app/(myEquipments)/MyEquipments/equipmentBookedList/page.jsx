@@ -76,7 +76,7 @@ const EquipmentToBookList = () => {
       {loading ? (
        <div className="flex justify-center items-center mt-36 text-2xl font-semibold text-gray-700">Loading...</div>
       ) : combinedBookings.length === 0 ? (
-        <div className="text-center text-lg font-semibold text-gray-500">
+        <div className="text-center text-lg font-semibold py-32 pb-44 text-gray-500">
           No equipment bookings available.
         </div>
       ) : (

@@ -223,7 +223,7 @@ export const CartProvider = ({children}) => {
             setCartDeliveriesForAdmin(response.data);
             console.log(response.data);
         } catch (error) {
-            console.error("Error fetching cart deliveries:", error.response?.data || error.message);
+            // console.error("Error fetching cart deliveries:", error.response?.data || error.message);
             throw error.response?.data;
         } finally{
             setLoading(false);

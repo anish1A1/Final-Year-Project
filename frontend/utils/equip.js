@@ -26,7 +26,7 @@ export const EquipProvider = ({children}) => {
             setEquipment(response.data);
 
         } catch (error) {
-            console.error(`Error fetching equipment: ${error}`);
+            // console.error(`Error fetching equipment: ${error}`);
             setError(error.response?.data || error.message);
         }
         finally {
@@ -43,8 +43,9 @@ export const EquipProvider = ({children}) => {
             setLoading(false);
 
         } catch (error) {
-            console.error(`Error fetching equipment: ${error}`);
+            // console.error(`Error fetching equipment: ${error}`);
             setError(error.response?.data || error.message);
+            throw error.response?.data;
         }
         finally {
             setLoading(false);
@@ -94,7 +95,7 @@ export const EquipProvider = ({children}) => {
             
             return response.data;
         } catch (error) {
-            console.error(`Error fetching equipment by ID: ${error}`);
+            // console.error(`Error fetching equipment by ID: ${error}`);
             if (error.response && error.response.status === 404) {
                 throw new Error('Equipment not found');
             } else {
@@ -176,7 +177,7 @@ export const EquipProvider = ({children}) => {
             setEquipmentBooks(response.data);
             
         } catch (error) {
-            console.error(`Error fetching equipment bookings: ${error}`);
+            // console.error(`Error fetching equipment bookings: ${error}`);
             setError(error.response?.data || error.message);
             throw error.response?.data;
         } finally {
@@ -207,7 +208,7 @@ export const EquipProvider = ({children}) => {
             setEquipmentBooks((prevEquipmentBookings) => [...prevEquipmentBookings,
                 response.data
             ]);
-            router.push('/equipmentList');
+            router.push('/MyEquipments/equipmentBookedList');
             return { status: 'success', message: 'Equipment booked successfully!' };
         } catch (error) {
             setError(error.response.data);
@@ -272,7 +273,7 @@ export const EquipProvider = ({children}) => {
                 ...equipmentPurchases,
                 response.data
             ]);
-             router.push('/dashboards');
+             router.push('/MyOrders/EquipmentsOrders/ToReceiveItem');
              return {status: 'success', message: 'Equipment Payment created successfully!' };
             
 

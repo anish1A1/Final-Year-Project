@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ProductContext } from '../../../../utils/prod';
+import { AuthContext } from '../../../../utils/auth';
 import { FaClock, FaUser, FaBoxOpen } from "react-icons/fa";
 import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
@@ -12,6 +13,7 @@ import TradeSummary from '../../../../ImpComponent/aiComponent/TradeSummary';
 
 const TradeViewPage = () => {
     const { getTradeById, tradeById, loading } = useContext(ProductContext);
+    const {user} = useContext(AuthContext);
     const router = useRouter();
     const { id } = useParams();
     const [timeLeft, setTimeLeft] = useState(null);
@@ -66,6 +68,12 @@ const TradeViewPage = () => {
     
 
   const handleUserSelectForTrade = async ( trade_id) => {
+    if (!user) {
+      toast.error("You must be logged in to create a chat.");
+      
+      return;
+    }
+   
     try {
       console.log("Trade ID:", trade_id);
 

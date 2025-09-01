@@ -12,7 +12,7 @@ import { Download, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
 import { AuthContext } from '../../../../utils/auth';
-
+import axios from '@/utils/axios';
 const EquipmentDetail = () => {
   const [equipment, setEquipment] = useState(null);
   const { getEquipmentById, fetchEquipmentBookings, equipmentBooks } = useContext(EquipmentContext);
@@ -21,11 +21,13 @@ const EquipmentDetail = () => {
   const { user } = useContext(AuthContext);
     const [userBookings, setUserBookings] = useState([]);
   
-
+  useEffect(() => {
     if (!user) {
       router.push('/login');
       toast.info("Please login to access Equipment Pages!");
     }
+    
+  },[])
     
   useEffect(() => {
     if (id) {
@@ -35,8 +37,8 @@ const EquipmentDetail = () => {
           setEquipment(data);
           await fetchEquipmentBookings();
         } catch (error) {
-          console.error('Error fetching equipment details:', error);
-          toast.error('Error fetching equipment details');
+          // console.error('Error fetching equipment details:', error);
+          // toast.error('Error fetching equipment details');
         }
       };
       fetchData();
@@ -66,6 +68,38 @@ const EquipmentDetail = () => {
       return userBookings.some((booking) => booking.equipment === equipmentId);
     };
 
+    const handleUserSelectForEquipment = async ( equipment_id) => {
+    try {
+
+        const response = await axios.post(`/api/chat/create-equipment-chat/${equipment_id}/`,{}, {headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }});
+        // console.log(response.data);
+        const data = response.data;
+        
+        if (data) {
+
+          if (data.message === "Chat already exists.") {
+            toast.info("Chat already exists!");
+          } else {
+            toast.success("Chat created successfully!");
+          }
+      router.push('/Chats')
+        }
+
+    } catch (error) {
+      if (error.response?.data.error){
+        toast.error(error.response?.data.error);
+        return;
+      }
+      
+      console.error("Error creating chat:", error);
+      toast.error("Error creating chat:", error);
+
+     }
+    };
+
 
   if (!equipment) {
     return (
@@ -93,11 +127,8 @@ const EquipmentDetail = () => {
           <img src={equipment.image} alt={equipment.name} className="w-full h-96 object-cover rounded-lg" />
           <div className="p-4 bg-gray-200 rounded-lg">
             <p className="font-semibold">Quick Message</p>
-            <div className="flex gap-2 mt-2">
-              <span className="bg-gray-300 px-3 py-1 rounded-lg">Hello, You can quick message here.</span>
-              <span className="bg-gray-300 px-3 py-1 rounded-lg">Hello, Thank You.</span>
-            </div>
-            <input type="text" placeholder="Message..." className="w-full mt-2 p-2 border rounded-lg" />
+           
+            <button className='w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold mt-1 py-2 px-4 rounded-lg' onClick={() => handleUserSelectForEquipment(equipment.id)}>Create Chat</button>
           </div>
         </motion.div>
 

@@ -105,6 +105,7 @@ class EquipmentBookingSerializer(serializers.ModelSerializer):
         if EquipmentBooking.objects.filter(equipment=equipment, user=user, status__in=["active", "pending"]).exists():
             raise serializers.ValidationError("Equipment is already booked by you")
 
+        
         return data
 
     
@@ -118,18 +119,6 @@ class EquipmentBookingSerializer(serializers.ModelSerializer):
         print("validated Data: ", validated_data)
         return super().create(validated_data)
 
-    # def update(self, instance, validated_data):
-    #     validated_data['user'] = self.context['request'].user
-    #     return super().update(instance, validated_data)
-    
-    
-    
-    # def create(self, validated_data):
-    #     # Sets the user from the context
-    #     user = self.context['request'].user
-    #     validated_data['user'] = user
-    #     print("validated Data: ", validated_data)
-    #     return super().create(validated_data)
     
 
 class EquipmentPaymentSerializer(serializers.ModelSerializer):
@@ -150,8 +139,22 @@ class EquipmentPaymentSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         payment = super().create(validated_data)
-        # if payment.status ==  EquipmentPayment.PaymentStatusChoices.CLEARED:
-        EquipmentDelivery.objects.create(equipment_payment=payment)
+        user = self.context['request'].user
+        equipment_booking = validated_data.get('equipment_booking')
+        payment = super().create(validated_data)
+        
+        if payment.status == EquipmentPayment.PaymentStatusChoices.CLEARED:
+            equipment = equipment_booking.equipment
+            
+            if equipment.quantity < equipment_booking.quantity:
+                raise serializers.ValidationError("Insufficient equipment quantity available.")
+
+            equipment.quantity -= equipment_booking.quantity
+            equipment.save()
+            if equipment.quantity == 0:
+                equipment.availability_status = False
+                equipment.save()
+            EquipmentDelivery.objects.create(equipment_payment=payment)
         return payment
     
     
@@ -261,6 +264,23 @@ class CartPaymentSerializer(serializers.ModelSerializer):
 
         # Set ManyToMany carts
         payment.cart.set(carts)
+        print("Cart is:", carts)
+        if payment.status == CartPayment.PaymentStatusChoices.CLEARED:
+            for cart in carts:
+                product = cart.product
+                print("Cart of each cart is", cart)
+                print("Product is: ", product)
+                if product.quantity < cart.product_qty:
+                    raise serializers.ValidationError(f"Insufficient stock for {product.name}")
+
+                product.quantity -= cart.product_qty
+                product.save()
+                if product.quantity == 0:
+                    product.status = False
+                    product.save()
+            
+
+
         CartDelivery.objects.create(cart_payment=payment)
         return payment
         
@@ -366,7 +386,7 @@ class ConfirmedTradeSerializer(serializers.ModelSerializer):
                                     
     class Meta:
         model = ConfirmedTrade
-        fields = ['id', 'trade_request', 'trade_request_id', 'created_at', 'updated_at', 'status', 'item_received', 'item_location']
+        fields = ['id', 'trade_request', 'trade_request_id', 'created_at', 'updated_at', 'status', 'item_received', 'item_location', 'item_received_by_owner']
         
         
         

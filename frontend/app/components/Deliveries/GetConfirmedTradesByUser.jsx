@@ -49,9 +49,9 @@ const GetConfirmedTradesByUser = () => {
 
   return (
     <div className="mt-1 px-6 bg-gray-100">
-      <BreadCrumbs />
+      {/* <BreadCrumbs /> */}
       <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
-        📦 Your Confirmed Trades
+        📦 Your Trades For Receiving
       </h1>
 
       {loading ? (
@@ -133,13 +133,20 @@ const GetConfirmedTradesByUser = () => {
                     {trade.status.charAt(0).toUpperCase() + trade.status.slice(1)}
                   </Badge>
                 </div>
+
+                 {trade.item_received_by_owner === true && (
+                  <p  className="text-blue-600 mt-2 font-semibold  text-center ">
+                    Trade has been Completed!
+                  </p>
+                    
+                  )}
               </CardContent>
             </Card>
           ))}
         </div>
       ) : (
         <p className="text-lg font-semibold text-gray-800 text-center">
-          No confirmed trades found.
+          No trades to be received.
         </p>
       )}
     </div>

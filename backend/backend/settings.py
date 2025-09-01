@@ -14,6 +14,8 @@ from pathlib import Path
 from datetime import timedelta
 
 from decouple import config
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,14 +90,38 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'farmsajilo',
+#         'HOST': 'localhost',
+#         'USER' : 'root',
+#         'PASSWORD' : '',
+#         'PORT' : '3306',
+#     }
+# }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get("DB_NAME"),
+#         'USER': os.environ.get("DB_USER"),
+#         'PASSWORD': os.environ.get("DB_PASSWORD"),
+#         'HOST': os.environ.get("DB_HOST", "localhost"),
+#         'PORT': os.environ.get("DB_PORT"),
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'farmsajilo',
+        'NAME': os.getenv('DB_NAME', 'farmsajilo'),
+        'USER': os.getenv('DB_USER', 'anish'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'anish123'),
+        # 'HOST': os.getenv('DB_HOST', 'localhost'),
         'HOST': 'localhost',
-        'USER' : 'root',
-        'PASSWORD' : '',
-        'PORT' : '3306',
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 

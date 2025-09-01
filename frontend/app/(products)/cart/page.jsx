@@ -10,7 +10,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CartContext } from "../../../utils/cart";
 import BreadCrumbs from "@/Impcomponent/BreadCrumbs";
-
+import { AuthContext } from "../../../utils/auth";
 const CartPage = () => {
   const {
     fetchCart,
@@ -22,6 +22,7 @@ const CartPage = () => {
     totalCartAmounts,
     fetchtotalCartAmount,
   } = useContext(CartContext);
+  const {user} = useContext(AuthContext);
 
   const [quantity, setQuantity] = useState({});
   const [selectedItems, setSelectedItems] = useState({});
@@ -30,7 +31,7 @@ const CartPage = () => {
   useEffect(() => {
     fetchCart();
     fetchtotalCartAmount();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const initialQuantities = {};
@@ -158,7 +159,7 @@ const CartPage = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-lg">Your cart is empty.</p>
+        <p className="text-center text-lg py-20 pb-28">Your cart is empty.</p>
       )}
       {cartItem?.length > 0 && (
         <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg py-4 border-t flex justify-between px-12 lg:pl-20 items-center">

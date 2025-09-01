@@ -108,13 +108,7 @@ const UserNav = () => {
                             </li>
                             ): null}
 
-                            <li>
-                            <MenuLink label="Dashboard" onClick={() => {
-                                router.push('/dashboards'); 
-                            }}
-                            />
-                            </li>
-
+                            
 
                             <li>
                             <MenuLink label="Log Out" onClick={() => {

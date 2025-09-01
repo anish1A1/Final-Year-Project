@@ -25,8 +25,12 @@ const ProductDelivery = () => {
 
   const OwnerLocation = "Itahari-2, Plaza Complex";
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatusChange = async (id, newStatus, deliverUser) => {
     setUpdatingDeliveryId(id);
+    if (deliverUser === null) {
+      toast.info("The Delivery Partner has not confirmed this order wait for them to do so.");
+      return;
+    }
     try {
       const response = await UpdateDeliveryProductByOwner(id, { status: newStatus });
       toast.success(response.message || "Delivery status updated successfully!");
@@ -38,7 +42,11 @@ const ProductDelivery = () => {
     }
   };
 
-  const handleDateChange = async (id, selectedDate) => {
+  const handleDateChange = async (id, selectedDate, deliverUser) => {
+    if (deliverUser === null) {
+      toast.info("The Delivery Partner has not confirmed this order wait for them to do so.");
+      return;
+    }
     if (!selectedDate) {
       toast.error("Please select a date before updating.");
       return;
@@ -173,7 +181,7 @@ const ProductDelivery = () => {
                     item.status !== "delivering_to_user" &&
                     item.status !== "delivered" &&
                     item.status !== "canceled" ? (
-                      <Select defaultValue={item.status} onValueChange={(newValue) => handleStatusChange(item.id, newValue)}>
+                      <Select defaultValue={item.status} onValueChange={(newValue) => handleStatusChange(item.id, newValue, item?.admin_username)}>
                         <SelectTrigger className="w-full border-gray-300 shadow-sm">
                           <SelectValue placeholder="Change Status" />
                         </SelectTrigger>
@@ -185,7 +193,7 @@ const ProductDelivery = () => {
                       </Select>
                     ) : null
                   ) : null}
-
+  
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className="w-1/2  flex items-center gap-1 text-gray-800 hover:text-gray-900 bg-green-500 hover:bg-green-400">
@@ -193,7 +201,7 @@ const ProductDelivery = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent>
-                      <Calendar mode="single" selected={selectedDates[item.id]} onSelect={(date) => handleDateChange(item.id, date)} disabled={(day) => day < new Date()} />
+                      <Calendar mode="single" selected={selectedDates[item.id]} onSelect={(date) => handleDateChange(item.id, date, item?.admin_username)} disabled={(day) => day < new Date()} />
                     </PopoverContent>
                   </Popover>
                 </div>

@@ -46,14 +46,14 @@ const ProductDashboardLayout = ({ children }: { children: React.ReactNode }) => 
 
           <Link
             href="/MyProducts//MyTrades/tradeOwnerRequests"
-            className="block px-6 py-3 hover:bg-blue-700 rounded transition"
+            className="block px-6 pt-3 pb-1 hover:bg-blue-700 rounded transition"
           >
             Trade Requests
           </Link>
 
           <Link
             href="/MyProducts//MyTrades/ToDeliverTrade"
-            className="block px-6 py-3 hover:bg-blue-700 rounded transition"
+            className="block px-6 pt-3 pb-1 hover:bg-blue-700 rounded transition"
           >
             Trade Deliveries
           </Link>

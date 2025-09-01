@@ -10,7 +10,6 @@ export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [errors, setError] = useState({});
-
     
 
     useEffect(() => {
@@ -31,7 +30,7 @@ export const AuthProvider = ({children}) => {
         try {
             const response = await axios.get(`/api/auth/dashboard/`);
             setUser(response.data.user);
-
+            return response.data.user;
         } catch (error) {
             
             console.error("Error fetching user data:", error); 
@@ -54,9 +53,20 @@ export const AuthProvider = ({children}) => {
             // console.log(response.data);
             
             axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
-            await fetchUserData(access);
+            const userData = await fetchUserData(access);
+            if (userData && userData.user_roles) {
+            console.log("User is", userData?.user_roles);
+            const adminRole = userData.user_roles.some((role) => role.role.name === 'admin');
             
-            router.push('/');
+            if (adminRole) {
+                router.push('/adminDashboard'); 
+            } else {
+                router.push('/');
+            }
+        }
+
+
+        
             return {status : "success", message: "You have been logged in successfully!"}
             // Redirect to the home page
         // window.location.href = redirect_url;

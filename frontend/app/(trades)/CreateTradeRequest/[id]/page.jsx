@@ -46,8 +46,8 @@ const CreateTradeRequestPage = () => {
 
             setFormError("");
             setTimeout(() => {
-                router.push("/allTrades"); // Redirect after success
-            }, 2000);
+                router.push("/MyProducts/MyTrades/requestedTrades"); 
+            }, 1000);
         } catch (error) {
             const errorNotes = error.note && error.note[0] || error[0];
             if (errorNotes) {

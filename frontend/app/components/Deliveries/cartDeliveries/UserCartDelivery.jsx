@@ -42,6 +42,15 @@ const UserCartDelivery = () => {
       setUpdatingDeliveryId(null);
     }
   }
+  if (cartDeliveries.length === 0) {
+    return (
+      <div className="container mx-auto px-6">
+        <h1 className="text-3xl font-bold text-center mt-24 text-gray-900 mb-6">
+          📦 No Ordered Product Deliveries Found
+        </h1>
+      </div>
+    )
+  }
 
 
   return (
@@ -135,7 +144,7 @@ const UserCartDelivery = () => {
           </Card>
         ))
       ) : (
-        <p className="text-lg font-semibold text-gray-800 text-center">
+        <p className="text-lg font-semibold flex ml-40 pl-32 mt-40 items-center justify-center text-gray-800 text-center">
           No confirmed items found.
         </p>
       )}

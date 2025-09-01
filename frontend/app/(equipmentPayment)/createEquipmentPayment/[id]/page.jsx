@@ -56,7 +56,7 @@ const CreateEquipmentPaymentPage = () => {
             const response = await createEquipmentPayment(formData, router, setError);
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            router.push("/MyEquipments/ReceivingEquipments");
+            router.push("/MyOrders/EquipmentsOrders/ToReceiveItem");
             // toast.success("Equipment Payment successful!")
             toast.success(response.message);
         } catch (error) {
